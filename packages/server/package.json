@@ -2,9 +2,19 @@
   "name": "@functionland/server",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf ./build && tsc",
+    "start": "nodemon",
+    "serve": "npm run build && node build/app.js",
+    "lint": "eslint . --ext .ts",
+    "lint-format": "prettier --config .prettierrc \"src/**/*.ts\" --write",
+    "lint-watch": "onchange \"src/**/*.ts\" -- prettier --write {{changed}}"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-format"
+    }
   },
   "repository": {
     "type": "git",
@@ -15,5 +25,27 @@
   "bugs": {
     "url": "https://github.com/functionland/graph/issues"
   },
-  "homepage": "https://github.com/functionland/graph#readme"
+  "homepage": "https://github.com/functionland/graph#readme",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-logger": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.1",
+    "@types/koa__router": "^8.0.4",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-logger": "^3.1.1",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^6.0.0",
+    "nodemon": "^2.0.7",
+    "onchange": "^7.1.0",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
 }

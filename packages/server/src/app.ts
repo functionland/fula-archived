@@ -1,16 +1,46 @@
-import Koa from 'koa';
-import bodyParser from 'koa-bodyparser';
-import logger from 'koa-logger';
-import { router } from './routes';
-import settings from './settings';
+import Libp2p from 'libp2p';
+import Bootstrap from 'libp2p-bootstrap';
+import WebRTCDirect from 'libp2p-webrtc-direct';
+import Mplex from 'libp2p-mplex';
+import { NOISE } from 'libp2p-noise';
+import PeerId from 'peer-id';
 
-const app = new Koa();
+async function main() {
+  const peerId = await PeerId.createFromJSON({
+    id: '12D3KooWP9j4Cp8hEbMMxLuKYZ8RvXuBi81QneULrawgRo8HTD3x',
+    privKey:
+      'CAESQMphNCAzixg/7chz+LttzqbtqzvyJda/NtXRMBx0H2vPxh2VK3wSYYh1fQ5JhVs1AeClU4wUl6RjApkN30cSCUs=',
+    pubKey: 'CAESIMYdlSt8EmGIdX0OSYVbNQHgpVOMFJekYwKZDd9HEglL',
+  });
+  const node = await Libp2p.create({
+    peerId,
+    addresses: {
+      listen: ['/ip4/127.0.0.1/tcp/9090/http/p2p-webrtc-direct'],
+    },
+    modules: {
+      transport: [WebRTCDirect],
+      streamMuxer: [Mplex],
+      connEncryption: [NOISE],
+    },
+    config: {
+      peerDiscovery: {
+        [Bootstrap.tag]: {
+          enabled: false,
+        },
+      },
+    },
+  });
 
-app
-  .use(bodyParser())
-  .use(router.routes())
-  .use(logger());
+  node.connectionManager.on('peer:connect', connection => {
+    console.info(`Connected to ${connection.remotePeer.toB58String()}!`);
+  });
 
-app.listen(settings.port, () =>
-  console.log(`Server is running on port ${settings.port}...`)
-);
+  await node.start();
+
+  console.log('Listening on:');
+  node.multiaddrs.forEach(ma =>
+    console.log(`${ma.toString()}/p2p/${node.peerId.toB58String()}`)
+  );
+}
+
+main();

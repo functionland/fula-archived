@@ -27,16 +27,15 @@
   },
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
-    "@koa/router": "^10.0.0",
-    "koa": "^2.13.1",
-    "koa-bodyparser": "^4.3.0",
-    "koa-logger": "^3.2.1"
+    "libp2p": "^0.30.12",
+    "libp2p-bootstrap": "^0.12.2",
+    "libp2p-mplex": "^0.10.2",
+    "libp2p-noise": "^2.0.5",
+    "libp2p-webrtc-direct": "^0.5.1",
+    "peer-id": "^0.14.6"
   },
   "devDependencies": {
-    "@types/koa": "^2.13.1",
-    "@types/koa__router": "^8.0.4",
-    "@types/koa-bodyparser": "^4.3.0",
-    "@types/koa-logger": "^3.1.1",
+    "@mapbox/node-pre-gyp": "^1.0.3",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",

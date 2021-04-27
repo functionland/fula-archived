@@ -5,8 +5,11 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "start": "vite",
-    "build": "node scripts/build.js"
+    "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
+    "dev-server": "vite",
+    "build": "node scripts/build.js",
+    "watch": "concurrently \"npm:watch:*\"",
+    "watch:build": "onchange -i \"src/**/*.js\" -- npm run build"
   },
   "repository": {
     "type": "git",
@@ -31,11 +34,13 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.1.0",
     "@esbuild-plugins/node-modules-polyfill": "^0.1.1",
     "@mapbox/node-pre-gyp": "^1.0.3",
+    "concurrently": "^6.0.2",
     "es-module-lexer": "^0.4.1",
     "esbuild": "^0.9.7",
     "esbuild-dev": "^0.6.2",
     "magic-string": "^0.25.7",
     "node-fetch": "^2.6.1",
+    "onchange": "^7.1.0",
     "vite": "^2.1.5"
   }
 }

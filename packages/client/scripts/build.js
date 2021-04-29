@@ -6,6 +6,7 @@ build({
     entryPoints: ['src/graph.js'],
     target: 'es2020',
     bundle: true,
+    sourcemap: true,
     outfile: 'dist/index.js',
     define: {
         global: 'globalThis'

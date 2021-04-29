@@ -9,7 +9,7 @@
     "dev-server": "vite",
     "build": "node scripts/build.js",
     "watch": "concurrently \"npm:watch:*\"",
-    "watch:build": "onchange -i \"src/**/*.js\" -- npm run build"
+    "watch:build": "onchange -i \"scripts/**/*.js\" \"src/**/*.js\" -- npm run build"
   },
   "repository": {
     "type": "git",
@@ -22,11 +22,15 @@
   },
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
+    "it-pipe": "^1.1.0",
     "libp2p": "^0.30.12",
     "libp2p-bootstrap": "^0.12.2",
     "libp2p-mplex": "^0.10.2",
     "libp2p-noise": "^2.0.5",
     "libp2p-webrtc-direct": "^0.5.1",
+    "libp2p-webrtc-star": "^0.22.2",
+    "libp2p-websockets": "^0.15.6",
+    "multiaddr": "^8.1.2",
     "nodemon": "^2.0.7",
     "peer-id": "^0.14.6"
   },

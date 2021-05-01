@@ -2,6 +2,7 @@ import Libp2p from 'libp2p';
 import Bootstrap from 'libp2p-bootstrap';
 import wrtc from 'wrtc';
 import Websockets from 'libp2p-websockets';
+import filters from 'libp2p-websockets/src/filters';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
@@ -16,13 +17,13 @@ async function main() {
     pubKey: 'CAESIMYdlSt8EmGIdX0OSYVbNQHgpVOMFJekYwKZDd9HEglL',
   });
   const node = await Libp2p.create({
-    peerId,
+    // peerId,
     addresses: {
       listen: [
-        '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-        '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-        '/ip4/0.0.0.0/tcp/0',
-        '/ip4/0.0.0.0/tcp/0/ws',
+        // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+        // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+        // '/ip4/0.0.0.0/tcp/0',
+        // '/ip4/0.0.0.0/tcp/0/ws',
         `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`
       ]
     },
@@ -33,22 +34,25 @@ async function main() {
     },
     config: {
       transport: {
+        [Websockets.prototype[Symbol.toStringTag]]: {
+          filter: filters.all
+        },
         [WebRTCStar.prototype[Symbol.toStringTag]]: {
           wrtc // You can use `wrtc` when running in Node.js
         },
       },
-      peerDiscovery: {
-        [Bootstrap.tag]: {
-          enabled: true,
-          list: [
-            '/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN',
-            '/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb',
-            '/dnsaddr/bootstrap.libp2p.io/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
-            '/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa',
-            '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt'
-          ]
-        }
-      }
+      // peerDiscovery: {
+      //   [Bootstrap.tag]: {
+      //     enabled: true,
+      //     list: [
+      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN',
+      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb',
+      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
+      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa',
+      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt'
+      //     ]
+      //   }
+      // }
     }
   });
 
@@ -57,17 +61,49 @@ async function main() {
   });
 
   await node.handle('/chat', async ({stream}) => {
-    pipe(
+    await pipe(
       stream,
       async function (source) {
         for await (const message of source) {
-          console.log(message)
+          console.log(String(message))
         }
       }
     )
+    await pipe([], stream)
   });
 
   await node.start();
+
+  // Set up our input handler
+  process.stdin.on('data', (message) => {
+    // remove the newline
+    message = message.slice(0, -1)
+    // Iterate over all peers, and send messages to peers we are connected to
+    node.peerStore.peers.forEach(async (peerData) => {
+      // If they dont support the chat protocol, ignore
+      if (!peerData.protocols.includes('/chat')) return
+
+      // If we're not connected, ignore
+      const connection = node.connectionManager.get(peerData.id)
+      if (!connection) return
+
+      try {
+        const { stream } = await connection.newStream(['/chat'])        
+        await pipe(
+          [ message ],
+          stream,
+          async function (source) {
+            for await (const message of source) {
+              console.info(String(message))
+            }
+          }
+        )
+      } catch (err) {
+        console.error('Could not negotiate chat protocol stream with peer', err)
+      }
+    })
+  })
+
 
   console.log('Listening on:');
   node.multiaddrs.forEach(ma =>

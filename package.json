@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "postinstall": "yarn set version from sources && echo $npm_execpath | grep -q 'npm' && npx yarn install || true",
+    "update": "yarn install",
+    "start": "concurrently \"yarn:signal\" \"yarn:server\" \"yarn:server\" \"yarn:client\"",
+    "signal": "star-signal",
+    "server": "yarn workspace @functionland/server start",
+    "client": "yarn workspace @functionland/graph start"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "concurrently": "^6.1.0",
+    "libp2p-webrtc-star": "^0.22.3",
+    "yarn": "berry"
+  }
+}

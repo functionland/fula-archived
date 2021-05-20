@@ -1,7 +1,11 @@
 ### Node ###
 node_modules/
 package-lock.json
+.yarn/
+.yarnrc.yml
 yarn.lock
+yarn-error.log
+.pnp.cjs
 
 ### Build directory ###
 build/

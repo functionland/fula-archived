@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "nodemon",
+    "start": "nodemon --watch . --watch $(realpath node_modules/@functionland/protocols)",
     "serve": "npm run build && node build/app.js",
     "lint": "eslint . --ext .ts",
     "lint-format": "prettier --config .prettierrc \"src/**/*.ts\" --write",
@@ -27,8 +27,9 @@
   },
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
+    "@functionland/protocols": "^0.1.0",
     "it-pipe": "^1.1.0",
-    "libp2p": "^0.30.12",
+    "libp2p": "^0.31.5",
     "libp2p-bootstrap": "^0.12.2",
     "libp2p-mplex": "^0.10.2",
     "libp2p-noise": "^2.0.5",

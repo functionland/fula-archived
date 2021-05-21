@@ -8,6 +8,7 @@ import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
+import { FileProtocol } from '@functionland/protocols';
 
 async function main() {
   const peerId = await PeerId.createFromJSON({
@@ -24,7 +25,10 @@ async function main() {
         // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
         // '/ip4/0.0.0.0/tcp/0',
         // '/ip4/0.0.0.0/tcp/0/ws',
-        `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`
+        `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
+        // `/ip4/3.14.71.57/tcp/9090/ws/p2p-webrtc-star/`,
+        // '/dns4/server.fx.land/tcp/9090/ws/p2p-webrtc-star/',
+        // '/dns4/server.fx.land/tcp/443/wss/p2p-webrtc-star/',
       ]
     },
     modules: {
@@ -60,17 +64,7 @@ async function main() {
     console.log(`Connected to ${connection.remotePeer.toB58String()}!`);
   });
 
-  await node.handle('/chat', async ({stream}) => {
-    await pipe(
-      stream,
-      async function (source) {
-        for await (const message of source) {
-          console.log(String(message))
-        }
-      }
-    )
-    await pipe([], stream)
-  });
+  await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 
   await node.start();
 
@@ -81,14 +75,14 @@ async function main() {
     // Iterate over all peers, and send messages to peers we are connected to
     node.peerStore.peers.forEach(async (peerData) => {
       // If they dont support the chat protocol, ignore
-      if (!peerData.protocols.includes('/chat')) return
+      if (!peerData.protocols.includes(FileProtocol.PROTOCOL)) return
 
       // If we're not connected, ignore
       const connection = node.connectionManager.get(peerData.id)
       if (!connection) return
 
       try {
-        const { stream } = await connection.newStream(['/chat'])        
+        const { stream } = await connection.newStream([FileProtocol.PROTOCOL])        
         await pipe(
           [ message ],
           stream,

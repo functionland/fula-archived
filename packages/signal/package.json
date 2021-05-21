@@ -1,0 +1,11 @@
+{
+  "name": "@functionland/signal",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "star-signal"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "libp2p-webrtc-star": "^0.22.3"
+  }
+}

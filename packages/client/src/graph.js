@@ -6,7 +6,8 @@ import filters from 'libp2p-websockets/src/filters';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
-// import pipe from 'it-pipe';
+import pipe from 'it-pipe';
+import { FileProtocol } from '@functionland/protocols';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // use the same peer id as in `listener.js` to avoid copy-pasting of listener's peer id into `peerDiscovery`
@@ -21,7 +22,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         listen: [
           // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
           // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-          `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`
+          `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
+          // '/dns4/server.fx.land/tcp/443/wss/p2p-webrtc-star/'
         ]
       },
       modules: {
@@ -82,17 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
 
 
-  await node.handle('/chat', async ({stream}) => {
-    await pipe(
-      stream,
-      async function (source) {
-        for await (const message of source) {
-          console.log(String(message))
-        }
-      }
-    )
-    await pipe([], stream)
-  });
+  await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
   
     await node.start()
     status.innerText = 'libp2p started!'

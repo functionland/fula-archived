@@ -1,19 +1,15 @@
 {
+  "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "yarn set version from sources && echo $npm_execpath | grep -q 'npm' && npx yarn install || true",
-    "update": "yarn install",
-    "start": "concurrently \"yarn:signal\" \"yarn:server\" \"yarn:server\" \"yarn:client\"",
-    "signal": "star-signal",
-    "server": "yarn workspace @functionland/server start",
-    "client": "yarn workspace @functionland/graph start"
+    "bootstrap": "lerna bootstrap && lerna link --force-local",
+    "list": "lerna list",
+    "start": "lerna run start --parallel",
+    "client": "lerna run start --scope=@functionland/graph --stream",
+    "server": "lerna run start --scope=@functionland/server --stream"
+
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "concurrently": "^6.1.0",
-    "libp2p-webrtc-star": "^0.22.3",
-    "yarn": "berry"
+  "devDependencies": {
+    "lerna": "^4.0.0"
   }
 }

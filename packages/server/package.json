@@ -28,6 +28,8 @@
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
     "@functionland/protocols": "^0.1.0",
+    "ipfs": "^0.55.1",
+    "ipfs-repo": "^9.1.6",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.31.5",
     "libp2p-bootstrap": "^0.12.2",

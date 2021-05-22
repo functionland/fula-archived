@@ -8,17 +8,28 @@ import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
+import ipfs from 'ipfs';
+import Repo from 'ipfs-repo';
+import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
+import IPFS from 'ipfs-core/src/components'
 import { FileProtocol } from '@functionland/protocols';
+import {resolveLater} from './utils';
+
+const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
+const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
+
+export async function getLibp2p() {
+  return libp2pPromise;
+}
+
+export async function getIPFS() {
+  return ipfsPromise;
+}
 
 async function main() {
-  const peerId = await PeerId.createFromJSON({
-    id: '12D3KooWP9j4Cp8hEbMMxLuKYZ8RvXuBi81QneULrawgRo8HTD3x',
-    privKey:
-      'CAESQMphNCAzixg/7chz+LttzqbtqzvyJda/NtXRMBx0H2vPxh2VK3wSYYh1fQ5JhVs1AeClU4wUl6RjApkN30cSCUs=',
-    pubKey: 'CAESIMYdlSt8EmGIdX0OSYVbNQHgpVOMFJekYwKZDd9HEglL',
-  });
-  const node = await Libp2p.create({
-    // peerId,
+  const createLibp2 = ({peerId, config}: {peerId: PeerId, config: IPFSConfig}) => {
+    resolveLibp2p(Libp2p.create({
+    peerId,
     addresses: {
       listen: [
         // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
@@ -45,28 +56,29 @@ async function main() {
           wrtc // You can use `wrtc` when running in Node.js
         },
       },
-      // peerDiscovery: {
-      //   [Bootstrap.tag]: {
-      //     enabled: true,
-      //     list: [
-      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN',
-      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb',
-      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
-      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa',
-      //       '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt'
-      //     ]
-      //   }
-      // }
+      peerDiscovery: {
+        [Bootstrap.tag]: {
+          enabled: true,
+          list: config.Bootstrap
+        }
+      }
     }
-  });
+  }));
+  return libp2pPromise
+}
+
+  resolveIpfs(ipfs.create({
+    libp2p: createLibp2,
+    repo: new Repo('./.ipfs')
+  }));
+
+  const node = await libp2pPromise;
 
   node.connectionManager.on('peer:connect', connection => {
     console.log(`Connected to ${connection.remotePeer.toB58String()}!`);
   });
 
   await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
-
-  await node.start();
 
   // Set up our input handler
   process.stdin.on('data', (message) => {
@@ -97,12 +109,16 @@ async function main() {
       }
     })
   })
-
-
-  console.log('Listening on:');
-  node.multiaddrs.forEach(ma =>
-    console.log(`${ma.toString()}/p2p/${node.peerId.toB58String()}`)
-  );
 }
+
+async function graceful() {
+  const ipfs = await getIPFS();
+  console.log("\nStopping server...");
+  await ipfs.stop()
+  process.exit(0);
+}
+
+process.on("SIGTERM", graceful);
+process.on("SIGINT", graceful);
 
 main();

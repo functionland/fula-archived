@@ -9,7 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "it-pipe": "^1.1.0"
+    "@ipld/dag-cbor": "^5.0.5",
+    "@ipld/fbl": "^2.0.1",
+    "it-pipe": "^1.1.0",
+    "multiformats": "^8.0.6"
   },
   "devDependencies": {
     "libp2p": "^0.31.5"

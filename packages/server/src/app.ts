@@ -112,8 +112,8 @@ async function main() {
 }
 
 async function graceful() {
-  const ipfs = await getIPFS();
   console.log("\nStopping server...");
+  const ipfs = await getIPFS();
   await ipfs.stop()
   process.exit(0);
 }

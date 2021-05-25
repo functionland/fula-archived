@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
 
 
-  await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+    await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
   
     await node.start()
     status.innerText = 'libp2p started!'
@@ -93,8 +93,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('stream')
     // await pipe(
     //   ['yoyo'],
-    //   stream
+    //   stream 
     // )
-    
-  
+
+    const sendButton = document.getElementById('send')
+    sendButton.addEventListener('click', async () => {
+      const file = document.getElementById('file').files[0];
+      const a = [];
+      for await (const block of FileProtocol.fileToBlocks(file)) {
+        a.push(block);
+      }
+      console.log(a)
+    })  
   })
+  

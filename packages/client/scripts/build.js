@@ -4,6 +4,7 @@ import path from 'path';
 
 build({
     entryPoints: ['src/graph.js'],
+    platform: 'browser',
     target: 'es2020',
     bundle: true,
     sourcemap: true,

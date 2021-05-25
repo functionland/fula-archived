@@ -9,7 +9,7 @@
     "dev-server": "vite",
     "build": "node scripts/build.js",
     "watch": "concurrently \"npm:watch:*\"",
-    "watch:build": "onchange -i \"scripts/**/*.js\" \"src/**/*.js\" -- npm run build"
+    "watch:build": "onchange -i \"scripts/**/*.js\" \"src/**/*.js\" \"../protocols/**\" -- npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
     "@functionland/protocols": "^0.1.0",
+    "@ipld/schema-validation": "^1.1.0",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.31.5",
     "libp2p-bootstrap": "^0.12.2",
@@ -31,6 +32,7 @@
     "libp2p-webrtc-star": "^0.22.2",
     "libp2p-websockets": "^0.15.6",
     "multiaddr": "^8.1.2",
+    "multiformats": "^8.0.6",
     "peer-id": "^0.14.6"
   },
   "devDependencies": {
@@ -39,8 +41,7 @@
     "@mapbox/node-pre-gyp": "^1.0.3",
     "concurrently": "^6.0.2",
     "es-module-lexer": "^0.4.1",
-    "esbuild": "^0.9.7",
-    "esbuild-dev": "^0.6.2",
+    "esbuild": "^0.12.1",
     "magic-string": "^0.25.7",
     "node-fetch": "^2.6.1",
     "onchange": "^7.1.0",

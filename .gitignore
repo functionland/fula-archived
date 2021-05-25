@@ -6,6 +6,7 @@ package-lock.json
 yarn.lock
 yarn-error.log
 .pnp.cjs
+lerna-debug.log
 
 ### IPFS ###
 .ipfs

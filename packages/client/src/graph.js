@@ -8,6 +8,7 @@ import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
 import pipe from 'it-pipe';
 import { FileProtocol } from '@functionland/protocols';
+import PeerId from 'peer-id';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // use the same peer id as in `listener.js` to avoid copy-pasting of listener's peer id into `peerDiscovery`
@@ -98,12 +99,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const sendButton = document.getElementById('send')
     sendButton.addEventListener('click', async () => {
+      const to = PeerId.createFromB58String(document.getElementById('serverId').value)
+      console.log(to)
       const file = document.getElementById('file').files[0];
-      const a = [];
-      for await (const block of FileProtocol.fileToBlocks(file)) {
-        a.push(block);
-      }
-      console.log(a)
+      await FileProtocol.sendFile({to, node, file});
     })  
   })
   

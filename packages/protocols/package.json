@@ -10,11 +10,13 @@
   "license": "MIT",
   "dependencies": {
     "@ipld/dag-cbor": "^5.0.5",
+    "@ipld/dag-json": "^7.0.0",
     "@ipld/fbl": "^2.0.1",
     "it-pipe": "^1.1.0",
     "multiformats": "^8.0.6"
   },
   "devDependencies": {
+    "@types/bl": "^5.0.1",
     "libp2p": "^0.31.5"
   }
 }

@@ -7,10 +7,12 @@
       "moduleResolution": "Node",
       "lib": ["es2019", "dom"],
       "allowJs": true,
+      "rootDir": ".",
       "strict": true,
       "noImplicitAny": false,
       "esModuleInterop": true,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "outDir": "./dist"
     }
   }
   

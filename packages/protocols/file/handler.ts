@@ -1,9 +1,7 @@
 import pipe from 'it-pipe';
 import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
-import {encode, decode} from '@ipld/dag-json';
 import { ProtocolHandler } from '..';
-import BufferList from 'bl/BufferList';
 
 const PROTOCOL = 'fx/file/0.1.0';
 
@@ -19,39 +17,59 @@ interface FileStream<Meta = MetaBase> {
 }
 
 const states = {
-  META: `${PROTOCOL}/end`,
-  DATA: `${PROTOCOL}/meta`,
-  END: `${PROTOCOL}/meta`
+  META: `${PROTOCOL}/meta`,
+  DATA: `${PROTOCOL}/data`,
+  END: `${PROTOCOL}/end`
+}
+
+function equals(message: Buffer | Uint8Array, state: string) {
+  const stateBytes = new TextEncoder().encode(state);
+  for (let i = 0; i < stateBytes.length; i++) {
+    if (stateBytes[i] !== message[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export const handleFile: ProtocolHandler = async ({stream}) => {
-  let queue = [
-    states.META,
-    states.END,
-    states.DATA,
-    states.END
-  ];
   let meta;
   await pipe(
     stream,
     async function (source) {
+      let queue = [
+        states.META,
+        states.END,
+        states.DATA,
+        states.END
+      ];
       for await (const message of source) {
-        const [state, ...queueRest] = queue;
-        if (String(message) === state) {
+        const [state, endState, ...queueRest] = queue;
+        console.log(queue)
+        if (equals(message.slice(), state)) {
+          continue;
+        }
+        if (equals(message.slice(), endState)) {
           queue = queueRest;
           continue;
         }
         switch (state) {
           case states.META:
-            console.log(BufferList.isBufferList(message));
-            meta = decode(message as Uint8Array);
+            console.log('meta')
+            // meta = JSON.parse(decoder.decode(message.slice()));
+            // console.log(meta)
             break;
           case states.DATA:
-            console.log(message);
+            console.log('data');
             break;
           default:
-            throw new Error(`stream not adhering to ${PROTOCOL} protocol`);
+            throw new Error(`stream not adhering to ${PROTOCOL} protocol,
+              message "${String(message)}" not recognized.`);
         }
+      }
+      if (queue.length > 0) {
+        throw new Error(`stream not adhering to ${PROTOCOL} protocol,
+          parse queue [${queue}] not empty at the end of the stream.`);
       }
     }
   )
@@ -62,13 +80,13 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
 export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file: File}) {
   const size = file.size;
   const name = file.name;
-  const meta = encode({size, name});
+  const meta = JSON.stringify({size, name});
   console.log(meta);
   const getFileAsAsyncIterable = async function * () {
-    yield '/meta';
+    yield states.META;
     yield meta;
-    yield '/end';
-    yield '/data';
+    yield states.END;
+    yield states.DATA;
     const reader = file.stream().getReader();
     while (true) {
       const { value, done } = await reader.read();
@@ -77,7 +95,7 @@ export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file
       }
       yield value;
     }
-    yield '/end';
+    yield states.END;
   }
     const { stream } = await node.dialProtocol(to, PROTOCOL);
     await pipe(

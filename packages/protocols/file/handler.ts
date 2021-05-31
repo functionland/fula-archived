@@ -2,8 +2,7 @@ import pipe from 'it-pipe';
 import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
 import { ProtocolHandler } from '..';
-
-const PROTOCOL = 'fx/file/0.1.0';
+import { PROTOCOL } from './constants';
 
 interface MetaBase {
   name: string;
@@ -56,8 +55,8 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
         switch (state) {
           case states.META:
             console.log('meta')
-            // meta = JSON.parse(decoder.decode(message.slice()));
-            // console.log(meta)
+            meta = JSON.parse(String(message));
+            console.log(meta)
             break;
           case states.DATA:
             console.log('data');
@@ -78,9 +77,8 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
 }
 
 export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file: File}) {
-  const size = file.size;
-  const name = file.name;
-  const meta = JSON.stringify({size, name});
+  const {size, name, lastModified} = file;
+  const meta = JSON.stringify({size, name, lastModified});
   console.log(meta);
   const getFileAsAsyncIterable = async function * () {
     yield states.META;

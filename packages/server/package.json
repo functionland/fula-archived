@@ -2,14 +2,17 @@
   "name": "@functionland/server",
   "version": "0.0.1",
   "description": "",
-  "main": "src/app.ts",
+  "main": "dist/app.js",
   "scripts": {
-    "build": "rimraf ./build && tsc",
-    "start": "nodemon --watch . --watch $(realpath node_modules/@functionland/protocols)",
-    "serve": "npm run build && node build/app.js",
+    "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
+    "dev-server": "nodemon",
+    "build": "node scripts/build.js",
+    "serve": "npm run build && node dist/app.js",
+    "watch": "concurrently \"npm:watch:*\"",
+    "watch:build": "onchange -i  'src/**/*.ts' 'src/**/*.js' 'scripts/**/*.js' '../protocols/**' -- npm run build",
     "lint": "eslint . --ext .ts",
     "lint-format": "prettier --config .prettierrc \"src/**/*.ts\" --write",
-    "lint-watch": "onchange \"src/**/*.ts\" -- prettier --write {{changed}}"
+    "watch:lint": "onchange 'src/**/*.ts' 'src/**/*.js' -- prettier --write {{changed}}"
   },
   "husky": {
     "hooks": {
@@ -43,6 +46,8 @@
   },
   "devDependencies": {
     "@mapbox/node-pre-gyp": "^1.0.3",
+    "concurrently": "^6.0.2",
+    "esbuild": "^0.12.1",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
@@ -50,7 +55,6 @@
     "nodemon": "^2.0.7",
     "onchange": "^7.1.0",
     "prettier": "^2.2.1",
-    "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }

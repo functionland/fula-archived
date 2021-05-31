@@ -13,7 +13,8 @@
     "@ipld/dag-json": "^7.0.0",
     "@ipld/fbl": "^2.0.1",
     "it-pipe": "^1.1.0",
-    "multiformats": "^8.0.6"
+    "multiformats": "^8.0.6",
+    "protons": "^2.0.1"
   },
   "devDependencies": {
     "@types/bl": "^5.0.1",

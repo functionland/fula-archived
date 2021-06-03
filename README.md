@@ -1,6 +1,6 @@
 # graph
 
- Software stack for [**"box"**](https://fx.land/box)
+ Software stack for [**"box"**](https://fx.land/)
 
 ## Packages
 

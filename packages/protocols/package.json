@@ -4,20 +4,23 @@
   "description": "",
   "types": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@ipld/dag-cbor": "^5.0.5",
     "@ipld/dag-json": "^7.0.0",
-    "@ipld/fbl": "^2.0.1",
+    "@protobuf-ts/runtime": "^1.0.13",
     "it-pipe": "^1.1.0",
     "multiformats": "^8.0.6",
-    "protons": "^2.0.1"
+    "pako": "^2.0.3",
+    "rxjs": "^7.1.0"
   },
   "devDependencies": {
+    "@protobuf-ts/plugin": "^1.0.13",
     "@types/bl": "^5.0.1",
+    "@types/pako": "^1.0.1",
     "libp2p": "^0.31.5"
   }
 }

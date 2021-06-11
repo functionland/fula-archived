@@ -14,6 +14,9 @@ import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { FileProtocol } from '@functionland/protocols';
 import { resolveLater } from './utils';
+import os from 'os';
+import path from 'path';
+import fs from 'fs/promises';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -88,7 +91,23 @@ async function main() {
     console.log(`Connected to ${connection.remotePeer.toB58String()}!`);
   });
 
-  await node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+  node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+
+  const filesPath = path.resolve(os.homedir(), '.box/files');
+
+  FileProtocol.incomingFiles.subscribe(async ({ meta, content, done }) => {
+    const parentDirectory = path.join(filesPath, meta.type);
+    await fs
+      .access(parentDirectory)
+      .catch(() => fs.mkdir(parentDirectory, { recursive: true }));
+    const destination = path.join(parentDirectory, meta.name);
+    let previousWritten = Promise.resolve();
+    content.subscribe(async chunk => {
+      await previousWritten;
+      previousWritten = fs.appendFile(destination, chunk);
+    });
+    await done;
+  });
 
   // Set up our input handler
   process.stdin.on('data', message => {

@@ -2,7 +2,7 @@
 {
     "compilerOptions": {
       "downlevelIteration": true,
-      "target": "es5",
+      "target": "es2020",
       "module": "commonjs",
       "moduleResolution": "Node",
       "lib": ["es2019", "dom"],

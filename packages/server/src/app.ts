@@ -13,10 +13,13 @@ import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { FileProtocol } from '@functionland/protocols';
-import { resolveLater } from './utils';
 import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
+import {
+  resolveLater,
+  asyncIterableFromObservable,
+} from '@functionland/protocols/util';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -85,28 +88,32 @@ async function main() {
     })
   );
 
-  const node = await libp2pPromise;
+  const libp2pNode = await getLibp2p();
+  const ipfsNode = await getIPFS();
 
-  node.connectionManager.on('peer:connect', connection => {
+  libp2pNode.connectionManager.on('peer:connect', connection => {
     console.log(`Connected to ${connection.remotePeer.toB58String()}!`);
   });
 
-  node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+  libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 
   const filesPath = path.resolve(os.homedir(), '.box/files');
 
-  FileProtocol.incomingFiles.subscribe(async ({ meta, content, done }) => {
+  FileProtocol.incomingFiles.subscribe(async ({ meta, content, declareId }) => {
+    console.log(meta);
     const parentDirectory = path.join(filesPath, meta.type);
     await fs
       .access(parentDirectory)
       .catch(() => fs.mkdir(parentDirectory, { recursive: true }));
     const destination = path.join(parentDirectory, meta.name);
-    let previousWritten = Promise.resolve();
-    content.subscribe(async chunk => {
-      await previousWritten;
-      previousWritten = fs.appendFile(destination, chunk);
-    });
-    await done;
+    for await (const chunk of asyncIterableFromObservable(content)) {
+      console.log(String(chunk));
+      console.log(chunk);
+      await fs.appendFile(destination, chunk);
+    }
+    declareId('ddddfff');
+    console.log('done');
+    // ipfsNode.add()
   });
 
   // Set up our input handler
@@ -114,12 +121,12 @@ async function main() {
     // remove the newline
     message = message.slice(0, -1);
     // Iterate over all peers, and send messages to peers we are connected to
-    node.peerStore.peers.forEach(async peerData => {
+    libp2pNode.peerStore.peers.forEach(async peerData => {
       // If they dont support the chat protocol, ignore
       if (!peerData.protocols.includes(FileProtocol.PROTOCOL)) return;
 
       // If we're not connected, ignore
-      const connection = node.connectionManager.get(peerData.id);
+      const connection = libp2pNode.connectionManager.get(peerData.id);
       if (!connection) return;
 
       try {

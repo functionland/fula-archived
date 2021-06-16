@@ -6,6 +6,7 @@ import { PROTOCOL } from './constants';
 import { deflate } from 'pako';
 import { Request, Meta } from './schema';
 import { Subject, lastValueFrom } from 'rxjs';
+import { resolveLater } from '../util';
 
 interface Streamer extends AsyncIterable<Uint8Array> {
   pause(): void;
@@ -31,12 +32,14 @@ function equals(message: Buffer | Uint8Array, state: string) {
 export const incomingFiles = new Subject<{
     meta: Meta,
     content: Subject<Uint8Array>,
-    done: Promise<void>
+    declareId(_id: string): void;
   }>();
 
 export const handleFile: ProtocolHandler = async ({stream}) => {
   let requestIdentified = false;
+  // const [content, next, complete] = iterateLater<Uint8Array>();
   const content = new Subject<Uint8Array>();
+  let [promiseId, declareId] = resolveLater<string>();
   await pipe(
     stream,
     async function (source) {
@@ -49,7 +52,7 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
               incomingFiles.next({
                 meta: request.type.send,
                 content,
-                done: lastValueFrom(content).then()
+                declareId,
               })
               break;
             case 'receive':
@@ -63,11 +66,11 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
       content.complete();
     }
   )
-  await pipe(['done'], stream)
+  await pipe([await promiseId], stream)
   await pipe([], stream)
 }
 
-export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file: File}) {
+export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file: File}): Promise<string> {
   let { name, type, size, lastModified } = file;
   const getFileAsAsyncIterable = async function * () {
     yield Request.toBinary({
@@ -86,14 +89,13 @@ export async function sendFile({to, node, file}: {to: PeerId, node: Libp2p, file
     }
   }
     const { stream } = await node.dialProtocol(to, PROTOCOL);
-    await pipe(
+    return pipe(
       () => getFileAsAsyncIterable(),
       stream,
       async function (source) {
         for await (const message of source) {
-          console.info(String(message) + 'weee')
+          return String(message); // _id
         }
       }
     );
-    console.log('sent')
 }

@@ -102,7 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const to = PeerId.createFromB58String(document.getElementById('serverId').value)
       console.log(to)
       const file = document.getElementById('file').files[0];
-      await FileProtocol.sendFile({to, node, file});
+      const id = await FileProtocol.sendFile({to, node, file});
+      console.log(id)
     })  
   })
   

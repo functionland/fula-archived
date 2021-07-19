@@ -21,17 +21,17 @@ A personal server is a commodity hardware (PC, Raspberry Pi, etc.) that's kept *
 
 To achieve this, we are developing protocols to accommodate client-server programming with minimal effort on developer's side:
 
-- File Protocol: For sending/reading files from/to a browser or an app (stage: prototype)
-- Data Protocol: Database interface client-side; describing linked JSON documents and having them saved/retrieved (stage: first design draft)
-- AI Protocol: Map-Reduce stack for distributed processing (stage: ideation)
+- [File Protocol](packages/protocols/file): For sending/reading files from/to a browser or an app **(stage: prototype)**
+- [Data Protocol](packages/protocols/data): Database interface client-side; describing linked JSON documents and having them saved/retrieved **(stage: design draft)**
+- [AI Protocol](packages/protocols/ai): Map-Reduce stack for distributed processing **(stage: ideation)**
 
 ## Packages
 
 | Name | Description |
 | --- | --- |
 | [protocols](packages/protocols) | Libp2p protocols for the box stack |
-| [graph](packages/graph) | Client library for using the protocols from browser and react native |
 | [server](packages/server) | Reference server implementation in Node.js |
+| [graph](packages/graph) | Client library for using the protocols from browser and react native |
 | [cli](packages/cli) | **fx** CLI for developers and sys admins |
 
 ## License

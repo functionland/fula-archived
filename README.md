@@ -4,6 +4,8 @@ Client-server stack for Web3
 
 [Intro blog](https://dev.to/fx/google-photos-open-source-alternative-with-react-native-80c#ending-big-techs-reign-by-building-opensource-p2p-apps)
 
+[Flagship App: Photos](https://github.com/functionland/photos)
+
 ![client-server resemblance](https://user-images.githubusercontent.com/1758649/126010892-b7bf9905-0044-472d-aeb6-1ed7e66268d8.png)
 
 ![box server demo](https://user-images.githubusercontent.com/1758649/126008513-e5f8f2eb-b931-4450-8373-6102cf47e7d1.png)

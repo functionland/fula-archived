@@ -19,7 +19,7 @@ There are currently two ways to interact with Web3 storage solutions:
 
 **box** aims to address these issues by creating a third alternative: **Personal Server**
 
-A personal server is a commodity hardware (PC, Raspberry Pi, etc.) that's kept *at home* vs *in pocket*. It helps with actual decentralization, also saves money since people pay once for HDDs and own them forever, no monthly charge! From privacy perspective, it guarantees that data doesn't leave the premise unless user specifically wants to (e.g. sharing).
+A personal server is a commodity hardware (PC, Raspberry Pi, etc.) that's kept *at home* vs. *in pocket*. It helps with actual decentralization, also saves money since people pay once for HDDs and own them forever, no monthly charge! From privacy perspective, it guarantees that data doesn't leave the premise unless user specifically wants to (e.g. sharing).
 
 To achieve this, we are developing protocols to accommodate client-server programming with minimal effort on developer's side:
 

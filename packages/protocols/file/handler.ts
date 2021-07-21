@@ -5,8 +5,9 @@ import { ProtocolHandler } from '..';
 import { PROTOCOL } from './constants';
 import { deflate } from 'pako';
 import { Request, Meta } from './schema';
-import { Subject, lastValueFrom } from 'rxjs';
-import { resolveLater } from '../util';
+import { Subject } from 'rxjs';
+import { resolveLater, partition } from '../util';
+import { map, consume, pipeline } from 'streaming-iterables';
 
 interface Streamer extends AsyncIterable<Uint8Array> {
   pause(): void;
@@ -36,16 +37,16 @@ export const incomingFiles = new Subject<{
   }>();
 
 export const handleFile: ProtocolHandler = async ({stream}) => {
-  let requestIdentified = false;
-  // const [content, next, complete] = iterateLater<Uint8Array>();
   const content = new Subject<Uint8Array>();
   let [promiseId, declareId] = resolveLater<string>();
   await pipe(
     stream,
     async function (source) {
-      for await (let message of source) {
-        message = message.slice();
-        if (!requestIdentified) {
+      const messages = map(message => message.slice(), source);
+      const [header, bytes] = partition(1, messages);
+      await pipeline(
+        () => header,
+        map(message => {
           const request = Request.fromBinary(message);
           switch (request.type.oneofKind) {
             case 'send':
@@ -58,14 +59,15 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
             case 'receive':
               break;
           }
-          requestIdentified = true;
-          continue;
-        }
-        content.next(message)
-      }
+        }),
+        consume
+      );
+      // await pipeline(() => source, map(message => console.log(String(message))), consume)
+      // content.next(new Uint8Array([1,2,3]))
+      await pipeline(() => bytes, map(message => content.next(message)), consume);
       content.complete();
-    }
-  )
+  }
+)
   await pipe([await promiseId], stream)
   await pipe([], stream)
 }

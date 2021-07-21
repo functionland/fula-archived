@@ -15,7 +15,8 @@
     "it-pipe": "^1.1.0",
     "multiformats": "^8.0.6",
     "pako": "^2.0.3",
-    "rxjs": "^7.1.0"
+    "rxjs": "^7.1.0",
+    "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
     "@protobuf-ts/plugin": "^1.0.13",

@@ -8,7 +8,7 @@ import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
 import pipe from 'it-pipe';
 
-export async function connect() {  
+export async function connect() {
   const node = await Libp2p.create({
     addresses: {
       listen: [
@@ -16,7 +16,7 @@ export async function connect() {
         // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
         `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
         // '/dns4/server.fx.land/tcp/443/wss/p2p-webrtc-star/'
-      ]
+      ],
     },
     modules: {
       transport: [Websockets, WebRTCStar],
@@ -26,7 +26,7 @@ export async function connect() {
     config: {
       transport: {
         [Websockets.prototype[Symbol.toStringTag]]: {
-          filter: filters.all
+          filter: filters.all,
         },
       },
       // peerDiscovery: {
@@ -41,10 +41,10 @@ export async function connect() {
       //     ]
       //   }
       // }
-    }
-  })
+    },
+  });
 
-  await node.start()
+  await node.start();
 
   return node;
 }

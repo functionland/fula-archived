@@ -1,5 +1,5 @@
 export default {
-    get port() {
-        return 5050;
-    }
-}
+  get port() {
+    return 5050;
+  },
+};

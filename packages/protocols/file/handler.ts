@@ -58,7 +58,7 @@ export const handleFile: ProtocolHandler = async ({stream}) => {
               break;
             case 'receive':
               break;
-          }
+          } 
         }),
         consume
       );

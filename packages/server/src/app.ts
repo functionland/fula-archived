@@ -12,14 +12,14 @@ import ipfs from 'ipfs';
 import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
+import { encode, decode } from '@ipld/dag-json';
 import { FileProtocol } from '@functionland/protocols';
-import os from 'os';
-import path from 'path';
-import fs from 'fs/promises';
 import {
   resolveLater,
   asyncIterableFromObservable,
 } from '@functionland/protocols/util';
+import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
+import { map } from 'streaming-iterables';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -97,23 +97,39 @@ async function main() {
 
   libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 
-  const filesPath = path.resolve(os.homedir(), '.box/files');
+  FileProtocol.incomingFiles.subscribe(async ({ content, meta, declareId }) => {
+    const { cid: file } = await ipfsNode.add(
+      // map(
+      //   async (bytes: Uint8Array) =>
+      //     encrypt({
+      //       message: await createMessage({ binary: bytes }),
+      //       passwords: ['weeeee weeee'],
+      //       armor: false,
+      //     }),
+      //   asyncIterableFromObservable(content)
+      // )
 
-  FileProtocol.incomingFiles.subscribe(async ({ meta, content, declareId }) => {
-    console.log(meta);
-    const parentDirectory = path.join(filesPath, meta.type);
-    await fs
-      .access(parentDirectory)
-      .catch(() => fs.mkdir(parentDirectory, { recursive: true }));
-    const destination = path.join(parentDirectory, meta.name);
-    for await (const chunk of asyncIterableFromObservable(content)) {
+      asyncIterableFromObservable(content)
+    );
+    for await (const chunk of ipfsNode.cat(file)) {
       console.log(String(chunk));
-      console.log(chunk);
-      await fs.appendFile(destination, chunk);
     }
-    declareId('ddddfff');
+    const { cid } = await ipfsNode.add(encode({ file, meta }));
     console.log('done');
-    // ipfsNode.add()
+    declareId(cid.toBaseEncodedString());
+    const cat = async cid => {
+      for await (const chunk of ipfsNode.cat(cid)) {
+        console.log(decode(chunk));
+      }
+    };
+    const ls = async cid => {
+      for await (const chunk of ipfsNode.ls(cid)) {
+        console.log(chunk);
+        chunk.type !== 'file' && (await ls(chunk.cid));
+        chunk.type === 'file' && (await cat(chunk.cid));
+      }
+    };
+    await ls(cid);
   });
 
   // Set up our input handler

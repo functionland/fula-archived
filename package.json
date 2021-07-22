@@ -6,12 +6,27 @@
     "bootstrap": "lerna bootstrap",
     "link": "lerna link --force-local",
     "list": "lerna list",
-    "start": "lerna run start --parallel",
+    "start": "concurrently \"npm:watch:*\" \"lerna run start --parallel\"",
     "client": "lerna run start --scope=@functionland/graph --stream",
     "server": "lerna run start --scope=@functionland/server --stream",
-    "signal": "lerna run start --scope=@functionland/signal --stream"
+    "signal": "lerna run start --scope=@functionland/signal --stream",
+    "lint": "eslint . --ext .ts",
+    "lint-format": "prettier --config .prettierrc \"packages/**/src/**/*.ts\" \"packages/**/src/**/*.js\" --write",
+    "watch:lint": "onchange 'src/**/*.ts' 'src/**/*.js' -- prettier --write {{changed}}"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-format"
+    }
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "concurrently": "^6.0.2",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^6.0.0",
+    "lerna": "^4.0.0",
+    "onchange": "^7.1.0",
+    "prettier": "^2.2.1"
   }
 }

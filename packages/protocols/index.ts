@@ -4,12 +4,9 @@ import * as File from './file';
 
 export type ProtocolHandler = (props: HandlerProps) => void;
 
-export {
-  File as FileProtocol,
-  Graph as GraphProtocol
-};
+export { File as FileProtocol, Graph as GraphProtocol };
 
 export default {
   File,
-  Graph
+  Graph,
 };

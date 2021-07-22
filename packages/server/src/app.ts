@@ -18,8 +18,8 @@ import {
   resolveLater,
   asyncIterableFromObservable,
 } from '@functionland/protocols/util';
-import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
-import { map } from 'streaming-iterables';
+// import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
+// import { map } from 'streaming-iterables';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -83,6 +83,7 @@ async function main() {
 
   resolveIpfs(
     ipfs.create({
+      // @ts-ignore
       libp2p: createLibp2,
       repo: new Repo('./.ipfs'),
     })
@@ -96,6 +97,16 @@ async function main() {
   });
 
   libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+
+  async function handleMeta(_id: string) {}
+
+  FileProtocol.setHandleSend(async ({ Id: _id, skip, limit }) => {
+    for await (const chunk of ipfsNode.cat(_id)) {
+      const { file } = decode(chunk);
+      console.log(file);
+      return ipfsNode.cat(file);
+    }
+  });
 
   FileProtocol.incomingFiles.subscribe(async ({ content, meta, declareId }) => {
     const { cid: file } = await ipfsNode.add(

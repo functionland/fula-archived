@@ -1,4 +1,3 @@
-
 export type Resolve<T> = (value?: T | PromiseLike<T>) => void;
 type PromiseAndResolve<T> = [Promise<T>, Resolve<T>];
 
@@ -10,23 +9,19 @@ export function resolveLater<T = void>(): PromiseAndResolve<T> {
   return [promise, resolve];
 }
 
-export function iterateLater<T>(): [
-  AsyncIterable<T>,
-  Resolve<T>,
-  () => void
-]  {
+export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
   const queue = [resolveLater<T>()];
   let resolveIndex = -1;
   let [nextAssigned, flagNextAssigned] = resolveLater<boolean>();
-  const next: Resolve<T> = (value) => {
+  const next: Resolve<T> = value => {
     const [[_, resolve]] = queue.slice(resolveIndex);
     resolve(value);
     queue.unshift(resolveLater<T>());
     flagNextAssigned(true);
     [nextAssigned, flagNextAssigned] = resolveLater<boolean>();
   };
-  const iterate = async function * () {
-    while (await nextAssigned || queue.length > 0) {
+  const iterate = async function* () {
+    while ((await nextAssigned) || queue.length > 0) {
       const [nextValue] = queue.pop() as PromiseAndResolve<T>;
       yield await nextValue;
       resolveIndex--;
@@ -40,13 +35,24 @@ export function iterateLater<T>(): [
 }
 
 interface ObservableLike<T> {
-  subscribe(next: (value?: T) => void, error: (error: any) => void, complete: () => void)
+  subscribe(
+    next: (value?: T) => void,
+    error: (error: any) => void,
+    complete: () => void
+  );
 }
 
 export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
   const [iterable, next, complete] = iterateLater<T>();
-  observable.subscribe(next, (error) => next(Promise.reject(error)), complete);
+  observable.subscribe(next, error => next(Promise.reject(error)), complete);
   return iterable;
+}
+
+export function toAsyncIterable<T>(promise: Promise<T>): AsyncIterable<T> {
+  const iterate = async function* () {
+    yield await promise;
+  };
+  return iterate();
 }
 
 export function partition<T>(index: number, iterable: AsyncIterable<T>) {

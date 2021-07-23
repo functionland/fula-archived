@@ -16,6 +16,7 @@ message Chunk {
 
 message Request {
   oneof type {
+    string meta = 1;
     Chunk receive = 2;
     Meta send = 3;
   }

@@ -14,10 +14,7 @@ import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { encode, decode } from '@ipld/dag-json';
 import { FileProtocol } from '@functionland/protocols';
-import {
-  resolveLater,
-  asyncIterableFromObservable,
-} from '@functionland/protocols/util';
+import { resolveLater, asyncIterableFromObservable } from '@functionland/protocols/util';
 // import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
 // import { map } from 'streaming-iterables';
 
@@ -33,13 +30,7 @@ export async function getIPFS() {
 }
 
 async function main() {
-  const createLibp2 = ({
-    peerId,
-    config,
-  }: {
-    peerId: PeerId;
-    config: IPFSConfig;
-  }) => {
+  const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
     resolveLibp2p(
       Libp2p.create({
         peerId,
@@ -100,7 +91,7 @@ async function main() {
 
   async function handleMeta(_id: string) {}
 
-  FileProtocol.setHandleSend(async ({ Id: _id, skip, limit }) => {
+  FileProtocol.setRetrievalMethod(async ({ Id: _id }) => {
     for await (const chunk of ipfsNode.cat(_id)) {
       const { file } = decode(chunk);
       console.log(file);
@@ -164,10 +155,7 @@ async function main() {
           }
         });
       } catch (err) {
-        console.error(
-          'Could not negotiate chat protocol stream with peer',
-          err
-        );
+        console.error('Could not negotiate chat protocol stream with peer', err);
       }
     });
   });

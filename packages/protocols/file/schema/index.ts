@@ -61,6 +61,13 @@ export interface Request {
    */
   type:
     | {
+        oneofKind: 'meta';
+        /**
+         * @generated from protobuf field: string meta = 1;
+         */
+        meta: string;
+      }
+    | {
         oneofKind: 'receive';
         /**
          * @generated from protobuf field: Chunk receive = 2;
@@ -86,13 +93,7 @@ class Meta$Type extends MessageType<Meta> {
     super('Meta', [
       { no: 1, name: 'name', kind: 'scalar', T: 9 /*ScalarType.STRING*/ },
       { no: 2, name: 'type', kind: 'scalar', T: 9 /*ScalarType.STRING*/ },
-      {
-        no: 3,
-        name: 'size',
-        kind: 'scalar',
-        T: 4 /*ScalarType.UINT64*/,
-        L: 0 /*LongType.BIGINT*/,
-      },
+      { no: 3, name: 'size', kind: 'scalar', T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
       {
         no: 4,
         name: 'lastModified',
@@ -100,13 +101,7 @@ class Meta$Type extends MessageType<Meta> {
         T: 3 /*ScalarType.INT64*/,
         L: 0 /*LongType.BIGINT*/,
       },
-      {
-        no: 5,
-        name: 'preview',
-        kind: 'scalar',
-        opt: true,
-        T: 12 /*ScalarType.BYTES*/,
-      },
+      { no: 5, name: 'preview', kind: 'scalar', opt: true, T: 12 /*ScalarType.BYTES*/ },
     ]);
   }
   create(value?: PartialMessage<Meta>): Meta {
@@ -165,27 +160,18 @@ class Meta$Type extends MessageType<Meta> {
     options: BinaryWriteOptions
   ): IBinaryWriter {
     /* string name = 1; */
-    if (message.name !== '')
-      writer.tag(1, WireType.LengthDelimited).string(message.name);
+    if (message.name !== '') writer.tag(1, WireType.LengthDelimited).string(message.name);
     /* string type = 2; */
-    if (message.type !== '')
-      writer.tag(2, WireType.LengthDelimited).string(message.type);
+    if (message.type !== '') writer.tag(2, WireType.LengthDelimited).string(message.type);
     /* uint64 size = 3; */
-    if (message.size !== 0n)
-      writer.tag(3, WireType.Varint).uint64(message.size);
+    if (message.size !== 0n) writer.tag(3, WireType.Varint).uint64(message.size);
     /* int64 lastModified = 4; */
-    if (message.lastModified !== 0n)
-      writer.tag(4, WireType.Varint).int64(message.lastModified);
+    if (message.lastModified !== 0n) writer.tag(4, WireType.Varint).int64(message.lastModified);
     /* optional bytes preview = 5; */
     if (message.preview !== undefined)
       writer.tag(5, WireType.LengthDelimited).bytes(message.preview);
     let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer
-      );
+    if (u !== false) (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
     return writer;
   }
 }
@@ -217,8 +203,7 @@ class Chunk$Type extends MessageType<Chunk> {
   }
   create(value?: PartialMessage<Chunk>): Chunk {
     const message = { Id: '' };
-    if (value !== undefined)
-      reflectionMergePartial<Chunk>(this, message, value);
+    if (value !== undefined) reflectionMergePartial<Chunk>(this, message, value);
     return message;
   }
   internalBinaryRead(
@@ -266,21 +251,13 @@ class Chunk$Type extends MessageType<Chunk> {
     options: BinaryWriteOptions
   ): IBinaryWriter {
     /* string _id = 1; */
-    if (message.Id !== '')
-      writer.tag(1, WireType.LengthDelimited).string(message.Id);
+    if (message.Id !== '') writer.tag(1, WireType.LengthDelimited).string(message.Id);
     /* optional uint64 skip = 2; */
-    if (message.skip !== undefined)
-      writer.tag(2, WireType.Varint).uint64(message.skip);
+    if (message.skip !== undefined) writer.tag(2, WireType.Varint).uint64(message.skip);
     /* optional uint64 limit = 3; */
-    if (message.limit !== undefined)
-      writer.tag(3, WireType.Varint).uint64(message.limit);
+    if (message.limit !== undefined) writer.tag(3, WireType.Varint).uint64(message.limit);
     let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer
-      );
+    if (u !== false) (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
     return writer;
   }
 }
@@ -291,20 +268,14 @@ export const Chunk = new Chunk$Type();
 class Request$Type extends MessageType<Request> {
   constructor() {
     super('Request', [
-      {
-        no: 2,
-        name: 'receive',
-        kind: 'message',
-        oneof: 'type',
-        T: () => Chunk,
-      },
+      { no: 1, name: 'meta', kind: 'scalar', oneof: 'type', T: 9 /*ScalarType.STRING*/ },
+      { no: 2, name: 'receive', kind: 'message', oneof: 'type', T: () => Chunk },
       { no: 3, name: 'send', kind: 'message', oneof: 'type', T: () => Meta },
     ]);
   }
   create(value?: PartialMessage<Request>): Request {
     const message = { type: { oneofKind: undefined } };
-    if (value !== undefined)
-      reflectionMergePartial<Request>(this, message, value);
+    if (value !== undefined) reflectionMergePartial<Request>(this, message, value);
     return message;
   }
   internalBinaryRead(
@@ -318,6 +289,12 @@ class Request$Type extends MessageType<Request> {
     while (reader.pos < end) {
       let [fieldNo, wireType] = reader.tag();
       switch (fieldNo) {
+        case /* string meta */ 1:
+          message.type = {
+            oneofKind: 'meta',
+            meta: reader.string(),
+          };
+          break;
         case /* Chunk receive */ 2:
           message.type = {
             oneofKind: 'receive',
@@ -364,6 +341,9 @@ class Request$Type extends MessageType<Request> {
     writer: IBinaryWriter,
     options: BinaryWriteOptions
   ): IBinaryWriter {
+    /* string meta = 1; */
+    if (message.type.oneofKind === 'meta')
+      writer.tag(1, WireType.LengthDelimited).string(message.type.meta);
     /* Chunk receive = 2; */
     if (message.type.oneofKind === 'receive')
       Chunk.internalBinaryWrite(
@@ -379,12 +359,7 @@ class Request$Type extends MessageType<Request> {
         options
       ).join();
     let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer
-      );
+    if (u !== false) (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
     return writer;
   }
 }

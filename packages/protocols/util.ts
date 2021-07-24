@@ -9,6 +9,18 @@ export function resolveLater<T = void>(): PromiseAndResolve<T> {
   return [promise, resolve];
 }
 
+function onlyOnce<V>(fn: (...args) => V) {
+  let invoked = false;
+  let result: V;
+  return (...args) => {
+    if (!invoked) {
+      result = fn(...args);
+      invoked = true;
+    }
+    return result;
+  };
+}
+
 export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
   const queue = [resolveLater<T>()];
   let resolveIndex = -1;
@@ -31,15 +43,11 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
     queue.shift();
     flagNextAssigned(false);
   };
-  return [iterate(), next, complete];
+  return [iterate(), next, onlyOnce(complete)];
 }
 
 interface ObservableLike<T> {
-  subscribe(
-    next: (value?: T) => void,
-    error: (error: any) => void,
-    complete: () => void
-  );
+  subscribe(next: (value?: T) => void, error: (error: any) => void, complete: () => void);
 }
 
 export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
@@ -71,6 +79,7 @@ export function partition<T>(index: number, iterable: AsyncIterable<T>) {
       }
       current++;
     }
+    completeFirst();
     completeSecond();
   };
   iterate();

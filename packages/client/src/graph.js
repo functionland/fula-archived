@@ -12,8 +12,7 @@ import PeerId from 'peer-id';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // use the same peer id as in `listener.js` to avoid copy-pasting of listener's peer id into `peerDiscovery`
-  const hardcodedPeerId =
-    '12D3KooWP9j4Cp8hEbMMxLuKYZ8RvXuBi81QneULrawgRo8HTD3x';
+  const hardcodedPeerId = '12D3KooWP9j4Cp8hEbMMxLuKYZ8RvXuBi81QneULrawgRo8HTD3x';
   // const serverPeerAddress = `/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/p2p/${hardcodedPeerId}`
   const serverPeerAddress = `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/p2p/QmQzfmPkPff4uKn6wtdvMKEMVYnVsKeZfDM1FPhtvkNpP5`;
   const node = await Libp2p.create({
@@ -77,6 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Listen for new connections to peers
   node.connectionManager.on('peer:connect', connection => {
     log(`Connected to ${connection.remotePeer.toB58String()}`);
+    document.getElementById('serverId').value = connection.remotePeer.toB58String();
   });
 
   // Listen for peers disconnecting
@@ -97,13 +97,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   // )
 
   const sendButton = document.getElementById('send');
+  const fileIdInput = document.getElementById('fileId');
   sendButton.addEventListener('click', async () => {
-    const to = PeerId.createFromB58String(
-      document.getElementById('serverId').value
-    );
-    console.log(to);
+    const to = PeerId.createFromB58String(document.getElementById('serverId').value);
     const file = document.getElementById('file').files[0];
     const id = await FileProtocol.sendFile({ to, node, file });
-    console.log(id);
+    fileIdInput.value = id;
+  });
+
+  const receiveButton = document.getElementById('receive');
+  receiveButton.addEventListener('click', async () => {
+    const from = PeerId.createFromB58String(document.getElementById('serverId').value);
+    const id = fileIdInput.value;
+    const content = document.getElementById('content');
+    content.value = '';
+    const decoder = new TextDecoder();
+    for await (const chunk of FileProtocol.receiveFile({ from, node, id })) {
+      content.value += decoder.decode(chunk);
+    }
   });
 });

@@ -23,11 +23,7 @@ export async function save({
 }): Response {
   const [promiseId, declareId] = resolveLater<string>();
   const content = new Subject<Uint8Array>();
-  incomingFiles.next({
-    meta,
-    content,
-    declareId,
-  });
+  incomingFiles.next({ meta, content, declareId });
   await pipeline(
     () => bytes,
     map(message => content.next(message)),
@@ -47,7 +43,7 @@ export async function sendFile({
   file: File;
 }): Promise<string> {
   let { name, type, size, lastModified } = file;
-  const getFileAsAsyncIterable = async function* () {
+  const streamSendFile = async function* () {
     yield Request.toBinary({
       type: {
         oneofKind: 'send',
@@ -69,13 +65,9 @@ export async function sendFile({
     }
   };
   const { stream } = await node.dialProtocol(to, PROTOCOL);
-  return pipe(
-    () => getFileAsAsyncIterable(),
-    stream,
-    async function (source) {
-      for await (const message of source) {
-        return String(message); // _id
-      }
+  return pipe(streamSendFile, stream, async function (source) {
+    for await (const message of source) {
+      return String(message); // _id
     }
-  );
+  });
 }

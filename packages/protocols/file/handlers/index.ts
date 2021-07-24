@@ -1,6 +1,6 @@
 import pipe from 'it-pipe';
 import { ProtocolHandler } from '../..';
-import { Request, Chunk } from '../schema';
+import { Request } from '../schema';
 import { partition, toAsyncIterable } from '../../util';
 import { map, consume } from 'streaming-iterables';
 import { save } from './save';
@@ -36,4 +36,4 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
 };
 
 export { incomingFiles, sendFile } from './save';
-export { setRetrievalMethod } from './retrieve';
+export { setRetrievalMethod, receiveFile } from './retrieve';

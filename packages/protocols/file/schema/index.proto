@@ -9,7 +9,7 @@ message Meta {
 }
 
 message Chunk {
-  string _id = 1;
+  string id = 1;
   optional uint64 skip = 2;
   optional uint64 limit = 3;
 }
@@ -20,4 +20,9 @@ message Request {
     Chunk receive = 2;
     Meta send = 3;
   }
+}
+
+message File {
+  Meta meta = 1;
+  string contentPath = 2;
 }

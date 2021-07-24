@@ -24,7 +24,7 @@
   "dependencies": {
     "@functionland/protocols": "^0.1.0",
     "@ipld/dag-json": "^7.0.5",
-    "ipfs": "^0.55.1",
+    "ipfs": "^0.55.4",
     "ipfs-repo": "^9.1.6",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.31.5",
@@ -34,6 +34,7 @@
     "libp2p-webrtc-direct": "^0.5.1",
     "libp2p-webrtc-star": "^0.22.2",
     "libp2p-websockets": "^0.15.6",
+    "multiformats": "^9.4.3",
     "openpgp": "^5.0.0-3",
     "peer-id": "^0.14.6",
     "streaming-iterables": "^6.0.0",

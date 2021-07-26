@@ -95,7 +95,7 @@ async function main() {
     for await (const file of ipfsNode.cat(id)) {
       const { contentPath } = FileSchema.fromBinary(file);
       return ipfsNode.cat(contentPath); 
-    }
+    } 
   });
 
   FileProtocol.incomingFiles.subscribe(async ({ content, meta, declareId }) => {

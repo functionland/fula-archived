@@ -92,8 +92,8 @@ async function main() {
   async function handleMeta(_id: string) {}
 
   FileProtocol.setRetrievalMethod(async ({ id }) => {
-    for await (const chunk of ipfsNode.cat(id)) {
-      const { contentPath } = FileSchema.fromBinary(chunk);
+    for await (const file of ipfsNode.cat(id)) { 
+      const { contentPath } = FileSchema.fromBinary(file);
       return ipfsNode.cat(contentPath);
     }
   });

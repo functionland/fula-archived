@@ -92,9 +92,9 @@ async function main() {
   async function handleMeta(_id: string) {}
 
   FileProtocol.setRetrievalMethod(async ({ id }) => {
-    for await (const file of ipfsNode.cat(id)) { 
+    for await (const file of ipfsNode.cat(id)) {
       const { contentPath } = FileSchema.fromBinary(file);
-      return ipfsNode.cat(contentPath);
+      return ipfsNode.cat(contentPath); 
     }
   });
 

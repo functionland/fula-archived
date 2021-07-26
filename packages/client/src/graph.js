@@ -106,14 +106,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const receiveButton = document.getElementById('receive');
+  const content = document.getElementById('content');
   receiveButton.addEventListener('click', async () => {
     const from = PeerId.createFromB58String(document.getElementById('serverId').value);
     const id = fileIdInput.value;
-    const content = document.getElementById('content');
     content.value = '';
     const decoder = new TextDecoder();
-    for await (const chunk of FileProtocol.receiveFile({ from, node, id })) {
+    for await (const chunk of FileProtocol.receiveContent({ from, node, id })) {
       content.value += decoder.decode(chunk);
     }
+  });
+
+  const metaButton = document.getElementById('meta');
+  metaButton.addEventListener('click', async () => {
+    const from = PeerId.createFromB58String(document.getElementById('serverId').value);
+    const id = fileIdInput.value;
+    content.value = '';
+    const decoder = new TextDecoder();
+    const meta = await FileProtocol.receiveMeta({ from, node, id });
+    content.value = JSON.stringify(
+      {
+        ...meta,
+        size: Number(meta.size),
+        lastModified: Number(meta.lastModified),
+      },
+      null,
+      2
+    );
   });
 });

@@ -13,7 +13,11 @@ import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { FileProtocol } from '@functionland/protocols';
-import { resolveLater, asyncIterableFromObservable } from '@functionland/protocols/util';
+import {
+  resolveLater,
+  asyncIterableFromObservable,
+  toAsyncIterable,
+} from '@functionland/protocols/util';
 import { File as FileSchema } from '@functionland/protocols/file/schema';
 // import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
 import { map } from 'streaming-iterables';
@@ -89,13 +93,18 @@ async function main() {
 
   libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 
-  async function handleMeta(_id: string) {}
+  FileProtocol.setMetaRetrievalMethod(async ({ id }) => {
+    for await (const file of ipfsNode.cat(id)) {
+      const { meta } = FileSchema.fromBinary(file);
+      return meta;
+    }
+  });
 
-  FileProtocol.setRetrievalMethod(async ({ id }) => {
+  FileProtocol.setContentRetrievalMethod(async ({ id }) => {
     for await (const file of ipfsNode.cat(id)) {
       const { contentPath } = FileSchema.fromBinary(file);
-      return ipfsNode.cat(contentPath); 
-    } 
+      return ipfsNode.cat(contentPath);
+    }
   });
 
   FileProtocol.incomingFiles.subscribe(async ({ content, meta, declareId }) => {

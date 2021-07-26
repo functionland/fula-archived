@@ -67,7 +67,7 @@ export async function sendFile({
   const { stream } = await node.dialProtocol(to, PROTOCOL);
   return pipe(streamSendFile, stream, async function (source) {
     for await (const message of source) {
-      return String(message); // _id
+      return String(message); // id
     }
   });
 }

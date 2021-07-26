@@ -5,6 +5,7 @@ import { partition, toAsyncIterable } from '../../util';
 import { map, consume } from 'streaming-iterables';
 import { save } from './save';
 import { retrieve } from './retrieve';
+import { getMeta } from './meta';
 
 export type Response = Promise<AsyncIterable<Uint8Array | string> | undefined>;
 
@@ -27,6 +28,9 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
           case 'receive':
             response = retrieve(request.type.receive);
             break;
+          case 'meta':
+            response = getMeta({ id: request.type.meta });
+            break;
         }
       }, header)
     );
@@ -36,4 +40,5 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
 };
 
 export { incomingFiles, sendFile } from './save';
-export { setRetrievalMethod, receiveFile } from './retrieve';
+export { setContentRetrievalMethod, receiveContent } from './retrieve';
+export { setMetaRetrievalMethod, receiveMeta } from './meta';

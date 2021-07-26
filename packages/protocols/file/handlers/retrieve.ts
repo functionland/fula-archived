@@ -8,16 +8,16 @@ import { PROTOCOL } from '../constants';
 type Retrieve = ({ id, skip, limit }: Chunk) => Response;
 
 const retrieveNotSupported: Retrieve = () => {
-  throw new Error('This node does not support file retrieval');
+  throw new Error('This node does not support file content retrieval');
 };
 
 export let retrieve = retrieveNotSupported;
 
-export function setRetrievalMethod(method: Retrieve) {
+export function setContentRetrievalMethod(method: Retrieve) {
   retrieve = method;
 }
 
-export async function* receiveFile({
+export async function* receiveContent({
   from,
   node,
   id,
@@ -30,7 +30,7 @@ export async function* receiveFile({
   skip?: bigint;
   limit?: bigint;
 }): AsyncIterable<Uint8Array> {
-  const streamReceiveFile = async function* () {
+  const streamReceiveFileContent = async function* () {
     yield Request.toBinary({
       type: {
         oneofKind: 'receive',
@@ -41,7 +41,7 @@ export async function* receiveFile({
 
   const { stream } = await node.dialProtocol(from, PROTOCOL);
 
-  const chunks = await pipe(streamReceiveFile, stream, async function* (source) {
+  const chunks = await pipe(streamReceiveFileContent, stream, async function* (source) {
     for await (const message of source) {
       yield message.slice();
     }

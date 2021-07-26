@@ -56,10 +56,19 @@ export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
   return iterable;
 }
 
-export function toAsyncIterable<T>(promise: Promise<T>): AsyncIterable<T> {
-  const iterate = async function* () {
-    yield await promise;
-  };
+export function toAsyncIterable<T>(value: T | Promise<T> | T[] | Promise<T>[]): AsyncIterable<T> {
+  let iterate: () => AsyncIterable<T>;
+  if (Array.isArray(value)) {
+    iterate = async function* () {
+      for (const element of value) {
+        yield await element;
+      }
+    };
+  } else {
+    iterate = async function* () {
+      yield await value;
+    };
+  }
   return iterate();
 }
 

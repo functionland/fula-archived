@@ -19,7 +19,7 @@
     "fallbackPolling": "dynamicPriority",
     // Don't coalesce watch notification
     "synchronousWatchDirectory": true,
-    "excludeDirectories": ["**/node_modules", "_dist"],
+    "excludeDirectories": ["**/node_modules", "tests", "_dist"],
     "excludeFiles": ["dist/fileWhichChangesOfent.ts"]
   }
 }

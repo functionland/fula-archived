@@ -12,8 +12,8 @@
     "server": "lerna run start --scope=@functionland/server --stream",
     "signal": "lerna run start --scope=@functionland/signal --stream",
     "lint": "eslint . --ext .ts",
-    "lint-format": "prettier --config .prettierrc \"packages/**/src/**/*.ts\" \"packages/**/src/**/*.js\" \"packages/protocols/**/*.ts\" --write",
-    "watch:lint": "onchange \"packages/**/src/**/*.ts\" \"packages/**/src/**/*.js\" \"packages/protocols/**/*.ts\" -- prettier --write {{changed}}"
+    "lint-format": "prettier --config .prettierrc \"**/*.ts\" \"**/*.js\" --write",
+    "watch:lint": "onchange \"**/*.ts\" \"**/*.js\" -- prettier --write {{changed}}"
   },
   "husky": {
     "hooks": {

@@ -1,7 +1,6 @@
 export type Resolve<T> = (value?: T | PromiseLike<T>) => void;
-export type PromiseAndResolve<T> = [Promise<T>, Resolve<T>];
 
-export function resolveLater<T>(): PromiseAndResolve<T> {
+export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   let resolve;
   const promise = new Promise<T>(resolveCallback => {
     resolve = resolveCallback;
@@ -50,7 +49,7 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
   };
   const iterate = async function* () {
     while ((await nextAssigned) || queue.length > 0) {
-      const [nextValue] = queue.pop() as PromiseAndResolve<T>;
+      const [nextValue] = queue.pop() as [Promise<T>, Resolve<T>];
       yield await nextValue;
       resolveIndex--;
     }

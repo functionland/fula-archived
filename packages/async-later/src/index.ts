@@ -38,19 +38,30 @@ export function callOnlyOnce<V>(fn: (...args) => V) {
   };
 }
 
+export function resolveLaterMutablePromiseLike<T>(): [PromiseLike<T>, Resolve<T>] {
+  let value;
+  const resolve: Resolve<T> = newValue => {
+    value = newValue;
+  };
+  const promiseLike: PromiseLike<T> = {
+    then: async callback => (callback ? callback(await value) : value),
+  };
+  return [promiseLike, resolve];
+}
+
 export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
   const queue = [resolveLater<T>()];
   let resolveIndex = -1;
-  let [nextAssigned, flagNextAssigned] = resolveLater<boolean>();
+  const [nextAssigned, flagNextAssigned] = resolveLaterMutablePromiseLike<boolean>();
   const next: Resolve<T> = value => {
     const [[_, resolve]] = queue.slice(resolveIndex);
     resolve(value);
     queue.unshift(resolveLater<T>());
     flagNextAssigned(true);
-    [nextAssigned, flagNextAssigned] = resolveLater<boolean>();
   };
   const iterate = async function* () {
     while ((await nextAssigned) || queue.length > 0) {
+      console.log(queue);
       const [nextValue] = queue.pop() as [Promise<T>, Resolve<T>];
       yield await nextValue;
       resolveIndex--;
@@ -76,7 +87,7 @@ export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
 export function partition<T>(
   index: number,
   iterable: AsyncIterable<T>
-): [() => AsyncIterable<T>, () => AsyncIterable<T>] {
+): [AsyncIterable<T>, AsyncIterable<T>] {
   let current = 0;
   const [partitionFirst, nextFirst, completeFirst] = iterateLater<T>();
   const [partitionSecond, nextSecond, completeSecond] = iterateLater<T>();
@@ -95,15 +106,6 @@ export function partition<T>(
     completeFirst();
     completeSecond();
   };
-  const iterateOnce = callOnlyOnce(iterate);
-  return [
-    () => {
-      iterateOnce();
-      return partitionFirst;
-    },
-    () => {
-      iterateOnce();
-      return partitionSecond;
-    },
-  ];
+  iterate();
+  return [partitionFirst, partitionSecond];
 }

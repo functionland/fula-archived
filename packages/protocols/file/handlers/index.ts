@@ -14,7 +14,7 @@ const emptyResponse = toAsyncIterable(Promise.resolve('Empty response'));
 export const handleFile: ProtocolHandler = async ({ stream }) => {
   let response: Response = Promise.resolve(emptyResponse);
   await pipe(stream, async function (source) {
-    const [getStreamHead, getStreamTail] = partition(
+    const [streamHead, streamTail] = partition(
       1,
       map(message => message.slice(), source)
     );
@@ -23,7 +23,7 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
         const request = Request.fromBinary(message);
         switch (request.type.oneofKind) {
           case 'send':
-            response = save({ meta: request.type.send, bytes: getStreamTail() });
+            response = save({ meta: request.type.send, bytes: streamTail });
             break;
           case 'receive':
             response = retrieve(request.type.receive);
@@ -32,7 +32,7 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
             response = getMeta({ id: request.type.meta });
             break;
         }
-      }, getStreamHead())
+      }, streamHead)
     );
   });
   await pipe((await response) || emptyResponse, stream);

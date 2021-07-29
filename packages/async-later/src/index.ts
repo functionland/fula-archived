@@ -8,7 +8,9 @@ export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   return [promise, resolve];
 }
 
-export function toAsyncIterable<T>(value: T | Promise<T> | T[] | Promise<T>[]): AsyncIterable<T> {
+export function toAsyncIterable<T>(
+  value: T | Promise<T> | T[] | (Promise<T> | T)[]
+): AsyncIterable<T> {
   let iterate: () => AsyncIterable<T>;
   if (Array.isArray(value)) {
     iterate = async function* () {
@@ -24,7 +26,7 @@ export function toAsyncIterable<T>(value: T | Promise<T> | T[] | Promise<T>[]): 
   return iterate();
 }
 
-function callOnce<V>(fn: (...args) => V) {
+export function callOnlyOnce<V>(fn: (...args) => V) {
   let invoked = false;
   let result: V;
   return (...args) => {
@@ -58,7 +60,7 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
     queue.shift();
     flagNextAssigned(false);
   };
-  return [iterate(), next, callOnce(complete)];
+  return [iterate(), next, callOnlyOnce(complete)];
 }
 
 interface ObservableLike<T> {
@@ -93,7 +95,7 @@ export function partition<T>(
     completeFirst();
     completeSecond();
   };
-  const iterateOnce = callOnce(iterate);
+  const iterateOnce = callOnlyOnce(iterate);
   return [
     () => {
       iterateOnce();

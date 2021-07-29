@@ -7,7 +7,7 @@
   "types": "src",
   "scripts": {
     "start": "tsc --watch",
-    "test": "npm run build && node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+    "test": "node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
     "build": "tsc"
   },
   "repository": {

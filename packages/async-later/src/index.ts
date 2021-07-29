@@ -1,7 +1,7 @@
 export type Resolve<T> = (value?: T | PromiseLike<T>) => void;
 export type PromiseAndResolve<T> = [Promise<T>, Resolve<T>];
 
-export function resolveLater<T = void>(): PromiseAndResolve<T> {
+export function resolveLater<T>(): PromiseAndResolve<T> {
   let resolve;
   const promise = new Promise<T>(resolveCallback => {
     resolve = resolveCallback;
@@ -9,7 +9,23 @@ export function resolveLater<T = void>(): PromiseAndResolve<T> {
   return [promise, resolve];
 }
 
-function invokeOnceReuseValue<V>(fn: (...args) => V) {
+export function toAsyncIterable<T>(value: T | Promise<T> | T[] | Promise<T>[]): AsyncIterable<T> {
+  let iterate: () => AsyncIterable<T>;
+  if (Array.isArray(value)) {
+    iterate = async function* () {
+      for (const element of value) {
+        yield await element;
+      }
+    };
+  } else {
+    iterate = async function* () {
+      yield await value;
+    };
+  }
+  return iterate();
+}
+
+function callOnce<V>(fn: (...args) => V) {
   let invoked = false;
   let result: V;
   return (...args) => {
@@ -43,7 +59,7 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
     queue.shift();
     flagNextAssigned(false);
   };
-  return [iterate(), next, invokeOnceReuseValue(complete)];
+  return [iterate(), next, callOnce(complete)];
 }
 
 interface ObservableLike<T> {
@@ -56,23 +72,10 @@ export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
   return iterable;
 }
 
-export function toAsyncIterable<T>(value: T | Promise<T> | T[] | Promise<T>[]): AsyncIterable<T> {
-  let iterate: () => AsyncIterable<T>;
-  if (Array.isArray(value)) {
-    iterate = async function* () {
-      for (const element of value) {
-        yield await element;
-      }
-    };
-  } else {
-    iterate = async function* () {
-      yield await value;
-    };
-  }
-  return iterate();
-}
-
-export function partition<T>(index: number, iterable: AsyncIterable<T>) {
+export function partition<T>(
+  index: number,
+  iterable: AsyncIterable<T>
+): [() => AsyncIterable<T>, () => AsyncIterable<T>] {
   let current = 0;
   const [partitionFirst, nextFirst, completeFirst] = iterateLater<T>();
   const [partitionSecond, nextSecond, completeSecond] = iterateLater<T>();
@@ -91,6 +94,15 @@ export function partition<T>(index: number, iterable: AsyncIterable<T>) {
     completeFirst();
     completeSecond();
   };
-  iterate();
-  return [partitionFirst, partitionSecond];
+  const iterateOnce = callOnce(iterate);
+  return [
+    () => {
+      iterateOnce();
+      return partitionFirst;
+    },
+    () => {
+      iterateOnce();
+      return partitionSecond;
+    },
+  ];
 }

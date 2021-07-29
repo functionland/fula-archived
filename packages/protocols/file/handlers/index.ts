@@ -1,7 +1,7 @@
 import pipe from 'it-pipe';
 import { ProtocolHandler } from '../..';
 import { Request } from '../schema';
-import { partition, toAsyncIterable } from '../../util';
+import { partition, toAsyncIterable } from 'async-later';
 import { map, consume } from 'streaming-iterables';
 import { save } from './save';
 import { retrieve } from './retrieve';

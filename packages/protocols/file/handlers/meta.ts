@@ -1,10 +1,10 @@
 import pipe from 'it-pipe';
 import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
+import { toAsyncIterable } from 'async-later';
 import { Request, Meta } from '../schema';
 import { Response } from '.';
 import { PROTOCOL } from '../constants';
-import { toAsyncIterable } from '../../util';
 
 type GetMeta = ({ id }: { id: string }) => Response;
 

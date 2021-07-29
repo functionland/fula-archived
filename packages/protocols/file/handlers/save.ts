@@ -3,9 +3,9 @@ import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
 import { Subject } from 'rxjs';
 import { map, consume, pipeline } from 'streaming-iterables';
+import { resolveLater, toAsyncIterable } from 'async-later';
 import { Request, Meta } from '../schema';
 import { Response } from '.';
-import { resolveLater, toAsyncIterable } from '../../util';
 import { PROTOCOL } from '../constants';
 
 export const incomingFiles = new Subject<{

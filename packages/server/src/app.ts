@@ -13,11 +13,7 @@ import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { FileProtocol } from '@functionland/protocols';
-import {
-  resolveLater,
-  asyncIterableFromObservable,
-  toAsyncIterable,
-} from '@functionland/protocols/util';
+import { resolveLater, asyncIterableFromObservable } from '@functionland/protocols/util';
 import { File as FileSchema } from '@functionland/protocols/file/schema';
 // import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
 import { map } from 'streaming-iterables';

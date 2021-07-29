@@ -67,10 +67,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Listen for new peers
   node.on('peer:discovery', async peerId => {
     log(`Found peer ${peerId.toB58String()}`);
-    // if (peerId.toB58String() === hardcodedPeerId) {
-    const connection = await node.dial(multiaddr(serverPeerAddress));
-    console.log('aasdasdasd');
-    // }
   });
 
   // Listen for new connections to peers

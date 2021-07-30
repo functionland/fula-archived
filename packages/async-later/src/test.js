@@ -93,6 +93,27 @@ const randomDuration = () => Math.round(Math.random() * 40);
   ['random inflow/outflow speed', randomDuration, randomDuration, 50],
 ].map(args => testIterateLaterWith(...args));
 
-// test('partition', async t => {
-//   partition(42, toAsyncIterable([]))
-// });
+test('partition', async t => {
+  let [p1, p2] = partition(42, toAsyncIterable([]));
+  for await (const value of p1) {
+    t.fail(`First partition of empty iterable should also be empty, received: ${value}`);
+  }
+  for await (const value of p2) {
+    t.fail(`Second partition of empty iterable should also be empty, received: ${value}`);
+  }
+  [p1, p2] = partition(1, toAsyncIterable([42]));
+  for await (const value of p1) {
+    t.equal(value, 42, 'First partition of iterable with single value yield the value');
+  }
+  for await (const value of p2) {
+    t.fail(`Second partition of iterable with single value should be empty, received: ${value}`);
+  }
+  [p1, p2] = partition(1, toAsyncIterable([0, 1, 2, 3, 4, 5, 6]));
+  let current = 0;
+  for await (const value of p1) {
+    t.equal(value, current++, `Pass ${current} of first partition`);
+  }
+  for await (const value of p2) {
+    t.equal(value, current++, `Pass ${current} of second partition`);
+  }
+});

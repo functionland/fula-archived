@@ -38,40 +38,31 @@ export function callOnlyOnce<V>(fn: (...args) => V) {
   };
 }
 
-export function resolveLaterMutablePromiseLike<T>(): [PromiseLike<T>, Resolve<T>] {
-  let value;
-  const resolve: Resolve<T> = newValue => {
-    value = newValue;
-  };
-  const promiseLike: PromiseLike<T> = {
-    then: async callback => (callback ? callback(await value) : value),
-  };
-  return [promiseLike, resolve];
+export async function concurrently<T>(...functions: (() => T)[]) {
+  return Promise.all(functions.map(async fn => fn()));
 }
 
 export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
-  const queue = [resolveLater<T>()];
-  let resolveIndex = -1;
-  const [nextAssigned, flagNextAssigned] = resolveLaterMutablePromiseLike<boolean>();
+  let nextInLine = resolveLater<T>();
+  const queue = [nextInLine];
+  const completed: T = {} as T; // Marker
   const next: Resolve<T> = value => {
-    const [[_, resolve]] = queue.slice(resolveIndex);
+    const [_, resolve] = nextInLine;
     resolve(value);
-    queue.unshift(resolveLater<T>());
-    flagNextAssigned(true);
+    nextInLine = resolveLater<T>();
+    queue.unshift(nextInLine);
   };
   const iterate = async function* () {
-    while ((await nextAssigned) || queue.length > 0) {
-      console.log(queue);
+    while (queue.length > 0) {
       const [nextValue] = queue.pop() as [Promise<T>, Resolve<T>];
-      yield await nextValue;
-      resolveIndex--;
+      if ((await nextValue) !== completed) yield nextValue;
     }
   };
   const complete = () => {
-    queue.shift();
-    flagNextAssigned(false);
+    const [_, resolve] = nextInLine;
+    resolve(completed);
   };
-  return [iterate(), next, callOnlyOnce(complete)];
+  return [iterate(), next, complete];
 }
 
 interface ObservableLike<T> {

@@ -87,3 +87,30 @@ export function partition<T>(
   iterate();
   return [partitionFirst, partitionSecond];
 }
+
+export async function valueAt<T>(index: number, iterable: AsyncIterable<T>) {
+  let current = 0;
+  for await (const value of iterable) {
+    if (current == index) return value;
+    current++;
+  }
+  throw new ReferenceError(`Index ${index} not found in iterable`);
+}
+
+export function firstValueOf<T>(iterable: AsyncIterable<T>) {
+  return valueAt(0, iterable);
+}
+
+export async function lastValueOf<T>(iterable: AsyncIterable<T>) {
+  let last: T;
+  let wasEmpty = true;
+  for await (const value of iterable) {
+    last = value;
+    wasEmpty = false;
+  }
+  if (!wasEmpty) {
+    // @ts-ignore
+    return last;
+  }
+  throw new ReferenceError(`Cannot get last value of empty iterable`);
+}

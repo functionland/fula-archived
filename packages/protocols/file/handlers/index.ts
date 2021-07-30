@@ -1,42 +1,34 @@
 import pipe from 'it-pipe';
-import { ProtocolHandler } from '../..';
+import { partition, firstValueOf } from 'async-later';
+import { map } from 'streaming-iterables';
+import { ProtocolHandler, Response } from '../..';
 import { Request } from '../schema';
-import { partition, toAsyncIterable } from 'async-later';
-import { map, consume } from 'streaming-iterables';
 import { save } from './save';
 import { retrieve } from './retrieve';
 import { getMeta } from './meta';
 
-export type Response = Promise<AsyncIterable<Uint8Array | string> | undefined>;
-
-const emptyResponse = toAsyncIterable(Promise.resolve('Empty response'));
-
 export const handleFile: ProtocolHandler = async ({ stream }) => {
-  let response: Response = Promise.resolve(emptyResponse);
+  let response: Response = Promise.resolve(Response.EMPTY);
   await pipe(stream, async function (source) {
     const [streamHead, streamTail] = partition(
       1,
       map(message => message.slice(), source)
     );
-    await consume(
-      map(async message => {
-        const request = Request.fromBinary(message);
-        switch (request.type.oneofKind) {
-          case 'send':
-            response = save({ meta: request.type.send, bytes: streamTail });
-            break;
-          case 'receive':
-            response = retrieve(request.type.receive);
-            break;
-          case 'meta':
-            response = getMeta({ id: request.type.meta });
-            break;
-        }
-      }, streamHead)
-    );
+    const request = Request.fromBinary(await firstValueOf(streamHead));
+    switch (request.type.oneofKind) {
+      case 'send':
+        response = save({ meta: request.type.send, bytes: streamTail });
+        break;
+      case 'receive':
+        response = retrieve(request.type.receive);
+        break;
+      case 'meta':
+        response = getMeta({ id: request.type.meta });
+        break;
+    }
   });
-  await pipe((await response) || emptyResponse, stream);
-  await pipe([], stream);
+  await pipe((await response) || Response.EMPTY, stream);
+  await pipe([], stream); // Close the stream
 };
 
 export { incomingFiles, sendFile } from './save';

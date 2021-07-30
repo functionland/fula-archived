@@ -65,7 +65,7 @@ test('iterateLater simple', async t => {
 const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 const passOnValueWithDelay = milliseconds => async value => delay(milliseconds).then(() => value);
 
-const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay, totalPasses = 5) =>
+const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay, totalPasses) =>
   test(`iterateLater ${scenario}`, async t => {
     const [iterable, next, complete] = iterateLater();
     const fill = async () => {
@@ -90,7 +90,7 @@ const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay, totalPa
 const randomDuration = () => Math.round(Math.random() * 40);
 
 [
-  ['slow inflow', () => 100, () => 0],
-  ['slow outflow', () => 0, () => 100],
+  ['slower inflow', () => 30, () => 10, 5],
+  ['slower outflow', () => 10, () => 30, 15],
   ['random inflow/outflow speed', randomDuration, randomDuration, 50],
 ].map(args => testIterateLaterWith(...args));

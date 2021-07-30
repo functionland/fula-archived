@@ -2,6 +2,8 @@ import test from 'tape';
 import { resolveLater, toAsyncIterable, concurrently, iterateLater } from '.';
 import { pipeline, map, consume } from 'streaming-iterables';
 
+globalThis.DEBUG = true;
+
 test('resolveLater', async t => {
   const [promise, resolve] = resolveLater();
   resolve(42);
@@ -22,12 +24,12 @@ test('toAsyncIterable', async t => {
     t.fail('T[] with no element should not iterate');
   }
   let current = 0;
-  for await (const value of toAsyncIterable([1, 2, 3])) {
-    t.equal(value, ++current, 'T[] with multiple elements iterates');
+  for await (const value of toAsyncIterable([0, 1, 2])) {
+    t.equal(value, current++, 'T[] with multiple elements iterates');
   }
   current = 0;
-  for await (const value of toAsyncIterable([Promise.resolve(1), 2, Promise.resolve(3)])) {
-    t.equal(value, ++current, '(Promise<T>| T)[] with multiple elements iterates');
+  for await (const value of toAsyncIterable([Promise.resolve(0), 1, Promise.resolve(2)])) {
+    t.equal(value, current++, '(Promise<T>| T)[] with multiple elements iterates');
   }
 });
 
@@ -50,25 +52,25 @@ test('iterateLater single value', async t => {
 
 test('iterateLater simple', async t => {
   const [iterable, next, complete] = iterateLater();
+  next(0);
   next(1);
   next(2);
-  next(3);
   complete();
   let current = 0;
   for await (const value of iterable) {
-    t.equal(value, ++current, `Pass ${current}`);
+    t.equal(value, current++, `Pass ${current}`);
   }
 });
 
 const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 const passOnValueWithDelay = milliseconds => async value => delay(milliseconds).then(() => value);
 
-const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay) =>
+const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay, totalPasses = 5) =>
   test(`iterateLater ${scenario}`, async t => {
     const [iterable, next, complete] = iterateLater();
     const fill = async () => {
       await pipeline(
-        () => toAsyncIterable([1, 2, 3, 4, 5]),
+        () => toAsyncIterable(Array.from(Array(totalPasses).keys())),
         map(passOnValueWithDelay(getInflowDelay())),
         map(next),
         consume
@@ -79,16 +81,16 @@ const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay) =>
       let current = 0;
       for await (const value of iterable) {
         await delay(getOutflowDelay());
-        t.equal(value, ++current, `Pass ${current}`);
+        t.equal(value, current++, `Pass ${current}`);
       }
     };
     await concurrently(fill, use);
   });
 
-const randomDuration = () => Math.round(Math.random() * 100);
+const randomDuration = () => Math.round(Math.random() * 40);
 
 [
   ['slow inflow', () => 100, () => 0],
   ['slow outflow', () => 0, () => 100],
-  ['random inflow/outflow speed', randomDuration, randomDuration],
+  ['random inflow/outflow speed', randomDuration, randomDuration, 50],
 ].map(args => testIterateLaterWith(...args));

@@ -44,6 +44,7 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
     while (queue.length > 0) {
       const [nextValue] = queue.pop() as [Promise<T>, Resolve<T>];
       if ((await nextValue) !== completed) yield nextValue;
+      if (globalThis.DEBUG) console.debug(`In queue: ${queue.length}`);
     }
   };
   const complete = () => {

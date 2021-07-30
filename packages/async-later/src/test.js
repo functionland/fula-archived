@@ -1,5 +1,5 @@
 import test from 'tape';
-import { resolveLater, toAsyncIterable, callOnlyOnce, concurrently, iterateLater } from '.';
+import { resolveLater, toAsyncIterable, concurrently, iterateLater } from '.';
 import { pipeline, map, consume } from 'streaming-iterables';
 
 test('resolveLater', async t => {
@@ -21,29 +21,14 @@ test('toAsyncIterable', async t => {
   for await (const value of toAsyncIterable([])) {
     t.fail('T[] with no element should not iterate');
   }
-  let current = 1;
+  let current = 0;
   for await (const value of toAsyncIterable([1, 2, 3])) {
-    t.equal(value, current, 'T[] with multiple elements iterates');
-    current++;
+    t.equal(value, ++current, 'T[] with multiple elements iterates');
   }
-  current = 1;
+  current = 0;
   for await (const value of toAsyncIterable([Promise.resolve(1), 2, Promise.resolve(3)])) {
-    t.equal(value, current++, '(Promise<T>| T)[] with multiple elements iterates');
+    t.equal(value, ++current, '(Promise<T>| T)[] with multiple elements iterates');
   }
-});
-
-test('callOnlyOnce', async t => {
-  let invokeTimes = 0;
-  const fn = value => {
-    invokeTimes++;
-    return value;
-  };
-  const fnOnce = callOnlyOnce(fn);
-  fnOnce(42);
-  fnOnce(43);
-  const value = fnOnce(44);
-  t.equal(value, 42, 'Should return value of the first call');
-  t.equal(invokeTimes, 1, 'Should have been invoked only once despite multiple calls');
 });
 
 test('iterateLater empty', async t => {
@@ -69,9 +54,9 @@ test('iterateLater simple', async t => {
   next(2);
   next(3);
   complete();
-  let current = 1;
+  let current = 0;
   for await (const value of iterable) {
-    t.equal(value, current++);
+    t.equal(value, ++current, `Pass ${current}`);
   }
 });
 

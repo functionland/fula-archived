@@ -26,18 +26,6 @@ export function toAsyncIterable<T>(
   return iterate();
 }
 
-export function callOnlyOnce<V>(fn: (...args) => V) {
-  let invoked = false;
-  let result: V;
-  return (...args) => {
-    if (!invoked) {
-      result = fn(...args);
-      invoked = true;
-    }
-    return result;
-  };
-}
-
 export async function concurrently<T>(...functions: (() => T)[]) {
   return Promise.all(functions.map(async fn => fn()));
 }

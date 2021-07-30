@@ -8,9 +8,7 @@ export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   return [promise, resolve];
 }
 
-export function toAsyncIterable<T>(
-  value: T | Promise<T> | T[] | (Promise<T> | T)[]
-): AsyncIterable<T> {
+export function toAsyncIterable<T>(value: T | Promise<T> | (Promise<T> | T)[]): AsyncIterable<T> {
   let iterate: () => AsyncIterable<T>;
   if (Array.isArray(value)) {
     iterate = async function* () {
@@ -44,7 +42,7 @@ export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
     while (queue.length > 0) {
       const [nextValue] = queue.pop() as [Promise<T>, Resolve<T>];
       if ((await nextValue) !== completed) yield nextValue;
-      if (globalThis.DEBUG) console.debug(`In queue: ${queue.length}`);
+      if (globalThis?.process?.env?.DEBUG) console.debug(`In queue: ${queue.length}`);
     }
   };
   const complete = () => {

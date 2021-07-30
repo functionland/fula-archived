@@ -1,8 +1,6 @@
 import test from 'tape';
-import { resolveLater, toAsyncIterable, concurrently, iterateLater } from '.';
+import { resolveLater, toAsyncIterable, concurrently, iterateLater, partition } from '.';
 import { pipeline, map, consume } from 'streaming-iterables';
-
-globalThis.DEBUG = true;
 
 test('resolveLater', async t => {
   const [promise, resolve] = resolveLater();
@@ -94,3 +92,7 @@ const randomDuration = () => Math.round(Math.random() * 40);
   ['slower outflow', () => 10, () => 30, 15],
   ['random inflow/outflow speed', randomDuration, randomDuration, 50],
 ].map(args => testIterateLaterWith(...args));
+
+// test('partition', async t => {
+//   partition(42, toAsyncIterable([]))
+// });

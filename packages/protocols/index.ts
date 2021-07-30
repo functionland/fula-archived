@@ -8,7 +8,9 @@ export type ProtocolHandler = (props: HandlerProps) => void;
 export type Response<T = Uint8Array | string> = Promise<AsyncIterable<T> | undefined>;
 
 export const Response = {
-  EMPTY: toAsyncIterable(Promise.resolve('Empty response')),
+  get EMPTY() {
+    return toAsyncIterable(Promise.resolve('Empty response'));
+  },
 };
 
 export { File as FileProtocol, Graph as GraphProtocol };

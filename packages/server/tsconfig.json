@@ -11,6 +11,10 @@
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "excludeDirectories": [
+      "./dist",
+      "./scripts"
+    ]
   }
 }

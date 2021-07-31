@@ -4,8 +4,8 @@ import PeerId from 'peer-id';
 import { Subject } from 'rxjs';
 import { map, consume, pipeline } from 'streaming-iterables';
 import { resolveLater, toAsyncIterable } from 'async-later';
+import { Response } from '../..';
 import { Request, Meta } from '../schema';
-import { Response } from '.';
 import { PROTOCOL } from '../constants';
 
 export const incomingFiles = new Subject<{

@@ -2,7 +2,7 @@ import pipe from 'it-pipe';
 import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
 import { Request, Chunk } from '../schema';
-import { Response } from '.';
+import { Response } from '../..';
 import { PROTOCOL } from '../constants';
 
 type Retrieve = ({ id, skip, limit }: Chunk) => Response;

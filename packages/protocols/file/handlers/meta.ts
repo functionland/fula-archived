@@ -3,7 +3,7 @@ import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
 import { toAsyncIterable } from 'async-later';
 import { Request, Meta } from '../schema';
-import { Response } from '.';
+import { Response } from '../..';
 import { PROTOCOL } from '../constants';
 
 type GetMeta = ({ id }: { id: string }) => Response;

@@ -1,15 +1,15 @@
 {
   "name": "@functionland/server",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Reference implementation of box server in Node.js",
   "main": "dist/app.js",
+  "types": "src",
   "scripts": {
     "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
-    "dev-server": "nodemon",
+    "dev-server": "nodemon --watch dist --delay 8",
     "build": "node scripts/build.js",
-    "serve": "npm run build && node dist/app.js",
     "watch": "concurrently \"npm:watch:*\"",
-    "watch:build": "onchange -i  'src/**/*.ts' 'src/**/*.js' 'scripts/**/*.js' '../protocols/**' -- npm run build"
+    "watch:build": "onchange \"scripts/**\" \"src/**\" \"../protocols/**\" -- npm run build"
   },
   "repository": {
     "type": "git",

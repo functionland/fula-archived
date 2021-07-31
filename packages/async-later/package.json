@@ -6,8 +6,8 @@
   "type": "module",
   "types": "src",
   "scripts": {
-    "start": "tsc --watch",
-    "test": "DEBUG=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+    "start": "onchange \"src/**/*.js\" \"src/**/*.ts\" -- npm run build",
+    "test": "DEBUG=1 node dist/test.js --experimental-specifier-resolution=node | tap-spec-emoji",
     "build": "tsc"
   },
   "repository": {
@@ -25,6 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/tape": "^4.13.2",
+    "onchange": "^7.1.0",
     "streaming-iterables": "^6.0.0",
     "tap-spec-emoji": "^6.1.2",
     "tape": "^5.3.0",

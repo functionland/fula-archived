@@ -1,15 +1,16 @@
 {
   "name": "@functionland/graph",
-  "version": "0.0.1",
-  "description": "",
-  "type": "module",
+  "version": "0.1.0",
+  "description": "Interface with a box server from the browser!",
   "main": "dist/index.js",
+  "type": "module",
+  "types": "src",
   "scripts": {
     "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
     "dev-server": "vite",
     "build": "node scripts/build.js",
     "watch": "concurrently \"npm:watch:*\"",
-    "watch:build": "onchange -i \"scripts/**/*.js\" \"src/**/*.js\" \"../protocols/**\" -- npm run build"
+    "watch:build": "onchange \"scripts/**\" \"src/**\" \"../protocols/**\" -- npm run build"
   },
   "repository": {
     "type": "git",

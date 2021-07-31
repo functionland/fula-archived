@@ -61,7 +61,7 @@ test('iterateLater simple', async t => {
 });
 
 const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-const passOnValueWithDelay = milliseconds => async value => delay(milliseconds).then(() => value);
+const passOnValueWithDelay = milliseconds => value => delay(milliseconds).then(() => value);
 
 const testIterateLaterWith = (scenario, getInflowDelay, getOutflowDelay, totalPasses) =>
   test(`iterateLater ${scenario}`, async t => {

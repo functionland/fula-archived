@@ -7,7 +7,7 @@
   "types": "src",
   "scripts": {
     "start": "onchange \"src/**/*.js\" \"src/**/*.ts\" -- npm run build",
-    "test": "DEBUG=1 node dist/test.js --experimental-specifier-resolution=node | tap-spec-emoji",
+    "test": "DEBUG=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
     "build": "tsc"
   },
   "repository": {

@@ -1,3 +1,5 @@
+![example workflow](https://github.com/functionland/box/actions/workflows/npm-test.yml/badge.svg)
+
 # box
 
 Client-server stack for Web3

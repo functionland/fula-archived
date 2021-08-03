@@ -117,3 +117,12 @@ test('partition', async t => {
     t.equal(value, current++, `Pass ${current} of second partition`);
   }
 });
+
+test('concurrently', async t => {
+  const result = await concurrently(
+    ...Array(10).fill(() => 42),
+    ...Array(10).fill(() => Promise.resolve(24))
+  );
+  t.deepEqual(result.slice(0, 10), Array(10).fill(42));
+  t.deepEqual(result.slice(10), Array(10).fill(24));
+});

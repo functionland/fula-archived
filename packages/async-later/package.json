@@ -18,6 +18,7 @@
     "promise",
     "async-iterable",
     "stream",
+    "observable",
     "fp",
     "functional",
     "functional-programming"

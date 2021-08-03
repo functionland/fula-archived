@@ -8,29 +8,6 @@ export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   return [promise, resolve];
 }
 
-export function toAsyncIterable<T>(
-  value: T | Promise<T> | Iterable<Promise<T> | T> | AsyncIterable<T>
-): AsyncIterable<T> {
-  let iterate: () => AsyncIterable<T>;
-  if (value[Symbol.asyncIterator]) return value as AsyncIterable<T>;
-  if (value[Symbol.iterator]) {
-    iterate = async function* () {
-      for (const element of value as Iterable<Promise<T> | T>) {
-        yield await element;
-      }
-    };
-  } else {
-    iterate = async function* () {
-      yield (await value) as T | Promise<T>;
-    };
-  }
-  return iterate();
-}
-
-export async function concurrently<T>(...functions: (() => T | Promise<T>)[]) {
-  return Promise.all(functions.map(async fn => fn()));
-}
-
 export function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void] {
   let nextInLine = resolveLater<T>();
   const queue = [nextInLine];
@@ -63,6 +40,27 @@ export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
   const [iterable, next, complete] = iterateLater<T>();
   observable.subscribe(next, error => next(Promise.reject(error)), complete);
   return iterable;
+}
+
+export function toAsyncIterable<T>(
+  value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
+): AsyncIterable<T> {
+  let iterate: () => AsyncIterable<T>;
+  if (value[Symbol.asyncIterator]) return value as AsyncIterable<T>;
+  if (typeof (value as ObservableLike<T>).subscribe === 'function')
+    return asyncIterableFromObservable(value as ObservableLike<T>);
+  if (value[Symbol.iterator]) {
+    iterate = async function* () {
+      for (const element of value as Iterable<PromiseLike<T> | T>) {
+        yield await element;
+      }
+    };
+  } else {
+    iterate = async function* () {
+      yield (await value) as T | PromiseLike<T>;
+    };
+  }
+  return iterate();
 }
 
 export function partition<T>(
@@ -133,4 +131,8 @@ export function lastValue<T>(iterable?: Iterable<T> | AsyncIterable<T>) {
   return iterable
     ? _lastValue(iterable)
     : (curriedIterable: Iterable<T> | AsyncIterable<T>) => _lastValue(curriedIterable);
+}
+
+export async function concurrently<T>(...functions: (() => T | PromiseLike<T>)[]) {
+  return Promise.all(functions.map(async fn => fn()));
 }

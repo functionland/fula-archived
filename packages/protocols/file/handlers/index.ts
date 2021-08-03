@@ -1,5 +1,5 @@
 import pipe from 'it-pipe';
-import { partition, firstValueOf } from 'async-later';
+import { partition, firstValue } from 'async-later';
 import { map } from 'streaming-iterables';
 import { ProtocolHandler, Response } from '../..';
 import { Request } from '../schema';
@@ -14,7 +14,7 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
       1,
       map(message => message.slice(), source)
     );
-    const request = Request.fromBinary(await firstValueOf(streamHead));
+    const request = Request.fromBinary(await firstValue(streamHead));
     switch (request.type.oneofKind) {
       case 'send':
         response = save({ meta: request.type.send, bytes: streamTail });

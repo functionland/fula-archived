@@ -8,23 +8,26 @@ export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   return [promise, resolve];
 }
 
-export function toAsyncIterable<T>(value: T | Promise<T> | (Promise<T> | T)[]): AsyncIterable<T> {
+export function toAsyncIterable<T>(
+  value: T | Promise<T> | Iterable<Promise<T> | T> | AsyncIterable<T>
+): AsyncIterable<T> {
   let iterate: () => AsyncIterable<T>;
-  if (Array.isArray(value)) {
+  if (value[Symbol.asyncIterator]) return value as AsyncIterable<T>;
+  if (value[Symbol.iterator]) {
     iterate = async function* () {
-      for (const element of value) {
+      for (const element of value as Iterable<Promise<T> | T>) {
         yield await element;
       }
     };
   } else {
     iterate = async function* () {
-      yield await value;
+      yield (await value) as T | Promise<T>;
     };
   }
   return iterate();
 }
 
-export async function concurrently<T>(...functions: (() => T)[]) {
+export async function concurrently<T>(...functions: (() => T | Promise<T>)[]) {
   return Promise.all(functions.map(async fn => fn()));
 }
 
@@ -88,7 +91,7 @@ export function partition<T>(
   return [partitionFirst, partitionSecond];
 }
 
-export async function valueAt<T>(index: number, iterable: AsyncIterable<T>) {
+async function _valueAt<T>(index: number, iterable: Iterable<T> | AsyncIterable<T>) {
   let current = 0;
   for await (const value of iterable) {
     if (current == index) return value;
@@ -97,20 +100,37 @@ export async function valueAt<T>(index: number, iterable: AsyncIterable<T>) {
   throw new ReferenceError(`Index ${index} not found in iterable`);
 }
 
-export function firstValueOf<T>(iterable: AsyncIterable<T>) {
-  return valueAt(0, iterable);
+export function valueAt<T>(index: number): (iterable: Iterable<T> | AsyncIterable<T>) => T;
+export function valueAt<T>(index: number, iterable: Iterable<T> | AsyncIterable<T>): Promise<T>;
+export function valueAt<T>(index: number, iterable?: Iterable<T> | AsyncIterable<T>) {
+  return iterable
+    ? _valueAt(index, iterable)
+    : (curriedIterable: Iterable<T> | AsyncIterable<T>) => _valueAt(index, curriedIterable);
 }
 
-export async function lastValueOf<T>(iterable: AsyncIterable<T>) {
-  let last: T;
+export function firstValue<T>(): (iterable: Iterable<T> | AsyncIterable<T>) => Promise<T>;
+export function firstValue<T>(iterable: Iterable<T> | AsyncIterable<T>): Promise<T>;
+export function firstValue<T>(iterable?: Iterable<T> | AsyncIterable<T>) {
+  return iterable ? valueAt(0, iterable) : valueAt(0);
+}
+
+async function _lastValue<T>(iterable: Iterable<T> | AsyncIterable<T>) {
+  let value: T;
   let wasEmpty = true;
-  for await (const value of iterable) {
-    last = value;
+  for await (value of iterable) {
     wasEmpty = false;
   }
   if (!wasEmpty) {
     // @ts-ignore
-    return last;
+    return value;
   }
-  throw new ReferenceError(`Cannot get last value of empty iterable`);
+  throw new ReferenceError('Cannot get last value of empty iterable');
+}
+
+export function lastValue<T>(): (iterable: Iterable<T> | AsyncIterable<T>) => Promise<T>;
+export function lastValue<T>(iterable: Iterable<T> | AsyncIterable<T>): Promise<T>;
+export function lastValue<T>(iterable?: Iterable<T> | AsyncIterable<T>) {
+  return iterable
+    ? _lastValue(iterable)
+    : (curriedIterable: Iterable<T> | AsyncIterable<T>) => _lastValue(curriedIterable);
 }

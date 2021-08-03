@@ -31,7 +31,7 @@ function resolveLater<T>(): [Promise<T>, Resolve<T>]
 // type Resolve<T> = (value?: T | PromiseLike<T>) => void;
 ```
 
-Creates a `Promise` and passes its `resolve` to the outer scope (`resolve` is only accessible through `new Promise((resolve, reject) => {...})` in the native promise API).
+Creates a `Promise` and passes its `resolve` to the outer scope (in the native Promise API, `resolve` is only accessible through `new Promise((resolve, reject) => {...})`).
 
 ```js
 import { resolveLater } from 'async-later';
@@ -46,6 +46,7 @@ console.log(await value);
 // Customizable backend for "save"
 
 type SaveMethod = (blog: Blog, declareId: (id: string) => void) => any;
+// We want custom implementations to invoke a function with `id` when they are done
 let saveMethod: SaveMethod = async () => {}; // Default: no implementation
 export function changeSaveMethod(method: SaveMethod) {
   saveMethod = method;
@@ -224,7 +225,7 @@ console.log(await valueAt(1, iterable));
 function concurrently<T>(...functions: (() => T | PromiseLike<T>)[]): Promise<T[]>
 ```
 
-Invokes `functions` with `Promise.all`.
+Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/01894b3b3547bef2384e120a76e480d5e0b48b41/packages/async-later/src/index.ts#L137).
 
 ```js
 import { concurrently } from 'async-iterable';

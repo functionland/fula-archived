@@ -92,7 +92,7 @@ function partition<T>(index: number, iterable: AsyncIterable<T>): [AsyncIterable
 Decomposes an `AsyncIterable` into two at an `index` (more partitions can be made by subsequent calls).
 
 ```js
-import { partition, toAsyncIterable } from 'async-iterable';
+import { partition, toAsyncIterable } from 'async-later';
 
 const [p1, rest] = partition(2, toAsyncIterable([1, 2, 3, 4, 5]));
 const [p2, p3] = partition(2, rest);
@@ -173,7 +173,7 @@ function firstValue<T>(): (iterable: Iterable<T> | AsyncIterable<T>) => Promise<
 Returns the first value from an `AsyncIterable` as a `Promise`. The `Promise` rejects if iterable is empty.
 
 ```js
-import { firstValue, toAsyncIterable } from 'async-iterable';
+import { firstValue, toAsyncIterable } from 'async-later';
 
 const iterable = toAsyncIterable([1, 2, 3]);
 
@@ -192,7 +192,7 @@ function lastValue<T>(): (iterable: Iterable<T> | AsyncIterable<T>) => Promise<T
 Returns the last value from an `AsyncIterable` as a `Promise`. The `Promise` rejects if iterable is empty.
 
 ```js
-import { lastValue, toAsyncIterable } from 'async-iterable';
+import { lastValue, toAsyncIterable } from 'async-later';
 
 const iterable = toAsyncIterable([1, 2, 3]);
 
@@ -211,7 +211,7 @@ function valueAt<T>(index: number): (iterable: Iterable<T> | AsyncIterable<T>) =
 Returns the value specified by an `index` in an `AsyncIterable`, as a `Promise`. The `Promise` rejects if iterable is empty or `index` >= length.
 
 ```js
-import { valueAt, toAsyncIterable } from 'async-iterable';
+import { valueAt, toAsyncIterable } from 'async-later';
 
 const iterable = toAsyncIterable([1, 2, 3]);
 
@@ -228,7 +228,7 @@ function concurrently<T>(...functions: (() => T | PromiseLike<T>)[]): Promise<T[
 Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/01894b3b3547bef2384e120a76e480d5e0b48b41/packages/async-later/src/index.ts#L137).
 
 ```js
-import { concurrently } from 'async-iterable';
+import { concurrently } from 'async-later';
 
 const result = await concurrently(
   () => 42,

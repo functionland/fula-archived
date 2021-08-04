@@ -2,7 +2,7 @@
 
 [![Node.js CI](https://github.com/functionland/box/actions/workflows/npm-test-async-later.yml/badge.svg)](https://github.com/functionland/box/actions/workflows/npm-test-async-later.yml) [![Try streaming-iterables on RunKit](https://badge.runkitcdn.com/async-later.svg)](https://npm.runkit.com/async-later) [![install size](https://packagephobia.now.sh/badge?p=async-later)](https://packagephobia.now.sh/result?p=async-later)
 
-Return a `Promise` or an `AsyncIterable` now and handle the logic later! Use in conjunction with the amazing [`streaming-iterables`](https://github.com/reconbot/streaming-iterables) package and write elegant functional code!
+Return a `Promise` or an `AsyncIterable` now and handle the logic later! Use in conjunction with the amazing [`streaming-iterables`](https://github.com/reconbot/streaming-iterables) package and write elegant functional code.
 
 ## Install
 There are no dependencies.
@@ -37,16 +37,19 @@ Creates a `Promise` and passes its `resolve` to the outer scope (in the native P
 import { resolveLater } from 'async-later';
 
 const [value, setValue] = resolveLater();
+value.then(console.log);
 setValue(42);
-console.log(await value);
 // 42
 ```
+
+Real world example [adapted from @functionland/protocols/file](https://github.com/functionland/box/blob/8c82eb40d4511f498bb5f02451b8612b36d0672e/packages/protocols/file/handlers/save.ts#L24):
 
 ```ts
 // Customizable backend for "save"
 
 type SaveMethod = (blog: Blog, declareId: (id: string) => void) => any;
-// We want custom implementations to invoke a function with `id` when they are done
+// We want to pass a callback, "declareId", to custom implementations
+// to be invoked with "id" when they are done
 let saveMethod: SaveMethod = async () => {}; // Default: no implementation
 export function changeSaveMethod(method: SaveMethod) {
   saveMethod = method;
@@ -89,7 +92,7 @@ for await (const value of iterable) {
 function partition<T>(index: number, iterable: AsyncIterable<T>): [AsyncIterable<T>, AsyncIterable<T>]
 ```
 
-Decomposes an `AsyncIterable` into two at an `index` (more partitions can be made by subsequent calls).
+Decomposes an `AsyncIterable` into two at an `index` (more partitions can be made by subsequent/recursive calls).
 
 ```js
 import { partition, toAsyncIterable } from 'async-later';
@@ -120,6 +123,10 @@ for await (const value of p3) {
 function toAsyncIterable<T>(
   value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
 ): AsyncIterable<T>
+// Curried overload suitable for pipeline:
+export function toAsyncIterable<T>(): (
+  value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
+) => AsyncIterable<T>
 ```
 
 Converts anything to an `AsyncIterable`!
@@ -225,7 +232,7 @@ console.log(await valueAt(1, iterable));
 function concurrently<T>(...functions: (() => T | PromiseLike<T>)[]): Promise<T[]>
 ```
 
-Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/01894b3b3547bef2384e120a76e480d5e0b48b41/packages/async-later/src/index.ts#L137).
+Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/eb995f09a1aaf27b2505235e237e2d181cdbc99d/packages/async-later/src/concurrently.ts#L1).
 
 ```js
 import { concurrently } from 'async-later';
@@ -235,7 +242,7 @@ const result = await concurrently(
   () => Promise.resolve(42),
   async () => 42,
   () => 24,
-  async () => 42
+  async () => 24
 );
 console.log(result)
 // [42, 42, 42, 24, 24]

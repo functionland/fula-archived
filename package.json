@@ -9,7 +9,7 @@
     "list": "lerna list",
     "test": "concurrently \"npm:test:*\"",
     "test:async-later": "lerna run test --scope=async-later --stream",
-    "start": "npm run build && concurrently \"npm:watch:*\" \"npm:start-all\" --prefix=time",
+    "start": "npm run build-all && concurrently \"npm:watch:*\" \"npm:start-all\" --prefix=time",
     "build-all": "lerna run build --parallel",
     "start-all": "lerna run start --parallel",
     "client": "lerna run start --scope=@functionland/graph --stream",

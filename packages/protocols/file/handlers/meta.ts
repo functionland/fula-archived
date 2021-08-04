@@ -20,7 +20,7 @@ export function setMetaRetrievalMethod(
   getMeta = async ({ id }) => {
     const meta = await method({ id });
     const binary = meta && Meta.toBinary(meta);
-    return binary && toAsyncIterable(binary);
+    return binary && toAsyncIterable([binary]);
   };
 }
 

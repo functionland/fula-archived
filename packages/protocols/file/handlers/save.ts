@@ -10,8 +10,8 @@ import { PROTOCOL } from '../constants';
 
 export const incomingFiles = new Subject<{
   meta: Meta;
-  content: Subject<Uint8Array>;
-  declareId(_id: string): void;
+  getContent: () => AsyncIterable<Uint8Array>;
+  declareId(id: string): void;
 }>();
 
 export async function save({
@@ -23,7 +23,7 @@ export async function save({
 }): Response {
   const [promiseId, declareId] = resolveLater<string>();
   const content = new Subject<Uint8Array>();
-  incomingFiles.next({ meta, content, declareId });
+  incomingFiles.next({ meta, getContent: () => toAsyncIterable(content), declareId });
   await pipeline(
     () => bytes,
     map(message => content.next(message)),

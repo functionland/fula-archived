@@ -45,11 +45,13 @@ export function asyncIterableFromObservable<T>(observable: ObservableLike<T>) {
 export function toAsyncIterable<T>(
   value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
 ): AsyncIterable<T> {
-  let iterate: () => AsyncIterable<T>;
-  if (value[Symbol.asyncIterator]) return value as AsyncIterable<T>;
+  if (typeof value[Symbol.asyncIterator] === 'function') return value as AsyncIterable<T>;
+
   if (typeof (value as ObservableLike<T>).subscribe === 'function')
     return asyncIterableFromObservable(value as ObservableLike<T>);
-  if (value[Symbol.iterator]) {
+
+  let iterate: () => AsyncIterable<T>;
+  if (typeof value[Symbol.iterator] === 'function') {
     iterate = async function* () {
       for (const element of value as Iterable<PromiseLike<T> | T>) {
         yield await element;

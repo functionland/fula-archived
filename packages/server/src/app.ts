@@ -13,7 +13,7 @@ import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
 import { FileProtocol } from '@functionland/protocols';
-import { resolveLater, asyncIterableFromObservable } from '@functionland/protocols/util';
+import { resolveLater } from '@functionland/protocols/util';
 import { File as FileSchema } from '@functionland/protocols/file/schema';
 // import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
 import { map } from 'streaming-iterables';
@@ -103,7 +103,7 @@ async function main() {
     }
   });
 
-  FileProtocol.incomingFiles.subscribe(async ({ content, meta, declareId }) => {
+  FileProtocol.incomingFiles.subscribe(async ({ getContent, meta, declareId }) => {
     const { cid: file } = await ipfsNode.add(
       // map(
       //   async (bytes: Uint8Array) =>
@@ -112,10 +112,9 @@ async function main() {
       //       passwords: ['weeeee weeee'],
       //       armor: false,
       //     }),
-      //   asyncIterableFromObservable(content)
+      //   getContent()
       // )
-
-      asyncIterableFromObservable(content)
+      getContent()
     );
     for await (const chunk of ipfsNode.cat(file)) {
       console.log(String(chunk));

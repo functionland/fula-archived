@@ -1,6 +1,6 @@
 import test from 'tape';
-import { resolveLater, toAsyncIterable, concurrently, iterateLater, partition } from '.';
 import { pipeline, map, consume } from 'streaming-iterables';
+import { resolveLater, toAsyncIterable, concurrently, iterateLater, partition } from '.';
 
 test('resolveLater', async t => {
   const [promise, resolve] = resolveLater();

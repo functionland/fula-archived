@@ -39,9 +39,9 @@ type ValueTypes<T> =
 export function toAsyncIterable<T>(): (
   value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
 ) => AsyncIterable<T>;
-export function toAsyncIterable<T>(): (
+export function toAsyncIterable<T>(
   value: T | PromiseLike<T> | ObservableLike<T> | Iterable<PromiseLike<T> | T> | AsyncIterable<T>
-) => AsyncIterable<T>;
+): AsyncIterable<T>;
 export function toAsyncIterable<T>(
   value?: ValueTypes<T>
 ): AsyncIterable<T> | ((value: ValueTypes<T>) => AsyncIterable<T>) {

@@ -1,6 +1,6 @@
 {
   "name": "async-later",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Functional directives for Promise and AsyncIterable",
   "main": "dist/esm.js",
   "type": "module",

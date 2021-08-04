@@ -68,7 +68,7 @@ export function save(blog: Blog): Promise<string> { // returns Promise of saved 
 function iterateLater<T>(): [AsyncIterable<T>, Resolve<T>, () => void]
 ```
 
-Creates `next()` and `complete()` interfaces for an `AsyncIterable` (similar to [`Observable`](https://github.com/tc39/proposal-observable)s). [Stalls on back pressure](https://github.com/functionland/box/blob/39c389aba558799bf909b82734e2408715f5103b/packages/async-later/src/test.js#L91) and [caches when read is slower](https://github.com/functionland/box/blob/39c389aba558799bf909b82734e2408715f5103b/packages/async-later/src/index.ts#L33).
+Creates `next()` and `complete()` interfaces for an `AsyncIterable` (similar to [`Observable`](https://github.com/tc39/proposal-observable)s). [Stalls on back pressure](https://github.com/functionland/box/blob/7a42a6e1e58d3a233066d969f2de03b401b684bb/packages/async-later/src/test.js#L91) and [caches when read is slower](https://github.com/functionland/box/blob/7a42a6e1e58d3a233066d969f2de03b401b684bb/packages/async-later/src/iterate-later.ts#L5).
 
 ```js
 import { iterateLater } from 'async-later';
@@ -232,7 +232,7 @@ console.log(await valueAt(1, iterable));
 function concurrently<T>(...functions: (() => T | PromiseLike<T>)[]): Promise<T[]>
 ```
 
-Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/eb995f09a1aaf27b2505235e237e2d181cdbc99d/packages/async-later/src/concurrently.ts#L1).
+Invokes `functions` [with `Promise.all`](https://github.com/functionland/box/blob/eb995f09a1aaf27b2505235e237e2d181cdbc99d/packages/async-later/src/concurrently.ts#L2).
 
 ```js
 import { concurrently } from 'async-later';

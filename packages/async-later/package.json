@@ -1,13 +1,13 @@
 {
   "name": "async-later",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Functional directives for Promise and AsyncIterable",
   "main": "dist/esm.js",
   "type": "module",
   "types": "src",
   "scripts": {
     "start": "onchange \"src/**/*.js\" \"src/**/*.ts\" -- npm run build",
-    "test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",    
+    "test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
     "build": "node scripts/build.js"
   },
   "repository": {

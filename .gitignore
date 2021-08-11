@@ -39,3 +39,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Storybook
+storybook-static/

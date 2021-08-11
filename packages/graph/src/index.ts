@@ -1,9 +1,12 @@
 import Libp2p from 'libp2p';
 import multiaddr from 'multiaddr';
-// import Bootstrap from 'libp2p-bootstrap';
+// @ts-ignore
 import Websockets from 'libp2p-websockets';
+// @ts-ignore
 import filters from 'libp2p-websockets/src/filters';
+// @ts-ignore
 import WebRTCStar from 'libp2p-webrtc-star';
+// @ts-ignore
 import Mplex from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
 import pipe from 'it-pipe';

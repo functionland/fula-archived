@@ -6,8 +6,8 @@
   "type": "module",
   "types": "src",
   "scripts": {
-    "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
-    "dev-server": "vite",
+    "start": "concurrently \"npm:watch\" \"npm:client-dev-server\"",
+    "client-dev-server": "vite",
     "build": "node scripts/build.js",
     "watch": "concurrently \"npm:watch:*\"",
     "watch:build": "onchange \"scripts/**\" \"src/**\" \"../protocols/**\" -- npm run build"

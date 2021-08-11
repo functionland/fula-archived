@@ -17,7 +17,7 @@
     "signal": "lerna run start --scope=@functionland/signal --stream",
     "lint": "eslint . --ext .ts",
     "lint-format": "prettier --config .prettierrc \"**/*.ts\" \"**/*.js\" --write",
-    "watch:lint": "onchange \"**/*.ts\" \"**/*.js\" -- prettier --write {{changed}}"
+    "watch:lint": "onchange \"**/*.ts\" \"**/*.js\" --exclude \"**/dist/*.ts\" \"**/dist/*.js\" -- prettier --write {{changed}}"
   },
   "husky": {
     "hooks": {

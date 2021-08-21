@@ -4,9 +4,7 @@
   "description": "Demo for use cases of @functionland/graph",
   "main": "dist/esm.js",
   "scripts": {
-    "start": "npm run storybook",
-    "build": "npm run build-storybook",
-    "test": "react-scripts test",
+    "dtest": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"

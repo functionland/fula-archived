@@ -1,6 +1,8 @@
 import { FileProtocol } from '@functionland/protocols';
 import PeerId from 'peer-id';
 
+import { graph } from './index';
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Listen for new peers
   let onPeerDiscovery = async peerId => {
@@ -11,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let onPeerConnect = async connection => {
     log(`Connected to ${connection.remotePeer.toB58String()}`);
     document.getElementById('serverId').value = connection.remotePeer.toB58String();
+    myGraph.setListener(PeerId.createFromB58String(connection.remotePeer.toB58String()));
   };
 
   // Listen for peers disconnecting
@@ -18,8 +21,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     log(`Disconnected from ${connection.remotePeer.toB58String()}`);
   };
 
-  let graph = new Graph({}, onPeerConnect, onPeerDisconnect, onPeerDiscovery);
-  graph = await GraphLogic.connect(graph);
+  let myGraph = graph();
+  await myGraph.connect();
+  myGraph.connectionHandler('peer:connect', onPeerConnect);
+  myGraph.connectionHandler('peer:disconnect', onPeerDisconnect);
+  myGraph.nodeHandler('peer:discovery', onPeerDiscovery);
 
   const status = document.getElementById('status');
   const output = document.getElementById('output');
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   status.innerText = 'libp2p started!';
-  log(`libp2p id is ${graph.node.peerId.toB58String()}`);
+  // log(`libp2p id is ${graph.node.peerId.toB58String()}`);
   // const { stream } = await libp2p.dialProtocol(multiaddr(serverPeerAddress), '/chat')
   // console.log('stream');
   // await pipe(
@@ -43,26 +49,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sendButton = document.getElementById('send');
   const fileIdInput = document.getElementById('fileId');
   sendButton.addEventListener('click', async () => {
-    const to = PeerId.createFromB58String(document.getElementById('serverId').value);
     const file = document.getElementById('file').files[0];
-    const id = await GraphLogic.sendFile(graph, to, file);
+    const id = await myGraph.sendFile(file);
     fileIdInput.value = id;
   });
 
   const receiveButton = document.getElementById('receive');
   const content = document.getElementById('content');
   receiveButton.addEventListener('click', async () => {
-    const from = PeerId.createFromB58String(document.getElementById('serverId').value);
     const id = fileIdInput.value;
     content.value = '';
-    content.value = await GraphLogic.receiveFile(graph, from, id);
+    content.value = await myGraph.receiveFile(id);
   });
 
   const metaButton = document.getElementById('meta');
   metaButton.addEventListener('click', async () => {
-    const from = PeerId.createFromB58String(document.getElementById('serverId').value);
     const id = fileIdInput.value;
     content.value = '';
-    content.value = await GraphLogic.receiveMeta(graph, from, id);
+    content.value = await myGraph.receiveMeta(id);
   });
 });

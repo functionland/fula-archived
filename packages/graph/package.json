@@ -6,7 +6,7 @@
   "type": "module",
   "types": "src",
   "scripts": {
-    "start": "concurrently \"npm:watch\" \"npm:client-dev-server\"",
+    "start": "concurrently \"npm:watch\"",
     "client-dev-server": "vite",
     "build": "node scripts/build.js",
     "watch": "concurrently \"npm:watch:*\"",

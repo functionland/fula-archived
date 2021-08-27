@@ -3,7 +3,7 @@ import { build } from 'esbuild';
 import path from 'path';
 
 build({
-  entryPoints: ['src/graph.js'],
+  entryPoints: ['src/index.ts'],
   platform: 'browser',
   target: 'es2020',
   format: 'esm',

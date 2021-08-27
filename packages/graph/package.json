@@ -25,6 +25,7 @@
   "dependencies": {
     "@functionland/protocols": "^0.1.0",
     "@ipld/schema-validation": "^1.1.0",
+    "ipfs-core-types": "^0.7.0",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.31.5",
     "libp2p-bootstrap": "^0.12.2",

@@ -5,7 +5,7 @@ import WebRTCStar from 'libp2p-webrtc-star'; // @ts-ignore
 import { NOISE } from 'libp2p-noise';
 import Mplex from 'libp2p-mplex';
 
-export function configure(config={}): Config {
+export function configure(config={}): any {
   return {
     addresses: {
       listen: [`/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`],

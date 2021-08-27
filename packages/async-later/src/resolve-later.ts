@@ -5,5 +5,7 @@ export function resolveLater<T>(): [Promise<T>, Resolve<T>] {
   const promise = new Promise<T>(resolveCallback => {
     resolve = resolveCallback;
   });
-  return [promise, resolve];
+  if(resolve!== undefined)
+    return [promise, resolve] ;
+  throw('Something Wrong')  
 }

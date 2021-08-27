@@ -1,23 +1,16 @@
 {
-  "include": ["src", "types"],
-  "exclude": [
-    "./dist",
-    "./scripts"
-  ],
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "node",
-    "jsx": "preserve",
-    "baseUrl": "./",
-    "allowSyntheticDefaultImports": true,
-    "importsNotUsedAsValues": "error",
-    "isolatedModules": true,
-    "noEmit": true,
+    "downlevelIteration": true,
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "lib": ["ES2019"],
+    "allowJs": true,
+    "rootDir": "src",
     "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "useDefineForClassFields": true
-  }
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules","dist", "scripts", "src/**/*.js"]
 }

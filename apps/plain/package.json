@@ -1,0 +1,45 @@
+{
+	"name": "@functionland/graph",
+	"version": "0.1.0",
+	"description": "Interface with a box server from the browser!",
+	"main": "dist/esm.js",
+	"type": "module",
+	"types": "src",
+	"scripts": {
+		"start": "",
+		"test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+		"build": "node scripts/build.js"
+	  },
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/functionland/graph.git"
+	},
+	"author": "",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/functionland/graph/issues"
+	},
+	"homepage": "https://github.com/functionland/graph#readme",
+	"dependencies": {
+		"@functionland/protocols": "^0.1.0",
+		"@ipld/schema-validation": "^1.1.0",
+		"libp2p": "^0.31.5",
+		"libp2p-bootstrap": "^0.12.2",
+		"libp2p-mplex": "^0.10.2",
+		"libp2p-noise": "^2.0.5",
+		"libp2p-webrtc-star": "^0.22.2",
+		"libp2p-websockets": "^0.15.6",
+		"peer-id": "^0.14.6"
+	},
+	"devDependencies": {
+		"@esbuild-plugins/node-globals-polyfill": "^0.1.0",
+		"@esbuild-plugins/node-modules-polyfill": "^0.1.1",
+		"@mapbox/node-pre-gyp": "^1.0.3",
+		"concurrently": "^6.0.2",
+		"es-module-lexer": "^0.4.1",
+		"esbuild": "^0.12.1",
+		"magic-string": "^0.25.7",
+		"node-fetch": "^2.6.1",
+		"onchange": "^7.1.0"
+	}
+}

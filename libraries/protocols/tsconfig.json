@@ -1,0 +1,18 @@
+  
+{
+    "compilerOptions": {
+      "downlevelIteration": true,
+      "target": "es2020",
+      "module": "commonjs",
+      "moduleResolution": "Node",
+      "lib": ["es2019", "dom"],
+      "allowJs": true,
+      "rootDir": ".",
+      "strict": true,
+      "noImplicitAny": false,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "outDir": "./dist"
+    }
+  }
+  

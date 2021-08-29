@@ -389,6 +389,46 @@
    * 3. It's useful to have a centralized inventory of all projects and their important metadata.
    */
   "projects": [
+    {
+      "packageName": "async-later",
+      "projectFolder": "libraries/async-later",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "@functionland/graph",
+      "projectFolder": "libraries/graph",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "@functionland/protocols",
+      "projectFolder": "libraries/protocols",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "@functionland/fx",
+      "projectFolder": "tools/cli",
+      "reviewCategory": "tools"
+    },
+    {
+      "packageName": "@functionland/server",
+      "projectFolder": "apps/server",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "@functionland/signal",
+      "projectFolder": "apps/signal",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "react-esbuild",
+      "projectFolder": "apps/react-esbuild",
+      "reviewCategory": "apps"
+    },
+    {
+      "packageName": "react-rca",
+      "projectFolder": "apps/react-rca",
+      "reviewCategory": "apps"
+    }
     // {
     //   /**
     //    * The NPM package name of the project (must match package.json)

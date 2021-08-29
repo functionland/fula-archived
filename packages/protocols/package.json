@@ -4,7 +4,7 @@
   "description": "",
   "types": "index.ts",
   "scripts": {
-    "start": "onchange \"file/schema/index.proto\" -- npm run build:proto",
+    "start": "",
     "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto"
   },
   "author": "",

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
     "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "Node",
@@ -8,9 +7,8 @@
     "allowJs": true,
     "rootDir": "src",
     "strict": true,
-    "noImplicitAny": false,
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules","dist", "scripts", "src/**/*.js"]
+  "exclude": ["dist", "scripts", "src/**/*.js"]
 }

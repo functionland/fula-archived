@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import './FileTransfer.css';
-import graph from '@functionland/graph'
+
 
 interface FileTransferProps {
     /**
@@ -16,7 +16,7 @@ export const FileTransfer =  ({
     ...props
 }: FileTransferProps) => {
     useEffect( () => {
-        let myGraph = graph();
+        // let myGraph = graph();
         // (async ()=>{
         //     let myGraph = graph();
         //     await myGraph.connect();

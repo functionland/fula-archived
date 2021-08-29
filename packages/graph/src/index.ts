@@ -1,12 +1,10 @@
-import { FileProtocol } from '@functionland/protocols';
+import { FileProtocol } from '@functionland/protocols'; // @ts-ignore
 import { configure } from './config';
 
 import Libp2p from 'libp2p'; // @ts-ignore
-
 import type PeerId from 'peer-id';
-import { TextDecoder } from 'text-encoding';
 
-export default function graph(config?: any) {
+export function graph(config?: any) {
   let node: Libp2p;
   let conf: any;
   let listener: PeerId;

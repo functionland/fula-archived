@@ -5,6 +5,11 @@
 	"main": "dist/esm.js",
 	"type": "module",
 	"types": "src",
+	"scripts": {
+		"start": "",
+		"test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+		"build": "node scripts/build.js"
+	  },
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/functionland/graph.git"
@@ -18,17 +23,12 @@
 	"dependencies": {
 		"@functionland/protocols": "^0.1.0",
 		"@ipld/schema-validation": "^1.1.0",
-		"@types/text-encoding": "0.0.36",
-		"ipfs-core-types": "^0.7.0",
-		"it-pipe": "^1.1.0",
 		"libp2p": "^0.31.5",
 		"libp2p-bootstrap": "^0.12.2",
 		"libp2p-mplex": "^0.10.2",
 		"libp2p-noise": "^2.0.5",
 		"libp2p-webrtc-star": "^0.22.2",
 		"libp2p-websockets": "^0.15.6",
-		"multiaddr": "^8.1.2",
-		"multiformats": "^8.0.6",
 		"peer-id": "^0.14.6"
 	},
 	"devDependencies": {
@@ -40,7 +40,6 @@
 		"esbuild": "^0.12.1",
 		"magic-string": "^0.25.7",
 		"node-fetch": "^2.6.1",
-		"onchange": "^7.1.0",
-		"vite": "^2.1.5"
+		"onchange": "^7.1.0"
 	}
 }

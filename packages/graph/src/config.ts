@@ -1,9 +1,10 @@
-import type { Config } from 'ipfs-core-types/src/config';
 import Websockets from 'libp2p-websockets'; // @ts-ignore
 import filters from 'libp2p-websockets/src/filters'; // @ts-ignore
 import WebRTCStar from 'libp2p-webrtc-star'; // @ts-ignore
-import { NOISE } from 'libp2p-noise';
-import Mplex from 'libp2p-mplex';
+export { Buffer } from 'buffer';
+import { NOISE } from 'libp2p-noise'; // @ts-ignore
+import Mplex from 'libp2p-mplex'; // @ts-ignore
+
 
 export function configure(config={}): any {
   return {

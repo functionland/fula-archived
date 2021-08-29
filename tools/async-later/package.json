@@ -1,0 +1,36 @@
+{
+  "name": "async-later",
+  "version": "0.1.5",
+  "description": "Functional directives for Promise and AsyncIterable",
+  "main": "dist/esm.js",
+  "type": "module",
+  "types": "src",
+  "scripts": {
+    "start": "onchange \"src/**/*.js\" \"src/**/*.ts\" -- npm run build",
+    "test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+    "build": "node scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/functionland/box/tree/main/packages/async-later"
+  },
+  "keywords": [
+    "promise",
+    "async-iterable",
+    "stream",
+    "observable",
+    "fp",
+    "functional",
+    "functional-programming"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/tape": "^4.13.2",
+    "esbuild": "^0.12.17",
+    "onchange": "^7.1.0",
+    "streaming-iterables": "^6.0.0",
+    "tap-spec-emoji": "^6.1.2",
+    "tape": "^5.3.0",
+    "typescript": "^4.3.5"
+  }
+}

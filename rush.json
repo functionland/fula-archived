@@ -425,8 +425,8 @@
       "reviewCategory": "apps"
     },
     {
-      "packageName": "react-rca",
-      "projectFolder": "apps/react-rca",
+      "packageName": "plain",
+      "projectFolder": "apps/plain",
       "reviewCategory": "apps"
     }
     // {

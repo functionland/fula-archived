@@ -23,13 +23,13 @@ export interface Meta {
      */
     type: string;
     /**
-     * @generated from protobuf field: uint64 size = 3;
+     * @generated from protobuf field: uint64 size = 3 [jstype = JS_STRING];
      */
-    size: bigint;
+    size: number;
     /**
-     * @generated from protobuf field: int64 lastModified = 4;
+     * @generated from protobuf field: int64 lastModified = 4 [jstype = JS_STRING];
      */
-    lastModified: bigint;
+    lastModified: number;
     /**
      * @generated from protobuf field: optional bytes preview = 5;
      */
@@ -44,13 +44,13 @@ export interface Chunk {
      */
     id: string;
     /**
-     * @generated from protobuf field: optional uint64 skip = 2;
+     * @generated from protobuf field: optional uint64 skip = 2 [jstype = JS_STRING];
      */
-    skip?: bigint;
+    skip?: number;
     /**
-     * @generated from protobuf field: optional uint64 limit = 3;
+     * @generated from protobuf field: optional uint64 limit = 3 [jstype = JS_STRING];
      */
-    limit?: bigint;
+    limit?: number;
 }
 /**
  * @generated from protobuf message Request
@@ -102,13 +102,13 @@ class Meta$Type extends MessageType<Meta> {
         super("Meta", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "size", kind: "scalar", T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 4, name: "lastModified", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "size", kind: "scalar", T: 4 /*ScalarType.UINT64*/, L: 2 /*LongType.NUMBER*/ },
+            { no: 4, name: "lastModified", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 2 /*LongType.NUMBER*/ },
             { no: 5, name: "preview", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<Meta>): Meta {
-        const message = { name: "", type: "", size: 0n, lastModified: 0n };
+        const message = { name: "", type: "", size: 0, lastModified: 0 };
         if (value !== undefined)
             reflectionMergePartial<Meta>(this, message, value);
         return message;
@@ -124,11 +124,11 @@ class Meta$Type extends MessageType<Meta> {
                 case /* string type */ 2:
                     message.type = reader.string();
                     break;
-                case /* uint64 size */ 3:
-                    message.size = reader.uint64().toBigInt();
+                case /* uint64 size = 3 [jstype = JS_STRING];*/ 3:
+                    message.size = reader.uint64().toNumber();
                     break;
-                case /* int64 lastModified */ 4:
-                    message.lastModified = reader.int64().toBigInt();
+                case /* int64 lastModified = 4 [jstype = JS_STRING];*/ 4:
+                    message.lastModified = reader.int64().toNumber();
                     break;
                 case /* optional bytes preview */ 5:
                     message.preview = reader.bytes();
@@ -151,11 +151,11 @@ class Meta$Type extends MessageType<Meta> {
         /* string type = 2; */
         if (message.type !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.type);
-        /* uint64 size = 3; */
-        if (message.size !== 0n)
+        /* uint64 size = 3 [jstype = JS_STRING]; */
+        if (message.size !== 0)
             writer.tag(3, WireType.Varint).uint64(message.size);
-        /* int64 lastModified = 4; */
-        if (message.lastModified !== 0n)
+        /* int64 lastModified = 4 [jstype = JS_STRING]; */
+        if (message.lastModified !== 0)
             writer.tag(4, WireType.Varint).int64(message.lastModified);
         /* optional bytes preview = 5; */
         if (message.preview !== undefined)
@@ -174,8 +174,8 @@ class Chunk$Type extends MessageType<Chunk> {
     constructor() {
         super("Chunk", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "skip", kind: "scalar", opt: true, T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 3, name: "limit", kind: "scalar", opt: true, T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ }
+            { no: 2, name: "skip", kind: "scalar", opt: true, T: 4 /*ScalarType.UINT64*/, L: 2 /*LongType.NUMBER*/ },
+            { no: 3, name: "limit", kind: "scalar", opt: true, T: 4 /*ScalarType.UINT64*/, L: 2 /*LongType.NUMBER*/ }
         ]);
     }
     create(value?: PartialMessage<Chunk>): Chunk {
@@ -192,11 +192,11 @@ class Chunk$Type extends MessageType<Chunk> {
                 case /* string id */ 1:
                     message.id = reader.string();
                     break;
-                case /* optional uint64 skip */ 2:
-                    message.skip = reader.uint64().toBigInt();
+                case /* optional uint64 skip = 2 [jstype = JS_STRING];*/ 2:
+                    message.skip = reader.uint64().toNumber();
                     break;
-                case /* optional uint64 limit */ 3:
-                    message.limit = reader.uint64().toBigInt();
+                case /* optional uint64 limit = 3 [jstype = JS_STRING];*/ 3:
+                    message.limit = reader.uint64().toNumber();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -213,10 +213,10 @@ class Chunk$Type extends MessageType<Chunk> {
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* optional uint64 skip = 2; */
+        /* optional uint64 skip = 2 [jstype = JS_STRING]; */
         if (message.skip !== undefined)
             writer.tag(2, WireType.Varint).uint64(message.skip);
-        /* optional uint64 limit = 3; */
+        /* optional uint64 limit = 3 [jstype = JS_STRING]; */
         if (message.limit !== undefined)
             writer.tag(3, WireType.Varint).uint64(message.limit);
         let u = options.writeUnknownFields;

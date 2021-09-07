@@ -27,8 +27,8 @@ export async function* receiveContent({
   from: PeerId;
   node: Libp2p;
   id: string;
-  skip?: bigint;
-  limit?: bigint;
+  skip?: number;
+  limit?: number;
 }): AsyncIterable<Uint8Array> {
   const streamReceiveFileContent = async function* () {
     yield Request.toBinary({

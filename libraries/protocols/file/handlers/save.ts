@@ -50,8 +50,8 @@ export async function sendFile({
         send: {
           name,
           type,
-          size: BigInt(size),
-          lastModified: BigInt(lastModified),
+          size,
+          lastModified
         },
       },
     });

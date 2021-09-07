@@ -3,6 +3,7 @@ import { configure } from './config';
 
 import Libp2p from 'libp2p'; // @ts-ignore
 import type PeerId from 'peer-id';
+import 'fastestsmallesttextencoderdecoder';
 
 export async function graph(config?: any) {
   let node: Libp2p;

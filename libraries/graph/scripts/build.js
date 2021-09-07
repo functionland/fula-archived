@@ -2,6 +2,7 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 import { build } from 'esbuild';
 import path from 'path';
 
+
 build({
   entryPoints: ['src/index.ts'],
   platform: 'browser',

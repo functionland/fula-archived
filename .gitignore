@@ -109,3 +109,11 @@ $RECYCLE.BIN/
 
 # Storybook
 storybook-static/
+
+# Yalc
+.yalc
+yalc.lock
+
+# rush 
+.rush
+pnpm-lock.yaml

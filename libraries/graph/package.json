@@ -3,10 +3,10 @@
 	"version": "0.1.0",
 	"description": "Interface with a box server from the browser!",
 	"main": "dist/esm.js",
-	"type": "module",
 	"types": "src",
+	"type": "module",
 	"scripts": {
-		"test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji",
+		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "node scripts/build.js"
 	  },
 	"repository": {
@@ -20,7 +20,7 @@
 	},
 	"homepage": "https://github.com/functionland/graph#readme",
 	"dependencies": {
-		"@functionland/protocols": "^0.1.0",
+		"@functionland/protocols": "0.1.0",
 		"@ipld/schema-validation": "^1.1.0",
 		"libp2p": "^0.31.5",
 		"libp2p-bootstrap": "^0.12.2",
@@ -35,10 +35,8 @@
 	"devDependencies": {
 		"@esbuild-plugins/node-globals-polyfill": "^0.1.0",
 		"@esbuild-plugins/node-modules-polyfill": "^0.1.1",
-		"@mapbox/node-pre-gyp": "^1.0.3",
-		"concurrently": "^6.0.2",
-		"es-module-lexer": "^0.4.1",
-		"esbuild": "^0.12.1",
-		"magic-string": "^0.25.7"
+		"magic-string": "^0.25.7",
+		"esbuild": "^0.12.17",
+		"typescript": "^4.3.5"
 	}
 }

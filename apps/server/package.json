@@ -5,11 +5,8 @@
   "main": "dist/app.js",
   "types": "src",
   "scripts": {
-    "start": "concurrently \"npm:watch\" \"npm:dev-server\"",
-    "dev-server": "nodemon --watch dist --delay 8",
-    "build": "node scripts/build.js",
-    "watch": "concurrently \"npm:watch:*\"",
-    "watch:build": "onchange \"scripts/**\" \"src/**\" \"../protocols/**\" -- npm run build"
+    "start": "nodemon --watch dist",
+    "build": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +19,7 @@
   },
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
+    "async-later": "^0.1.5",
     "@functionland/protocols": "^0.1.0",
     "@ipld/dag-json": "^7.0.5",
     "ipfs": "^0.55.4",
@@ -41,11 +39,8 @@
     "wrtc": "^0.4.7"
   },
   "devDependencies": {
-    "@mapbox/node-pre-gyp": "^1.0.3",
-    "concurrently": "^6.0.2",
     "esbuild": "^0.12.1",
     "nodemon": "^2.0.7",
-    "onchange": "^7.1.0",
     "typescript": "^4.2.3"
   }
 }

@@ -428,6 +428,11 @@
       "packageName": "plain",
       "projectFolder": "apps/plain",
       "reviewCategory": "apps"
+    },
+    {
+      "packageName": "react-cra",
+      "projectFolder": "apps/react-cra",
+      "reviewCategory": "apps"
     }
     // {
     //   /**

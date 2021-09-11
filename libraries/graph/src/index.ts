@@ -1,9 +1,12 @@
-import { FileProtocol } from '@functionland/protocols'; // @ts-ignore
+// @ts-ignore
+import { FileProtocol } from '@functionland/protocols'; 
+// @ts-ignore
 import { configure } from './config';
-
-import Libp2p from 'libp2p'; // @ts-ignore
+// @ts-ignore
+import Libp2p from 'libp2p'; 
 import type PeerId from 'peer-id';
 import 'fastestsmallesttextencoderdecoder';
+
 
 export async function graph(config?: any) {
   let node: Libp2p;
@@ -14,7 +17,7 @@ export async function graph(config?: any) {
   else conf = configure();
 
   node = await Libp2p.create(conf);
-  node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+  // node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
   await node.start();
 
   return {

@@ -12,11 +12,8 @@ import ipfs from 'ipfs';
 import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import IPFS from 'ipfs-core/src/components';
-import { FileProtocol } from '@functionland/protocols';
-import { resolveLater } from '@functionland/protocols/util';
-import { File as FileSchema } from '@functionland/protocols/file/schema';
-// import { createMessage, readMessage, encrypt, decrypt } from 'openpgp';
-import { map } from 'streaming-iterables';
+import { FileProtocol, SchemaProtocol } from '@functionland/protocols';
+import { resolveLater } from 'async-later';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -91,14 +88,14 @@ async function main() {
 
   FileProtocol.setMetaRetrievalMethod(async ({ id }) => {
     for await (const file of ipfsNode.cat(id)) {
-      const { meta } = FileSchema.fromBinary(file);
+      const { meta } = SchemaProtocol.File.fromBinary(file);
       return meta;
     }
   });
 
   FileProtocol.setContentRetrievalMethod(async ({ id }) => {
     for await (const file of ipfsNode.cat(id)) {
-      const { contentPath } = FileSchema.fromBinary(file);
+      const { contentPath } = SchemaProtocol.File.fromBinary(file);
       return ipfsNode.cat(contentPath);
     }
   });
@@ -119,12 +116,12 @@ async function main() {
     for await (const chunk of ipfsNode.cat(file)) {
       console.log(String(chunk));
     }
-    const { cid } = await ipfsNode.add(FileSchema.toBinary({ contentPath: file.toString(), meta }));
+    const { cid } = await ipfsNode.add(SchemaProtocol.File.toBinary({ contentPath: file.toString(), meta }));
     console.log('done');
     declareId(cid.toString());
     const cat = async cid => {
       for await (const chunk of ipfsNode.cat(cid)) {
-        console.log(FileSchema.fromBinary(chunk));
+        console.log(SchemaProtocol.File.fromBinary(chunk));
       }
     };
     const ls = async cid => {

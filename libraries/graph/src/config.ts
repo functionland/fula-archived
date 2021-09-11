@@ -1,8 +1,13 @@
-import Websockets from 'libp2p-websockets'; // @ts-ignore
-import filters from 'libp2p-websockets/src/filters'; // @ts-ignore
-import WebRTCStar from 'libp2p-webrtc-star'; // @ts-ignore
-import { NOISE } from 'libp2p-noise'; // @ts-ignore
-import Mplex from 'libp2p-mplex'; // @ts-ignore
+// @ts-ignore
+import Websockets from 'libp2p-websockets';
+// @ts-ignore
+import filters from 'libp2p-websockets/src/filters'; 
+// @ts-ignore
+import WebRTCStar from 'libp2p-webrtc-star'; 
+// @ts-ignore
+import { NOISE } from 'libp2p-noise'; 
+// @ts-ignore
+import Mplex from 'libp2p-mplex'; 
 
 
 export function configure(config={}): any {

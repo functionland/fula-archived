@@ -1,27 +1,22 @@
-import { build } from 'esbuild';
-import path from 'path';
-import fs from 'fs';
+const esbuild = require('esbuild');
 
-build({
+esbuild.build({
   entryPoints: ['src/index.ts'],
   platform: 'browser',
   target: 'es2020',
   format: 'esm',
   bundle: true,
   sourcemap: true,
-  outfile: 'dist/esm.js',
+  outfile: 'dist/browser/esm.js',
+  tsconfig:'./tsconfig.browser.json'
 });
 
-const packages = JSON.parse(fs.readFileSync(path.resolve('./package.json'), { encoding: 'utf8' }));
-const external = Object.keys(packages.devDependencies);
-
-build({
-  entryPoints: ['src/test.js'],
+esbuild.build({
+  entryPoints: ['src/index.ts'],
   platform: 'node',
-  target: 'es2020',
-  format: 'esm',
+  format: 'cjs',
   bundle: true,
-  sourcemap: false,
-  outfile: 'dist/test.js',
-  external,
+  sourcemap: true,
+  outfile: 'dist/node/cjs.js',
+  tsconfig:'./tsconfig.node.json'
 });

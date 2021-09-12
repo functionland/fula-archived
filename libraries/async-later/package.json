@@ -2,10 +2,12 @@
   "name": "async-later",
   "version": "0.1.5",
   "description": "Functional directives for Promise and AsyncIterable",
-  "main": "dist/browser/esm.js",
   "types": "src",
+  "main": "./dist/node/cjs.js",
+  "module": "./dist/node/esm.js",
+  "browser": "./dist/browser/esm.js",
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.mjs",
     "test": "VERBOSE=1 node --experimental-specifier-resolution=node dist/test.js | tap-spec-emoji"
   },
   "repository": {
@@ -28,19 +30,24 @@
     "streaming-iterables": "^6.0.0",
     "tap-spec-emoji": "^6.1.2",
     "tape": "^5.3.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "esbuild-plugin-babel": "~0.2.3",
+    "@babel/preset-typescript": "~7.15.0",
+    "@babel/preset-env": "~7.15.6",
+    "@babel/plugin-transform-runtime": "~7.15.0"
   },
-  "exports":{
-    ".":{
+  "exports": {
+    ".": {
       "browser": {
-        "default":"./dist/browser/esm.js"
+        "default": "./dist/browser/esm.js"
       },
       "node": {
-        "default":"./dist/node/cjs.js"
+        "require":"./dist/node/cjs.js",
+        "import":"./dist/node/esm.js"
       }
     }
   },
-  "dependencies":{
+  "dependencies": {
     "@babel/runtime": "~7.15.4"
   }
 }

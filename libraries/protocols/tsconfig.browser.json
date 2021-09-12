@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "ES2020",
+      "esModuleInterop": true,
+      "outDir": "./dist/browser",
+      "baseUrl": ".", // This must be specified if "paths" is.
+      "paths": {
+        "async-later": ["node_modules/async-later/dist/browser"] // This mapping is relative to "baseUrl"
+      }
+    }
+  }

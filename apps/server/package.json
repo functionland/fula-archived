@@ -1,0 +1,46 @@
+{
+  "name": "@functionland/server",
+  "version": "0.1.0",
+  "description": "Reference implementation of box server in Node.js",
+  "main": "dist/app.js",
+  "types": "src",
+  "scripts": {
+    "start": "nodemon --watch dist",
+    "build": "node scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/functionland/graph.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/functionland/graph/issues"
+  },
+  "homepage": "https://github.com/functionland/graph#readme",
+  "dependencies": {
+    "async-later": "^0.1.5",
+    "@functionland/protocols": "^0.1.0",
+    "@ipld/dag-json": "^7.0.5",
+    "ipfs": "^0.55.4",
+    "ipfs-repo": "^9.1.6",
+    "it-pipe": "^1.1.0",
+    "libp2p": "^0.31.5",
+    "libp2p-bootstrap": "^0.12.2",
+    "libp2p-mplex": "^0.10.2",
+    "libp2p-noise": "^2.0.5",
+    "libp2p-webrtc-direct": "^0.5.1",
+    "libp2p-webrtc-star": "^0.22.2",
+    "libp2p-websockets": "^0.15.6",
+    "multiformats": "^9.4.3",
+    "openpgp": "^5.0.0-3",
+    "peer-id": "^0.14.6",
+    "streaming-iterables": "^6.0.0",
+    "wrtc": "^0.4.7"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.1",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.2.3"
+  }
+}

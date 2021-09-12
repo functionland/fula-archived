@@ -1,0 +1,16 @@
+  {
+    "compilerOptions": {
+      "downlevelIteration": true,
+      "target": "ES2020",
+      "moduleResolution": "Node",
+      "lib": [
+        "es2019",
+        "dom"
+      ],
+      "allowJs": true,
+      "rootDir": "src",
+      "strict": true,
+      "noImplicitAny": false,
+      "resolveJsonModule": true
+    }
+  }

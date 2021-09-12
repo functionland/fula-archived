@@ -1,0 +1,54 @@
+{
+  "name": "@functionland/protocols",
+  "version": "0.1.0",
+  "description": "",
+  "types": "index.ts",
+  "main": "dist/browser/esm.js",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ipld/dag-cbor": "^5.0.5",
+    "@ipld/dag-json": "^7.0.0",
+    "@protobuf-ts/runtime": "^1.0.13",
+    "async-later": "0.1.5",
+    "it-pipe": "^1.1.0",
+    "multiformats": "^8.0.6",
+    "pako": "^2.0.3",
+    "rxjs": "^7.1.0",
+    "streaming-iterables": "^6.0.0",
+    "peer-id": "~0.15.3",
+    "@babel/runtime": "~7.15.4"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.0",
+    "@esbuild-plugins/node-modules-polyfill": "^0.1.1",
+    "@protobuf-ts/plugin": "^1.0.13",
+    "@types/bl": "^5.0.1",
+    "@types/pako": "^1.0.1",
+    "libp2p": "^0.31.5",
+    "esbuild": "^0.12.17",
+    "typescript": "^4.3.5",
+    "esbuild-plugin-babel": "~0.2.3",
+    "@babel/preset-typescript": "~7.15.0",
+    "@babel/plugin-syntax-async-generators": "~7.8.4",
+    "@babel/preset-flow": "~7.14.5",
+    "@babel/plugin-syntax-flow": "~7.14.5",
+    "@babel/preset-env": "~7.15.6",
+    "@babel/plugin-transform-runtime": "~7.15.0"
+  },  
+  "exports":{
+    ".":{
+      "browser": {
+        "default":"./dist/browser/esm.js"
+      },
+      "node": {
+        "default":"./dist/node/esm.js"
+      }
+    }
+  }
+}

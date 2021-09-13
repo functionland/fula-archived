@@ -27,6 +27,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@functionland/borg",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
       "name": "@functionland/graph",
       "allowedCategories": [ "prototypes" ]
     },

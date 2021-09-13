@@ -25,7 +25,7 @@
 
   "repository": {
 
-    "url": "https://github.com/functionland/box",
+    "url": "https://github.com/functionland/borg",
 
     "defaultBranch": "main",
 
@@ -58,8 +58,8 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@functionland/graph",
-      "projectFolder": "libraries/graph",
+      "packageName": "@functionland/borg",
+      "projectFolder": "libraries/borg",
       "reviewCategory": "production",
       "shouldPublish": true
     },
@@ -87,11 +87,6 @@
     {
       "packageName": "react-esbuild",
       "projectFolder": "apps/react-esbuild",
-      "reviewCategory": "prototypes"
-    },
-    {
-      "packageName": "plain",
-      "projectFolder": "apps/plain",
       "reviewCategory": "prototypes"
     },
     {

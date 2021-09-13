@@ -1,7 +1,7 @@
 {
-	"name": "@functionland/graph",
+	"name": "@functionland/borg",
 	"version": "0.1.0",
-	"description": "Interface with a box server from the browser!",
+	"description": "Interface with a borg server from the browser!",
 	"main": "dist/esm.js",
 	"types": "src",
 	"type": "module",
@@ -11,14 +11,14 @@
 	  },
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/functionland/graph.git"
+		"url": "https://github.com/functionland/borg/tree/main/libraries/borg"
 	},
 	"author": "",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/functionland/graph/issues"
+		"url": "https://github.com/functionland/borg/issues"
 	},
-	"homepage": "https://github.com/functionland/graph#readme",
+	"homepage": "https://github.com/functionland/borg#readme",
 	"dependencies": {
 		"@functionland/protocols": "0.1.0",
 		"@ipld/schema-validation": "^1.1.0",

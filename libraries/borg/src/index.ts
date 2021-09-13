@@ -8,7 +8,7 @@ import type PeerId from 'peer-id';
 import 'fastestsmallesttextencoderdecoder';
 
 
-export async function graph(config?: any) {
+export async function client(config?: any) {
   let node: Libp2p;
   let conf: any;
   let listener: PeerId;

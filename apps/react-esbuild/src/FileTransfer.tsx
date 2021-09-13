@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import './FileTransfer.css';
-import { graph } from '@functionland/graph'
+import { client } from '@functionland/borg'
 import PeerId from 'peer-id';
 
 interface FileTransferProps {
@@ -17,7 +17,7 @@ interface FileTransferProps {
 export const FileTransfer = ({
     ...props
 }: FileTransferProps) => {
-    const [myGraph, setMyGraph] = useState({});
+    const [borgClient, setBorgClient] = useState({});
     const [output, setOutput] = useState("");
     const [serverId, setServerId] = useState("")
     const [selectedFile, setSelectedFile] = useState(null)
@@ -33,7 +33,7 @@ export const FileTransfer = ({
         let onPeerConnect = async (connection: { remotePeer: { toB58String: () => any; }; }) => {
             console.log(`Connected to ${connection.remotePeer.toB58String()}`);
             setServerId(connection.remotePeer.toB58String());
-            myGraph.connect(PeerId.createFromB58String(connection.remotePeer.toB58String()));
+            borgClient.connect(PeerId.createFromB58String(connection.remotePeer.toB58String()));
         };
 
         // Listen for peers disconnecting
@@ -41,24 +41,24 @@ export const FileTransfer = ({
             console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
         };
 
-        const myGraph = await graph();
-        myGraph.connectionHandler('peer:connect', onPeerConnect);
-        myGraph.connectionHandler('peer:disconnect', onPeerDisconnect);
-        myGraph.nodeHandler('peer:discovery', onPeerDiscovery);
-        return myGraph
+        const borgClient = await client();
+        borgClient.connectionHandler('peer:connect', onPeerConnect);
+        borgClient.connectionHandler('peer:disconnect', onPeerDisconnect);
+        borgClient.nodeHandler('peer:discovery', onPeerDiscovery);
+        return borgClient
     }
     const sendFile = async ()=>{
-        const id = await myGraph.sendFile(selectedFile);
+        const id = await borgClient.sendFile(selectedFile);
         setFileId(id);
     }
 
     const receiveFile = async ()=>{
-        const data = await myGraph.receiveFile(fileId);
+        const data = await borgClient.receiveFile(fileId);
         setContent(data);
     }
 
     const receiveMeta = async ()=>{
-        const data = await myGraph.receiveMeta(fileId);
+        const data = await borgClient.receiveMeta(fileId);
         setContent(data);
     }
 
@@ -69,7 +69,7 @@ export const FileTransfer = ({
     useEffect(() => {
         (async () => {
             const temp = await loadDataOnlyOnce()
-            setMyGraph(temp)
+            setBorgClient(temp)
         })()
 
     }, []);

@@ -1,0 +1,262 @@
+// DO NOT ADD COMMENTS IN THIS FILE.  They will be lost when the Rush tool resaves it.
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/approved-packages.schema.json",
+  "packages": [
+    {
+      "name": "@babel/plugin-transform-runtime",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@babel/preset-env",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@babel/preset-typescript",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@babel/runtime",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@esbuild-plugins/node-globals-polyfill",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@esbuild-plugins/node-modules-polyfill",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@functionland/graph",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@functionland/protocols",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "@ipld/dag-cbor",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@ipld/dag-json",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@ipld/schema-validation",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "@mapbox/node-pre-gyp",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@protobuf-ts/plugin",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@protobuf-ts/runtime",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@testing-library/react",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@testing-library/user-event",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "async-later",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "buffer",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "chokidar",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "es-module-lexer",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "esbuild",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "esbuild-plugin-babel",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "eslint",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-config-airbnb",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-config-prettier",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-plugin-import",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-plugin-jsx-a11y",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-plugin-react",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "fastestsmallesttextencoderdecoder",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "husky",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "ipfs",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "ipfs-repo",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "it-pipe",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "libp2p",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-bootstrap",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-mplex",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-noise",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-webrtc-direct",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "libp2p-webrtc-star",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-websockets",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "lint-staged",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "live-server",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "magic-string",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "multiformats",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "node-fetch",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "nodemon",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "openpgp",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "pako",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "peer-id",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "prettier",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "react",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "react-dom",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "react-scripts",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "rxjs",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "streaming-iterables",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tap-spec-emoji",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tape",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "typescript",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "web-vitals",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "wrtc",
+      "allowedCategories": [ "production" ]
+    }
+  ]
+}

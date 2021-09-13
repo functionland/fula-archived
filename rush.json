@@ -54,17 +54,20 @@
     {
       "packageName": "async-later",
       "projectFolder": "libraries/async-later",
-      "reviewCategory": "production"
+      "reviewCategory": "production",
+      "shouldPublish": true
     },
     {
       "packageName": "@functionland/graph",
       "projectFolder": "libraries/graph",
-      "reviewCategory": "production"
+      "reviewCategory": "production",
+      "shouldPublish": true
     },
     {
       "packageName": "@functionland/protocols",
       "projectFolder": "libraries/protocols",
-      "reviewCategory": "production"
+      "reviewCategory": "production",
+      "shouldPublish": true
     },
     {
       "packageName": "@functionland/fx",

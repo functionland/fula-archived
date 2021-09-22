@@ -5,10 +5,11 @@ import filters from 'libp2p-websockets/src/filters';
 // @ts-ignore
 import WebRTCStar from 'libp2p-webrtc-star'; 
 // @ts-ignore
-import { NOISE } from 'libp2p-noise'; 
+import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 // @ts-ignore
 import Mplex from 'libp2p-mplex'; 
 
+const noise = new Noise();
 
 export function configure(config={}): any {
   return {

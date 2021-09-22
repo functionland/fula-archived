@@ -5,7 +5,7 @@ import Websockets from 'libp2p-websockets';
 import filters from 'libp2p-websockets/src/filters';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
-import { NOISE } from 'libp2p-noise';
+import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
 import ipfs from 'ipfs';
@@ -25,6 +25,8 @@ export async function getLibp2p() {
 export async function getIPFS() {
   return ipfsPromise;
 }
+
+const noise = new Noise();
 
 async function main() {
   const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {

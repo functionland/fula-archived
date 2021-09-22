@@ -17,7 +17,7 @@
     "@ipld/dag-cbor": "^5.0.5",
     "@ipld/dag-json": "^7.0.0",
     "@protobuf-ts/runtime": "^1.0.13",
-    "async-later": "0.1.5",
+    "async-later": "0.1.6",
     "it-pipe": "^1.1.0",
     "multiformats": "^8.0.6",
     "pako": "^2.0.3",

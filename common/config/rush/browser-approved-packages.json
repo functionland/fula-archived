@@ -19,6 +19,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@chainsafe/libp2p-noise",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@esbuild-plugins/node-globals-polyfill",
       "allowedCategories": [ "production" ]
     },

@@ -29,17 +29,20 @@ export async function getIPFS() {
 const noise = new Noise();
 
 async function main() {
+  const peerId = await PeerId.create({bits:2048,keyType:'Ed25519'})
   const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
     resolveLibp2p(
       Libp2p.create({
         peerId,
         addresses: {
           listen: [
-            // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-            // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+            '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+            '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
             // '/ip4/0.0.0.0/tcp/0',
             // '/ip4/0.0.0.0/tcp/0/ws',
-            `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
+            // `/ip4/192.168.1.6/tcp/9090/ws/p2p-webrtc-star/`,
+            // `/ip4/0.0.0.0/tcp/9090/ws/p2p-webrtc-star/`,
+            // `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
             // `/ip4/3.14.71.57/tcp/9090/ws/p2p-webrtc-star/`,
             // '/dns4/server.fx.land/tcp/9090/ws/p2p-webrtc-star/',
             // '/dns4/server.fx.land/tcp/443/wss/p2p-webrtc-star/',

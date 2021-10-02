@@ -1,8 +1,8 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import './FileTransfer.css';
-import { client } from '@functionland/borg' // @ts-ignore
-import PeerId from 'peer-id';
+import {client} from '@functionland/borg' // @ts-ignore
+// import PeerId from 'peer-id';
 
 interface FileTransferProps {
     /**
@@ -15,14 +15,15 @@ interface FileTransferProps {
  * Primary UI component for user interaction
  */
 export const FileTransfer = ({
-    ...props
-}: FileTransferProps) => {
+                                 ...props
+                             }: FileTransferProps) => {
     const [borgClient, setBorgClient] = useState<any>(null);
     const [output, setOutput] = useState("");
     const [serverId, setServerId] = useState("")
     const [selectedFile, setSelectedFile] = useState(null)
     const [fileId, setFileId] = useState("")
     const [content, setContent] = useState("")
+
     async function loadDataOnlyOnce() {
         let onPeerDiscovery = async (peerId: { toB58String: () => any; }) => {
             console.log(`Found peer ${peerId.toB58String()}`);
@@ -32,8 +33,8 @@ export const FileTransfer = ({
         // Listen for new connections to peers
         let onPeerConnect = async (connection: { remotePeer: { toB58String: () => any; }; }) => {
             console.log(`Connected to ${connection.remotePeer.toB58String()}`);
-            setServerId(connection.remotePeer.toB58String());
-            borgClient.connect(PeerId.createFromB58String(connection.remotePeer.toB58String()));
+            // setServerId(connection.remotePeer.toB58String());
+            // borgClient.connect(PeerId.createFromB58String(connection.remotePeer.toB58String()));
         };
 
         // Listen for peers disconnecting
@@ -47,25 +48,38 @@ export const FileTransfer = ({
         borgClient.nodeHandler('peer:discovery', onPeerDiscovery);
         return borgClient
     }
-    const sendFile = async ()=>{
+
+    const connect = async () => {
+        try{
+            await borgClient.connect(serverId)
+        }catch (e) {
+            console.log(`error is ${e}`)
+        }
+
+    }
+    const sendFile = async () => {
         const id = await borgClient.sendFile(selectedFile); // @ts-ignore
         setFileId(id);
     }
 
-    const receiveFile = async ()=>{
+    const receiveFile = async () => {
         const data = await borgClient.receiveFile(fileId);
         setContent(data);
     }
 
-    const receiveMeta = async ()=>{
+    const receiveMeta = async () => {
         const data = await borgClient.receiveMeta(fileId);
         setContent(data);
     }
 
-    const handleSelectFile = (event:any)=>{
+    const handleSelectFile = (event: any) => {
         setSelectedFile(event.target.files[0])
     }
-    
+
+    const handleServerId = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setServerId(event.target.value)
+    }
+
     useEffect(() => {
         (async () => {
             const temp = await loadDataOnlyOnce()
@@ -80,17 +94,20 @@ export const FileTransfer = ({
         >
             <header>
                 <h1 id="status">Starting libp2p...</h1>
-                <input id="serverId" value={serverId} style={{ width: "500px" }} placeholder={"Type server's PeerId here"} />
+                <input id="serverId" style={{width: "500px"}} onChange={handleServerId}
+                       placeholder={"Type server's PeerId here"}/>
                 <input id="file" type="file" onChange={handleSelectFile}/>
                 <button id="send" onClick={sendFile}>Send</button>
-                <br />
-                <br />
-                <input id="fileId" value={fileId} onChange= {(e)=> setFileId(e.target.value)} style={{ width: "500px" }} placeholder="Enter _id of a file here" />
+                <button id="connect" onClick={connect}>Connect</button>
+                <br/>
+                <br/>
+                <input id="fileId" value={fileId} onChange={(e) => setFileId(e.target.value)} style={{width: "500px"}}
+                       placeholder="Enter _id of a file here"/>
                 <button id="receive" onClick={receiveFile}>Receive</button>
                 <button id="meta" onClick={receiveMeta}>Meta</button>
-                <br />
-                <br />
-                <textarea id="content" value={content} style={{ width: "500px", height: "100px" }}></textarea>
+                <br/>
+                <br/>
+                <textarea id="content" value={content} style={{width: "500px", height: "100px"}}></textarea>
             </header>
             <main>
                 <pre id="output">{output}</pre>

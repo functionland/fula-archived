@@ -1,9 +1,9 @@
 {
 	"name": "@functionland/borg",
-	"version": "0.1.0",
+	"version": "0.1.4",
 	"description": "Interface with a borg server from the browser!",
-	"main": "dist/esm.js",
-	"types": "src",
+	"main": "dist/index.js",
+	"types": "src/index.ts",
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "ES2020",
+    "target": "es2020",
+    "module": "es6",
     "moduleResolution": "Node",
     "lib": ["ES2019","DOM"],
     "allowJs": true,
@@ -10,8 +10,5 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules","dist", "scripts", "src/**/*.js"],
-  "include": [
-    "src/**/*.ts"
-  ]
+  "exclude": ["node_modules","dist", "scripts"]
 }

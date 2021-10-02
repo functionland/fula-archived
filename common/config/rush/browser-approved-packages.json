@@ -3,6 +3,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/approved-packages.schema.json",
   "packages": [
     {
+      "name": "@babel/core",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@babel/plugin-transform-runtime",
       "allowedCategories": [ "production" ]
     },
@@ -20,6 +24,10 @@
     },
     {
       "name": "@chainsafe/libp2p-noise",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@esbuild-plugins/esm-externals",
       "allowedCategories": [ "production" ]
     },
     {
@@ -97,6 +105,10 @@
     {
       "name": "chokidar",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "core-js",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "es-module-lexer",

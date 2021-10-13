@@ -43,6 +43,10 @@
       "allowedCategories": [ "prototypes" ]
     },
     {
+      "name": "@functionland/file-protocol",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@functionland/graph",
       "allowedCategories": [ "prototypes" ]
     },

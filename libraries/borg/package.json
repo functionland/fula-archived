@@ -20,7 +20,7 @@
 	},
 	"homepage": "https://github.com/functionland/borg#readme",
 	"dependencies": {
-		"@functionland/protocols": "0.1.0",
+		"@functionland/file-protocol": "0.1.0",
 		"@ipld/schema-validation": "^1.1.0",
 		"libp2p": "^0.31.5",
 		"libp2p-bootstrap": "^0.12.2",

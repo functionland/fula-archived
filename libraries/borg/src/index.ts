@@ -1,4 +1,3 @@
-// import "core-js"
 // @ts-ignore
 import {FileProtocol} from '@functionland/protocols';
 // @ts-ignore
@@ -8,7 +7,6 @@ import Libp2p from 'libp2p';
 import PeerId from 'peer-id';
 import type {Connection} from "libp2p";
 import 'fastestsmallesttextencoderdecoder';
-
 
 export async function client(config?: any) {
     let node: Libp2p;
@@ -45,12 +43,14 @@ export async function client(config?: any) {
             const id = await FileProtocol.sendFile({to: serverPeer, node, file});
             return id;
         },
+
         async receiveFile(id: string) {
             if (!serverPeer) {
                 throw 'ServerPeer not found';
             }
             let content = '';
             const decoder = new TextDecoder();
+
             for await (const chunk of FileProtocol.receiveContent({from: serverPeer, node, id})) {
                 content += decoder.decode(chunk);
                 console.log(content);

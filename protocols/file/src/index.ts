@@ -1,4 +1,5 @@
 import { HandlerProps } from 'libp2p';
+// @ts-ignore
 import { toAsyncIterable } from 'async-later';
 import * as Graph from './graph';
 import * as File from './file';

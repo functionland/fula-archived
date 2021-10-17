@@ -1,9 +1,8 @@
 import { HandlerProps } from 'libp2p';
 // @ts-ignore
 import { toAsyncIterable } from 'async-later';
-import * as Graph from './graph';
-import * as File from './file';
-import * as Schema from './file/schema'
+import * as File from './handlers';
+import * as Schema from './schema'
 
 
 export type ProtocolHandler = (props: HandlerProps) => void;
@@ -16,10 +15,9 @@ export const Response = {
   },
 };
 
-export { File as FileProtocol, Graph as GraphProtocol,  Schema as SchemaProtocol};
+export { File as FileProtocol,  Schema as SchemaProtocol};
 
 export default {
   File,
-  Graph,
   Schema
 };

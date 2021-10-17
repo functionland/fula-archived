@@ -3,7 +3,7 @@ import type {MuxedStream} from 'libp2p';
 import {Subject} from 'rxjs';
 import {consume, map, pipeline} from 'streaming-iterables';
 import {resolveLater, toAsyncIterable} from 'async-later';
-import {Response} from '../..';
+import {Response} from '../';
 import {Meta, Request} from '../schema';
 import {PROTOCOL} from '../constants';
 
@@ -26,12 +26,12 @@ export async function save({meta, bytes}: { meta: Meta, bytes: AsyncIterable<Uin
     return toAsyncIterable(promiseId);
 }
 
-export async function sendFile({connection,file}: {
+export async function sendFile({connection, file}: {
     connection: { stream: MuxedStream, protocol: string },
     file: File;
-}): Promise<string|Error> {
+}): Promise<string> {
     if (connection.protocol !== PROTOCOL) {
-        return Error('Protocol mismatched')
+        throw Error('Protocol mismatched')
     }
 
     let {name, type, size, lastModified} = file;
@@ -58,13 +58,10 @@ export async function sendFile({connection,file}: {
         }
     };
 
-    try {
-        return pipe(streamSendFile, connection.stream, async function (source: any) {
-            for await (const message of source) {
-                return String(message); // id
-            }
-        });
-    } catch (e) {
-        return e as Error
-    }
+    return pipe(streamSendFile, connection.stream, async function (source: any) {
+        for await (const message of source) {
+            return String(message); // id
+        }
+    });
+
 }

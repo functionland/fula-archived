@@ -2,7 +2,7 @@ import pipe from 'it-pipe';
 import Libp2p, {MuxedStream} from 'libp2p';
 import PeerId from 'peer-id';
 import {Request, Chunk} from '../schema';
-import {Response} from '../..';
+import {Response} from '../';
 import {PROTOCOL} from '../constants';
 
 type Retrieve = ({id, skip, limit}: Chunk) => Response;
@@ -29,7 +29,7 @@ export async function* receiveContent({
     limit?: number;
 }): AsyncIterable<Uint8Array> {
     if (connection.protocol !== PROTOCOL) {
-        return Error('Protocol mismatched')
+        throw new Error('Protocol mismatched')
     }
     const streamReceiveFileContent = async function* () {
         yield Request.toBinary({
@@ -40,17 +40,14 @@ export async function* receiveContent({
         });
     };
 
-    try {
-        const chunks = await pipe(streamReceiveFileContent, connection.stream, async function* (source: any) {
-            for await (const message of source) {
-                yield message.slice();
-            }
-        });
-        for await (const chunk of chunks) {
-            yield chunk;
+    const chunks = await pipe(streamReceiveFileContent, connection.stream, async function* (source: any) {
+        for await (const message of source) {
+            yield message.slice();
         }
-    } catch (e) {
-        return e as Error
+    });
+    for await (const chunk of chunks) {
+        yield chunk;
     }
+
 
 }

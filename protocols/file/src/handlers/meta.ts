@@ -5,7 +5,7 @@ import Libp2p, {MuxedStream} from 'libp2p';
 import PeerId from 'peer-id';
 import {toAsyncIterable} from 'async-later';
 import {Request, Meta} from '../schema';
-import {Response} from '../..';
+import {Response} from '../';
 import {PROTOCOL} from '../constants';
 
 type GetMeta = ({id}: { id: string }) => Response;
@@ -24,13 +24,12 @@ export function setMetaRetrievalMethod(method: ({id}: { id: string }) => Promise
     };
 }
 
-export async function receiveMeta({from, connection, id,}: {
-    from: PeerId;
+export async function receiveMeta({connection, id,}: {
     connection: { stream: MuxedStream, protocol: string };
     id: string;
-}): Promise<Meta | Error> {
+}): Promise<Meta> {
     if (connection.protocol !== PROTOCOL) {
-        return Error('Protocol mismatched')
+        throw Error('Protocol mismatched')
     }
     const streamReceiveFileMeta = async function* () {
         yield Request.toBinary({
@@ -42,14 +41,11 @@ export async function receiveMeta({from, connection, id,}: {
     };
 
 
-    try {
-        return pipe(streamReceiveFileMeta, connection.stream, async function (source: any) {
-            for await (const message of source) {
-                return Meta.fromBinary(message.slice());
-            }
-        });
-    } catch (e) {
-        return e as Error
-    }
+    return pipe(streamReceiveFileMeta, connection.stream, async function (source: any) {
+        for await (const message of source) {
+            return Meta.fromBinary(message.slice());
+        }
+    });
+
 
 }

@@ -1,11 +1,12 @@
 import pipe from 'it-pipe';
 import { partition, firstValue } from 'async-later';
 import { map } from 'streaming-iterables';
-import { ProtocolHandler, Response } from '../..';
+import { ProtocolHandler, Response } from '../';
 import { Request } from '../schema';
 import { save } from './save';
 import { retrieve } from './retrieve';
 import { getMeta } from './meta';
+import {PROTOCOL} from '../constants'
 
 export const handleFile: ProtocolHandler = async ({ stream }) => {
   let response: Response = Promise.resolve(Response.EMPTY);
@@ -34,3 +35,4 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
 export { incomingFiles, sendFile } from './save';
 export { setContentRetrievalMethod, receiveContent } from './retrieve';
 export { setMetaRetrievalMethod, receiveMeta } from './meta';
+export {PROTOCOL}

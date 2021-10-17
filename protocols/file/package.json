@@ -2,7 +2,7 @@
   "name": "@functionland/file-protocol",
   "version": "0.2.0",
   "description": "",
-  "types": "index.ts",
+  "types": "src/index.ts",
   "main": "./dist/node/cjs.js",
   "module": "./dist/node/esm.js",
   "type": "module",

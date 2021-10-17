@@ -20,7 +20,7 @@
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
     "async-later": "^0.1.5",
-    "@functionland/file-protocol": "^0.1.0",
+    "@functionland/file-protocol": "^0.2.0",
     "@ipld/dag-json": "^7.0.5",
     "ipfs": "^0.55.4",
     "ipfs-repo": "^9.1.6",
@@ -36,7 +36,8 @@
     "openpgp": "^5.0.0-3",
     "peer-id": "^0.14.6",
     "streaming-iterables": "^6.0.0",
-    "wrtc": "^0.4.7"
+    "wrtc": "^0.4.7",
+    "ipfs-core-types": "~0.8.1"
   },
   "devDependencies": {
     "esbuild": "^0.12.1",

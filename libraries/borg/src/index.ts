@@ -1,18 +1,28 @@
 // @ts-ignore
-import {FileProtocol} from '@functionland/protocols';
-// @ts-ignore
+import type {SchemaProtocol} from "@functionland/file-protocol";
+import {FileProtocol} from '@functionland/file-protocol';
 import {configure} from './config';
-// @ts-ignore
-import Libp2p from 'libp2p';
+import Libp2p, {Connection, constructorOptions, Libp2pOptions} from 'libp2p';
 import PeerId from 'peer-id';
-import type {Connection} from "libp2p";
-import 'fastestsmallesttextencoderdecoder';
+import {SIG_MULTIADDRS} from "./constant";
 
-export async function client(config?: any) {
+
+// types
+export interface Borg {
+    connect: (peerId: string) => Promise<boolean>
+    sendFile: (file: File) => Promise<string>
+    receiveFile: (fileId: string) => Promise<File>
+    receiveMeta: (fileId: string) => Promise<SchemaProtocol.Meta>
+    getNode: () => Libp2p
+}
+
+// end of types
+
+export async function createClient(config?: Libp2pOptions & constructorOptions): Promise<Borg> {
     let node: Libp2p;
     let conf: any;
     let serverPeer: PeerId;
-    let connection: Connection;
+    let connection: Connection | undefined;
     let nodePeerId: PeerId;
 
     if (config) conf = await configure(config);
@@ -24,61 +34,68 @@ export async function client(config?: any) {
 
     return {
         async connect(peer: string) {
-            let serverPeerId = await PeerId.createFromB58String(peer)
-            let remoteMultiaddr = node.peerStore.addressBook.getMultiaddrsForPeer(serverPeerId)
-            if (remoteMultiaddr && remoteMultiaddr.length>0){
-                // @ts-ignore
-                serverPeer = remoteMultiaddr[0]
-                // @ts-ignore
-            } else serverPeer = remoteMultiaddr
-            if (serverPeer){
-                console.log(serverPeer)
-                connection = await node.dial(serverPeer)
+            let serverPeerId = PeerId.createFromB58String(peer)
+            node.peerStore.addressBook.set(serverPeerId, SIG_MULTIADDRS)
+            try {
+                // TODO make sure connection stay open by listening to node connection events
+                connection = await node.dial(serverPeerId)
+                return true;
+            } catch (e) {
+                console.log(e)
+                return false
             }
         },
-        async sendFile(file: any): Promise<string> {
-            if (!serverPeer) {
-                throw 'ServerPeer not found';
+        async sendFile(file) {
+            if (!connection) {
+                throw Error('No Connection Exist')
             }
-            const id = await FileProtocol.sendFile({to: serverPeer, node, file});
-            return id;
+            try {
+                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const fileId = await FileProtocol.sendFile({connection: connectionObj, file});
+                connectionObj.stream.close()
+                return fileId
+            } catch (e) {
+                console.log(e)
+                throw new Error((e as Error).message)
+            }
         },
 
         async receiveFile(id: string) {
-            if (!serverPeer) {
-                throw 'ServerPeer not found';
+            if (!connection) {
+                throw Error('No Connection Exist')
             }
-            let content = '';
-            const decoder = new TextDecoder();
+            try {
+                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
+                const connectionObj2 = await connection.newStream(FileProtocol.PROTOCOL)
+                const source = FileProtocol.receiveContent({connection: connectionObj2, id})
+                let content: Array<any> = [];
+                for await (const chunk of source) {
+                    content.push(...chunk);
+                }
+                const blob = new Blob([Uint8Array.from(content)], {type: meta.type})
+                connectionObj.stream.close()
+                return new File([blob], meta.name, {type: meta.type, lastModified: meta.lastModified});
+            } catch (e) {
+                throw Error((e as Error).message)
+            }
 
-            for await (const chunk of FileProtocol.receiveContent({from: serverPeer, node, id})) {
-                content += decoder.decode(chunk);
-                console.log(content);
-            }
-            return content;
         },
         async receiveMeta(id: string) {
-            if (!serverPeer) {
-                throw 'ServerPeer not found';
+            if (!connection) {
+                throw Error('No Connection Exist')
             }
-            let content = '';
-            const meta = await FileProtocol.receiveMeta({from: serverPeer, node, id});
-            content = JSON.stringify(
-                {
-                    ...meta,
-                    size: Number(meta.size),
-                    lastModified: Number(meta.lastModified),
-                },
-                null,
-                2
-            );
-            return content;
+            try {
+                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const meta: SchemaProtocol.Meta = await FileProtocol.receiveMeta({connection: connectionObj, id});
+                connectionObj.stream.close()
+                return meta;
+            } catch (e) {
+                throw new Error((e as Error).message)
+            }
         },
-        async connectionHandler(handlerName: string | symbol, handler: (...args: any[]) => void) {
-            node.connectionManager.on(handlerName, handler);
-        },
-        async nodeHandler(handlerName: string | symbol, handler: (...args: any[]) => void) {
-            node.on(handlerName, handler);
+        getNode() {
+            return node;
         }
     };
 }

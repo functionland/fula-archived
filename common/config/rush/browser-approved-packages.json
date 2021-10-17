@@ -167,6 +167,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "ipfs-core-types",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "ipfs-repo",
       "allowedCategories": [ "production" ]
     },
@@ -215,6 +219,10 @@
       "allowedCategories": [ "production", "prototypes" ]
     },
     {
+      "name": "multiaddr",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "multiformats",
       "allowedCategories": [ "production" ]
     },
@@ -237,6 +245,10 @@
     {
       "name": "peer-id",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "peer-info",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "prettier",

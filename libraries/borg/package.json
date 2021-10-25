@@ -1,6 +1,6 @@
 {
 	"name": "@functionland/borg",
-	"version": "0.1.4",
+	"version": "0.3.0",
 	"description": "Interface with a borg server from the browser!",
 	"main": "dist/index.js",
 	"types": "src/index.ts",
@@ -20,7 +20,7 @@
 	},
 	"homepage": "https://github.com/functionland/borg#readme",
 	"dependencies": {
-		"@functionland/file-protocol": "^0.2.0",
+		"@functionland/file-protocol": "^0.3.0",
 		"@ipld/schema-validation": "^1.1.0",
 		"libp2p": "^0.31.5",
 		"libp2p-mplex": "^0.10.2",

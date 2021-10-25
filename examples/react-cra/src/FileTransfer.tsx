@@ -1,8 +1,10 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import './FileTransfer.css';
-import {Borg, createClient} from '@functionland/borg' // @ts-ignore
-// import PeerId from 'peer-id';
+import {Borg, createClient} from '@functionland/borg'
+import {SchemaProtocol} from "../../../protocols/file";
+import {rejects} from "assert";
+import {base64} from "rfc4648";
 
 interface FileTransferProps {
     /**
@@ -14,84 +16,87 @@ interface FileTransferProps {
 /**
  * Primary UI component for user interaction
  */
-export const FileTransfer = ({
-                                 ...props
-                             }: FileTransferProps) => {
+export const FileTransfer = ({...props}: FileTransferProps) => {
     const [borgClient, setBorgClient] = useState<Borg>();
     const [output, setOutput] = useState("");
-    const [serverId, setServerId] = useState("QmVYZsjTgm3hBWkkSBugNJYYLPmGTACfoc4HGfqqE6TMcT")
-    const [selectedFile, setSelectedFile] = useState(null)
-    const [fileId, setFileId] = useState("")
+    const [serverId, setServerId] = useState("QmNi7CkBYtzt8vaDhFFXZ29dzaK5FdMWdiG1cxnJYDQLKB")
+    const [selectedFile, setSelectedFile] = useState<File|null>(null)
+    const [fileId, setFileId] = useState("QmQdHtY586drMqfKCUEWZpufMLGuXc9bZ3fiGWde9pY31N")
     const [content, setContent] = useState("")
 
-    async function loadDataOnlyOnce() {
-        let onPeerDiscovery = async (peerId: { toB58String: () => any; }) => {
-            console.log(`Found peer ${peerId.toB58String()}`);
-            setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
-        };
-
-        // Listen for new connections to peers
-        let onPeerConnect = async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-            console.log(`Connected to ${connection.remotePeer.toB58String()}`);
-            // setServerId(connection.remotePeer.toB58String());
-            // borgClient.connect(PeerId.createFromB58String(connection.remotePeer.toB58String()));
-        };
-
-        // Listen for peers disconnecting
-        let onPeerDisconnect = async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-            console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
-        };
-
+    async function startBorg() {
         const borgClient = await createClient();
         const node = borgClient.getNode()
-        node.connectionManager.on('peer:connect', onPeerConnect);
-        node.connectionManager.on('peer:disconnect', onPeerDisconnect);
-        node.on('peer:discovery', onPeerDiscovery);
+
+        node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
+            console.log(`Connected to ${connection.remotePeer.toB58String()}`);
+        });
+        node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
+            console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
+        });
+        node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
+            console.log(`Found peer ${peerId.toB58String()}`);
+            setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
+        });
         return borgClient
     }
 
     const connect = async () => {
-        if(!borgClient){
+        if (!borgClient) {
             console.log("borg not connected")
             return
         }
-        try{
+        try {
             await borgClient.connect(serverId)
-            console.log("connect misheh")
-        }catch (e) {
+        } catch (e) {
             console.log(`error is ${e}`)
         }
 
     }
     const sendFile = async () => {
-        if(!borgClient || !selectedFile){
+        if (!borgClient || !selectedFile) {
             console.log("borg not connected or file not exist")
             return
         }
-        const id = await borgClient.sendFile(selectedFile); // @ts-ignore
+        const meta =  {name:selectedFile.name,type:selectedFile.type,lastModified:selectedFile.lastModified,size:selectedFile.size}
+        const id = await borgClient.sendStreamFile(fileReader2(selectedFile),meta); // @ts-ignore
         setFileId(id);
     }
 
     const receiveFile = async () => {
-        if(!borgClient){
+        if (!borgClient) {
             console.log("borg not connected")
             return
         }
-        const data = await borgClient.receiveFile(fileId);
-        console.log(data)
-        let reader = new FileReader();
-        reader.readAsDataURL(data);
-        // @ts-ignore
-        reader.onloadend = (e)=> setContent(reader.result)
+        try {
+            console.log("r u there")
+            const data = await borgClient.receiveFile(fileId);
+            console.log(data)
+            let reader = new FileReader();
+            reader.readAsDataURL(data);
+            // @ts-ignore
+            reader.onloadend = (e) => setContent(reader.result)
+        }catch (e) {
+            console.log(e)
+        }
+
+
     }
 
     const receiveMeta = async () => {
-        if(!borgClient){
+        if (!borgClient) {
             console.log("borg not connected")
             return
         }
-        const data = await borgClient.receiveMeta(fileId);
-        setContent(JSON.stringify(data));
+        try{
+            console.log("meta there")
+            const data = await borgClient.receiveMeta(fileId);
+            console.log(data)
+            setContent(JSON.stringify(data));
+        }catch (e) {
+            console.log(e)
+        }
+
     }
 
     const handleSelectFile = (event: any) => {
@@ -104,7 +109,7 @@ export const FileTransfer = ({
 
     useEffect(() => {
         (async () => {
-            const temp = await loadDataOnlyOnce()
+            const temp = await startBorg()
             setBorgClient(temp)
         })()
 
@@ -117,7 +122,7 @@ export const FileTransfer = ({
             <header>
                 <h1 id="status">Starting libp2p...</h1>
                 <input id="serverId" style={{width: "500px"}} onChange={handleServerId}
-                       placeholder={"Type server's PeerId here"} value={serverId} />
+                       placeholder={"Type server's PeerId here"} value={serverId}/>
                 <input id="file" type="file" onChange={handleSelectFile}/>
                 <button id="send" onClick={sendFile}>Send</button>
                 <button id="connect" onClick={connect}>Connect</button>
@@ -137,3 +142,28 @@ export const FileTransfer = ({
         </div>
     );
 };
+
+const getBase64  = (file:File):Promise<string> =>{
+    return new Promise<string>((resolve,rejects)=>{
+        const reader = new FileReader()
+        reader.onloadend = (e)=>{
+            if(reader.result)resolve((reader.result as string).split(',')[1])
+
+        }
+        reader.readAsDataURL(file)
+    })
+}
+
+async function* fileReader2(file:File, chunksAmount:number=4*2048*100):AsyncIterable<Uint8Array> {
+    const content = await getBase64(file)
+    let byteStart = 0;
+    let byteEnd = chunksAmount;
+    while (byteStart < content.length){
+        yield base64.parse(JSON.parse(JSON.stringify({content:content.slice(byteStart,byteEnd)})).content)
+        byteStart = byteEnd
+        byteEnd += chunksAmount
+        if(byteEnd>=content.length) {
+            byteEnd = content.length
+        }
+    }
+}

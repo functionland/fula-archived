@@ -64,6 +64,12 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@functionland/rn-borg-bridge",
+      "projectFolder": "libraries/rn-borg-bridge",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
       "packageName": "@functionland/file-protocol",
       "projectFolder": "protocols/file",
       "reviewCategory": "production",

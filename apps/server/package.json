@@ -20,7 +20,7 @@
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
     "async-later": "^0.1.5",
-    "@functionland/file-protocol": "^0.2.0",
+    "@functionland/file-protocol": "^0.3.0",
     "@ipld/dag-json": "^7.0.5",
     "ipfs": "^0.55.4",
     "ipfs-repo": "^9.1.6",

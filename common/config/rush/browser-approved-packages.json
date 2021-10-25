@@ -40,7 +40,7 @@
     },
     {
       "name": "@functionland/borg",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "@functionland/file-protocol",
@@ -115,8 +115,12 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "debug",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "es-module-lexer",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "esbuild",
@@ -153,6 +157,10 @@
     {
       "name": "eslint-plugin-react-hooks",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "events",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "fastestsmallesttextencoderdecoder",
@@ -267,6 +275,10 @@
       "allowedCategories": [ "prototypes" ]
     },
     {
+      "name": "rfc4648",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "rxjs",
       "allowedCategories": [ "production" ]
     },
@@ -285,6 +297,10 @@
     {
       "name": "typescript",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "vite",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "web-vitals",

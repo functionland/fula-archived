@@ -32,7 +32,7 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
   await pipe([], stream); // Close the stream
 };
 
-export { incomingFiles, sendFile } from './save';
+export { incomingFiles, sendFile, streamFile } from './save';
 export { setContentRetrievalMethod, receiveContent } from './retrieve';
 export { setMetaRetrievalMethod, receiveMeta } from './meta';
 export {PROTOCOL}

@@ -17,12 +17,7 @@ export function setContentRetrievalMethod(method: Retrieve) {
     retrieve = method;
 }
 
-export async function* receiveContent({
-                                          connection,
-                                          id,
-                                          skip,
-                                          limit,
-                                      }: {
+export async function* receiveContent({connection, id, skip, limit}: {
     connection: { stream: MuxedStream, protocol: string };
     id: string;
     skip?: number;
@@ -48,6 +43,4 @@ export async function* receiveContent({
     for await (const chunk of chunks) {
         yield chunk;
     }
-
-
 }

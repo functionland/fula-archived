@@ -1,6 +1,6 @@
 import pipe from 'it-pipe';
 import type {MuxedStream} from 'libp2p';
-import {Subject} from 'rxjs';
+import {Observable, Observer, Subject} from 'rxjs';
 import {consume, map, pipeline} from 'streaming-iterables';
 import {resolveLater, toAsyncIterable} from 'async-later';
 import {Response} from '../';
@@ -60,6 +60,40 @@ export async function sendFile({connection, file}: {
 
     return pipe(streamSendFile, connection.stream, async function (source: any) {
         for await (const message of source) {
+            return String(message); // id
+        }
+    });
+
+}
+
+
+export async function streamFile({connection, source, meta}: {
+    connection: { stream: MuxedStream, protocol: string },
+    source: AsyncIterable<Uint8Array>;
+    meta:Meta
+}): Promise<string> {
+    if (connection.protocol !== PROTOCOL) {
+        throw Error('Protocol mismatched')
+    }
+    let {name, type, size, lastModified} = meta;
+    const streamSendFile = async function* () {
+        yield Request.toBinary({
+            type: {
+                oneofKind: 'send',
+                send: {
+                    name,
+                    type,
+                    size,
+                    lastModified
+                },
+            },
+        });
+        for await (const value of source){
+            yield value
+        }
+    };
+    return pipe(streamSendFile, connection.stream, async function (_source: any) {
+        for await (const message of _source) {
             return String(message); // id
         }
     });

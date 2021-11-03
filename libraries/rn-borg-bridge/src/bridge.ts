@@ -32,13 +32,11 @@ export interface DataMessage extends Message {
 let adaptor = {}
 
 export const register = (obj:Object) =>{
-    postLog(JSON.stringify(obj))
     adaptor = {...adaptor,...obj}
 }
 let emitter = new EventEmitter()
 document.addEventListener("message", async function (event: any) {
     const data: RPCRequest | DataMessage = JSON.parse(event.data)
-    postLog(JSON.stringify(data))
     if (data.type === "RPC") {
         try {
             // @ts-ignore

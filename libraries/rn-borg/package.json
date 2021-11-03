@@ -17,14 +17,12 @@
   "peerDependencies": {
     "react": "16.13.1",
     "react-native": "~0.63.4",
-    "react-native-unimodules": "0.14.10",
     "react-native-webview": "11.6.2",
-    "expo-image-picker": "~10.2.2",
     "expo-file-system": "~11.1.3",
     "expo-media-library": "~12.1.2"
   },
   "name": "@functionland/rn-borg",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "files": [
     "src/*"
   ]

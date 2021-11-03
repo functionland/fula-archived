@@ -1,6 +1,6 @@
 {
   "name": "@functionland/rn-borg-bridge",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "description": "run borg in webview!",
   "main": "dist/index.js",
   "type": "module",

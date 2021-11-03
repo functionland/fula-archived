@@ -4,6 +4,7 @@ import WebView from "react-native-webview";
 import {View} from 'react-native';
 import {generateUUID, fileReader2} from "./utils";
 import {messageHandler, transporter} from "./bridge";
+import {template} from "./template";
 
 export const BorgContext = createContext<Borg | null>(null);
 
@@ -80,7 +81,7 @@ export default function Borg(props: any) {
                 <WebView
                     style={styles.container}
                     ref={webViewRef}
-                    source={{uri: "https://192.168.1.7:3000"}}
+                    source={{html: template(), baseUrl: "https://localhost"}}
                     onMessage={onMessage}
                     onError={(e) => console.log(e)}
                     originWhitelist={['*']}

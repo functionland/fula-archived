@@ -28,15 +28,15 @@ async function main() {
     const start = async (data: RPCRequest) => {
         borgClient = await createClient();
         const node = borgClient.getNode()
-        node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-            log(`Connected to ${connection.remotePeer.toB58String()}`);
-        });
-        node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-            log(`Disconnected from ${connection.remotePeer.toB58String()}`);
-        });
-        node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
-            log(`Found peer ${peerId.toB58String()}`);
-        });
+        // node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
+            // log(`Connected to ${connection.remotePeer.toB58String()}`);
+        // });
+        // node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
+        //     log(`Disconnected from ${connection.remotePeer.toB58String()}`);
+        // });
+        // node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
+        //     log(`Found peer ${peerId.toB58String()}`);
+        // });
         return {
             ...data,
             response: "Ready",
@@ -68,6 +68,6 @@ async function main() {
     register(adaptor)
 }
 
-main().catch(console.error);
+main().catch(e=>log(e));
 
 

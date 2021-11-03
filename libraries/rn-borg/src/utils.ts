@@ -16,7 +16,6 @@ export async function* fileReader2(uri:string, chunksAmount:number=1048576):Asyn
     let byteEnd = chunksAmount;
     while (byteStart < content.length){
         yield content.slice(byteStart,byteEnd)
-        console.log(content.slice(byteStart,byteEnd).length/4)
         byteStart = byteEnd
         byteEnd += chunksAmount
         if(byteEnd>=content.length) {

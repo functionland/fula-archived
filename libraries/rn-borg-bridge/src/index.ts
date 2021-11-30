@@ -1,63 +1,51 @@
 import {Borg, createClient} from '@functionland/borg'
-import otag from "./async-queue";
-import type {RPCRequest, RPCResponse} from "./bridge";
-import {register, streamResponse} from "./bridge";
-import {postLog as log, streamSend} from "./bridge";
-import type {SchemaProtocol} from "../../../protocols/file";
-// import debug from 'debug'
-
-// debug.disable("libp2p*")
+import {observableToAsyncGenerator} from "./utils";
+import {eventBaseStreamToPromise, postLog as log, register} from "./bridge";
+import type {RPCRequest, RPCResponse} from "../../rn-borg-types";
+import {MessageType, RPCStatusType} from "../../rn-borg-types";
 
 
 async function main() {
     let borgClient: Borg
-
     const receiveFile = async (data: RPCRequest) => {
         const {source, meta} = await borgClient.receiveStreamFile(data.args[0])
         return {source, meta}
     }
-    const sendFile = async (data: RPCRequest) => {
-        const {source, meta} = await streamResponse(data.id)
-        const fileId = await borgClient.sendStreamFile(otag(source), meta)
+    const sendFile = async (data: RPCRequest): Promise<RPCResponse> => {
+        const {source, meta} = await eventBaseStreamToPromise(data.id)
+        const fileId = await borgClient.sendStreamFile(observableToAsyncGenerator(source), meta)
         return {
-            ...data,
-            response: fileId,
+            id: data.id,
+            payload: fileId,
+            status: RPCStatusType.done,
+            type: MessageType.RPCResponse
         }
     }
-
-    const start = async (data: RPCRequest) => {
+    const start = async (data: RPCRequest): Promise<RPCResponse> => {
         borgClient = await createClient();
-        const node = borgClient.getNode()
-        // node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-            // log(`Connected to ${connection.remotePeer.toB58String()}`);
-        // });
-        // node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-        //     log(`Disconnected from ${connection.remotePeer.toB58String()}`);
-        // });
-        // node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
-        //     log(`Found peer ${peerId.toB58String()}`);
-        // });
         return {
-            ...data,
-            response: "Ready",
+            id: data.id,
+            payload: "Ready",
+            status: RPCStatusType.done,
+            type: MessageType.RPCResponse
         }
     }
-
     const connect = async (data: RPCRequest) => {
         return {
-            ...data,
-            response: await borgClient.connect(<string>data.args[0]),
+            id: data.id,
+            payload: await borgClient.connect(<string>data.args[0]),
+            status: RPCStatusType.done,
+            type: MessageType.RPCResponse
         }
     }
-
     const receiveMeta = async (data: RPCRequest) => {
         return {
-            ...data,
-            response: await borgClient.receiveMeta(<string>data.args[0])
+            id: data.id,
+            payload: await borgClient.receiveMeta(<string>data.args[0]),
+            status: RPCStatusType.done,
+            type: MessageType.RPCResponse
         }
     }
-
-
     const adaptor = {
         connect,
         receiveMeta,
@@ -68,6 +56,6 @@ async function main() {
     register(adaptor)
 }
 
-main().catch(e=>log(e));
+main().catch(e => log(e));
 
 

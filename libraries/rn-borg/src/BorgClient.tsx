@@ -2,9 +2,10 @@ import React, {createContext, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import WebView from "react-native-webview";
 import {View} from 'react-native';
-import {generateUUID, fileReader2} from "./utils";
-import {messageHandler, transporter} from "./bridge";
+import {fileReader2} from "./utils";
+import {messageHandler, bridge} from "./bridge";
 import {template} from "./template";
+import {RPCStatusType} from "../../rn-borg-types";
 
 export const BorgContext = createContext<Borg | null>(null);
 
@@ -22,18 +23,18 @@ export default function Borg(props: any) {
         else
             throw Error("webview not Found")
     }
-    const rpc = transporter(postMessage)
+    const rpc = bridge(postMessage)
 
     const onMessage = (event: { nativeEvent: { data: string; }; }) => messageHandler(event)
 
     const borg: Borg = {
         async start() {
             const response = await rpc.RPC("start", [])
-            return response.response
+            return response.payload
         },
         async connect(peerId: string) {
             const response = await rpc.RPC("connect", [peerId])
-            return response.response
+            return response.payload
         },
         async sendFile(uri: string): Promise<string> {
             return new Promise<string>(async (resolve, reject) => {
@@ -43,10 +44,10 @@ export default function Borg(props: any) {
                 const meta = obj.value
                 // @ts-ignore
                 const response = await rpc.RPCStreamArgs("sendFile", [], {iterator, meta})
-                if (response.status === "done" && response.response)
-                    resolve(response.response)
+                if (response.status === RPCStatusType.done && response.payload)
+                    resolve(response.payload)
                 else
-                    reject(response.response)
+                    reject(response.payload)
             })
         },
 
@@ -70,7 +71,7 @@ export default function Borg(props: any) {
 
         async receiveMeta(id: string) {
             const response = await rpc.RPC("receiveMeta", [id])
-            return response.response
+            return response.payload
         }
 
     }

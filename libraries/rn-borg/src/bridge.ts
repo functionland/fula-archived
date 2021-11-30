@@ -1,71 +1,71 @@
 import {EventEmitter} from "events";
-import {Observer, Observable} from "rxjs";
+import {Observable, Observer} from "rxjs";
 import {generateUUID} from "./utils";
-import {SchemaProtocol} from "../../../../protocols/file";
-
-export interface Message {
-    id: string
-    type: string
-}
-
-export interface Log extends Message {
-    message: string|number;
-}
-
-export interface RPCRequest extends Message {
-    func: string
-    args: Array<string>
-}
-
-export interface RPCResponse extends RPCRequest {
-    response?: string
-    status?: string
-}
-
-export interface DataMessage extends Message {
-    meta: SchemaProtocol.Meta
-    data: string
-    status: string
-}
+import {
+    Chunk,
+    ChunkStatusType,
+    Log,
+    Message,
+    MessageType,
+    RPCRequest,
+    RPCResponse,
+    RPCStatusType
+} from "../../rn-borg-types";
+import {SchemaProtocol} from "../../../protocols/file";
 
 const emitter = new EventEmitter()
 
-
-
 export const messageHandler = (event: { nativeEvent: { data: string; }; }) => {
-    const data: Message | RPCResponse | RPCRequest | DataMessage = JSON.parse(event.nativeEvent.data);
-    if (data.type === "LOG") {
-        console.log("[bridge] " + (data as Log).message);
-    }
-    if (data.type === "RESPONSE") {
-        emitter.emit(data.id, data)
-    }
-    if (data.type === "STREAM") {
-        _streamListener(data as DataMessage)
-    }
-}
-
-export const _streamListener = (data: DataMessage) => {
-    if (data.status === "START") {
-        const obs$ = new Observable((observer: Observer<string>) => {
-            emitter.on(data.id + "CHUNK", val => observer.next(val));
-            emitter.once(data.id + 'error', err => observer.error(err));
-            emitter.once(data.id + "END", () => {
-                emitter.removeAllListeners(data.id);
-                observer.complete();
-            })
-        });
-        emitter.emit(data.id + "CALLBACK", {source: obs$, meta: data.meta})
-    }
-    if (data.status === "CHUNK" && "data" in data) {
-        emitter.emit(data.id + "CHUNK", data.data)
-    }
-    if (data.status === "END" && "data" in data) {
-        emitter.emit(data.id + "END", data.data)
+    const data: Message | RPCResponse | Chunk = JSON.parse(event.nativeEvent.data);
+    switch (data.type) {
+        case MessageType.Log: {
+            console.log("[bridge] " + (data as Log).message)
+            break
+        }
+        case MessageType.RPCResponse: {
+            const response = data as RPCResponse
+            emitter.emit(response.id, response)
+            break
+        }
+        case MessageType.StreamChunk: {
+            _streamListener(data as Chunk)
+            break
+        }
+        default: {
+            throw Error('Cant handle this type of message')
+        }
     }
 }
 
-export const streamResponse = (transferId: string) => {
+export const _streamListener = (data: Chunk) => {
+    switch (data.status) {
+        case ChunkStatusType.START: {
+            const observable = new Observable((observer: Observer<string>) => {
+                emitter.on(data.id + "CHUNK", val => observer.next(val));
+                emitter.once(data.id + 'error', err => observer.error(err));
+                emitter.once(data.id + "END", () => {
+                    emitter.removeAllListeners(data.id);
+                    observer.complete();
+                })
+            });
+            emitter.emit(data.id + "CALLBACK", {source: observable, meta: data.meta})
+            break
+        }
+        case ChunkStatusType.CHUNK: {
+            emitter.emit(data.id + "CHUNK", data.data)
+            break
+        }
+        case ChunkStatusType.END: {
+            emitter.emit(data.id + "END", data.data)
+            break
+        }
+        default: {
+            throw Error('Wrong type of stream')
+        }
+    }
+}
+
+export const eventBaseStreamToPromise = (transferId: string) => {
     return new Promise<{ source: Observable<string>, meta: any }>((resolve, reject) => {
         emitter.once(transferId + "CALLBACK", ({source, meta}: { source: Observable<string>, meta: any }) => {
             resolve({source, meta})
@@ -73,14 +73,14 @@ export const streamResponse = (transferId: string) => {
     })
 }
 
-export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>void){
+export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
     return {
         async streamSend(transferId: string, iterator: Iterator<String>, meta: SchemaProtocol.Meta) {
             postMessage({
                 id: transferId,
-                type: "STREAM",
+                type: MessageType.StreamChunk,
                 meta: meta,
-                status: "START",
+                status: ChunkStatusType.START,
                 data: ""
             })
             while (true) {
@@ -88,18 +88,18 @@ export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>
                 if (done) {
                     postMessage({
                         id: transferId,
-                        type: "STREAM",
+                        type: MessageType.StreamChunk,
                         meta: meta,
-                        status: "END",
+                        status: ChunkStatusType.END,
                         data: ""
                     })
                     break;
                 }
                 postMessage({
                     id: transferId,
-                    type: "STREAM",
+                    type: MessageType.StreamChunk,
                     meta: meta,
-                    status: "CHUNK",
+                    status: ChunkStatusType.CHUNK,
                     data: value
                 })
             }
@@ -110,12 +110,12 @@ export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>
                 const id = generateUUID(10)
                 postMessage({
                     id,
-                    func,
+                    function: func,
                     args,
-                    type: "RPC"
+                    type: MessageType.RPCRequest
                 })
                 emitter.once(id, (data: RPCResponse) => {
-                    if (data.status === "failed")
+                    if (data.status === RPCStatusType.failed)
                         return reject
                     return resolve(data)
                 })
@@ -126,11 +126,11 @@ export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>
             const id = generateUUID(10)
             postMessage({
                 id,
-                func,
+                function: func,
                 args,
-                type: "RPCStream"
+                type: MessageType.RPCRequestStream
             })
-            return streamResponse(id)
+            return eventBaseStreamToPromise(id)
         },
         RPCStreamArgs(func: string, args: Array<any>, {
             iterator,
@@ -140,13 +140,13 @@ export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>
                 const id = generateUUID(10)
                 postMessage({
                     id,
-                    func,
+                    function: func,
                     args,
-                    type: "RPC"
+                    type: MessageType.RPCRequest
                 })
                 await this.streamSend(id, iterator, meta)
                 emitter.once(id, (data: RPCResponse) => {
-                    if (data.status === "failed")
+                    if (data.status === RPCStatusType.failed)
                         return reject
                     return resolve(data)
                 })
@@ -154,8 +154,3 @@ export function transporter(postMessage:(m:DataMessage|RPCRequest|RPCResponse)=>
         }
     }
 }
-
-
-
-const func = "receiveFile"
-// @ts-ignore

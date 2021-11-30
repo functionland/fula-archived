@@ -1,7 +1,7 @@
 // @ts-ignore
 import {decode as atob} from 'base-64'
 import * as FileSystem from 'expo-file-system';
-import type {SchemaProtocol} from "../../../../protocols/file";
+import type {SchemaProtocol} from "../../../protocols/file";
 
 
 export async function* fileReader2(uri:string, chunksAmount:number=1048576):AsyncIterable<String|SchemaProtocol.Meta> {

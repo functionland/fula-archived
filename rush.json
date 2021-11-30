@@ -70,6 +70,12 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@functionland/rn-borg",
+      "projectFolder": "libraries/rn-borg",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
       "packageName": "@functionland/file-protocol",
       "projectFolder": "protocols/file",
       "reviewCategory": "production",

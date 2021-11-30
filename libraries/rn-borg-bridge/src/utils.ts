@@ -21,7 +21,7 @@ function defer<Value>(): Deferred<Value> {
     return Object.assign(promise, transit);
 }
 
-export default async function * otag<Value>(observable: Observable<Value>): AsyncIterableIterator<Value> {
+export async function * observableToAsyncGenerator<Value>(observable: Observable<Value>): AsyncIterableIterator<Value> {
     let deferred = defer<Value>();
     let finished = false;
 

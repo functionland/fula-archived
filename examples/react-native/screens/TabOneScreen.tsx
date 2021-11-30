@@ -33,8 +33,9 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
     const borg = useContext(BorgContext)
     const onSubmit = async (e: any) => {
         try {
-            console.log(borg)
+            // @ts-ignore
             await borg.start()
+            // @ts-ignore
             await borg.connect(serverId)
         } catch (e) {
             console.log(e)

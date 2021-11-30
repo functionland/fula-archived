@@ -94,9 +94,6 @@ async function main() {
     const { cid: file } = await ipfsNode.add(
       getContent()
     );
-    for await (const chunk of ipfsNode.cat(file)) {
-      console.log(String(chunk));
-    }
     const { cid } = await ipfsNode.add(SchemaProtocol.File.toBinary({ contentPath: file.toString(), meta }));
     console.log('done');
     declareId(cid.toString());
@@ -130,11 +127,7 @@ async function main() {
 
       try {
         const { stream } = await connection.newStream([FileProtocol.PROTOCOL]);
-        await pipe([message], stream, async function (source) {
-          for await (const message of source) {
-            console.info(String(message));
-          }
-        });
+        await pipe([message], stream);
       } catch (err) {
         console.error('Could not negotiate chat protocol stream with peer', err);
       }

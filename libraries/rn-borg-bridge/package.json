@@ -1,6 +1,6 @@
 {
   "name": "@functionland/rn-borg-bridge",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "run borg in webview!",
   "main": "dist/index.js",
   "type": "module",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/functionland/graph#readme",
   "dependencies": {
-    "@functionland/borg": "^0.3.0",
+    "@functionland/borg": "^0.4.0",
     "events": "^3.3.0",
     "buffer": "~6.0.3",
     "rxjs": "~7.4.0",

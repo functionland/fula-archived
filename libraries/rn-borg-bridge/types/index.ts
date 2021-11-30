@@ -1,12 +1,12 @@
-import {SchemaProtocol} from "../../protocols/file";
+import type {SchemaProtocol} from "../../../protocols/file";
 
 
 export enum MessageType {
-    RPCRequestStream,
-    RPCRequest,
-    RPCResponse,
-    StreamChunk,
-    Log
+    RPCRequestStream = 0,
+    RPCRequest = 1,
+    RPCResponse = 2,
+    StreamChunk = 3,
+    Log = 4
 }
 
 export enum RPCStatusType {
@@ -26,10 +26,10 @@ export interface Message {
 
 export interface Log extends Message {
     message: string;
-    type: MessageType.LOG
+    type: MessageType.Log
 }
 
-export interface RPC extends Message{
+export interface RPC extends Message {
     id: string;
 }
 
@@ -42,7 +42,7 @@ export interface RPCRequest extends RPC {
 export interface RPCResponse extends RPC {
     payload: string
     status: RPCStatusType
-    type: MessageType.RESPONSE
+    type: MessageType.RPCResponse
 }
 
 export interface Chunk extends RPC {

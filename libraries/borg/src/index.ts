@@ -8,6 +8,7 @@ import {SIG_MULTIADDRS} from "./constant";
 
 
 // types
+
 declare type FileId = string
 
 export interface Borg {
@@ -18,6 +19,7 @@ export interface Borg {
     receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
     receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
     getNode: () => Libp2p
+    close: () => void
 }
 
 // end of types
@@ -26,19 +28,32 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
     let node: Libp2p;
     let conf: any;
     let connection: Connection | undefined;
+    let serverPeerId: PeerId
 
-    if (config) conf = await configure(config);
-    else conf = await configure();
-
+    conf = await configure(config);
     node = await Libp2p.create(conf);
     node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
     await node.start();
 
+    const _getStreamConnection = async () => {
+        if (!serverPeerId) {
+            throw Error('no server peer found')
+        }
+        if (!node) {
+            throw Error('node not ready')
+        }
+        if (!connection || connection.stat.status !== 'open') {
+            throw Error('Server Unreachable')
+        }
+        return await connection.newStream(FileProtocol.PROTOCOL)
+    }
+
     return {
         async connect(peer: string) {
-            let serverPeerId = PeerId.createFromB58String(peer)
+            serverPeerId = PeerId.createFromB58String(peer)
             node.peerStore.addressBook.set(serverPeerId, SIG_MULTIADDRS)
             try {
+                await node.ping(serverPeerId)
                 // TODO make sure connection stay open by listening to node connection events
                 connection = await node.dial(serverPeerId)
                 return true;
@@ -48,11 +63,8 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
             }
         },
         async sendFile(file) {
-            if (!connection) {
-                throw Error('No Connection Exist')
-            }
             try {
-                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj = await _getStreamConnection()
                 const fileId = await FileProtocol.sendFile({connection: connectionObj, file});
                 connectionObj.stream.close()
                 return fileId
@@ -62,11 +74,8 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
             }
         },
         async sendStreamFile(source, meta: SchemaProtocol.Meta) {
-            if (!connection) {
-                throw Error('No Connection Exist')
-            }
             try {
-                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj = await _getStreamConnection()
                 const fileId = await FileProtocol.streamFile({connection: connectionObj, source, meta});
                 connectionObj.stream.close()
                 return fileId
@@ -76,21 +85,18 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
             }
         },
         async receiveFile(id: FileId) {
-            if (!connection) {
-                throw Error('No Connection Exist')
-            }
             try {
-                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj = await _getStreamConnection()
                 const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
-                const connectionObj2 = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj2 = await _getStreamConnection()
                 const source = FileProtocol.receiveContent({connection: connectionObj2, id})
-                let content: Array<any> = [];
+                let content: Array<Uint8Array> = [];
                 for await (const chunk of source) {
-                    console.log("source is connig")
-                    content.push(...chunk);
+                    content.push(Uint8Array.from(chunk));
                 }
-                const blob = new Blob([Uint8Array.from(content)], {type: meta.type})
+                const blob = new Blob(content, {type: meta.type})
                 connectionObj.stream.close()
+                connectionObj2.stream.close()
                 return new File([blob], meta.name, {type: meta.type, lastModified: meta.lastModified});
             } catch (e) {
                 throw Error((e as Error).message)
@@ -98,26 +104,20 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
 
         },
         async receiveStreamFile(id: FileId) {
-            if (!connection) {
-                throw Error('No Connection Exist')
-            }
             try {
-                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj = await _getStreamConnection()
                 const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
-                const connectionObj2 = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj2 = await _getStreamConnection()
                 const source = FileProtocol.receiveContent({connection: connectionObj2, id})
-                return {source,meta};
+                return {source, meta};
             } catch (e) {
                 throw Error((e as Error).message)
             }
 
         },
         async receiveMeta(id: string) {
-            if (!connection) {
-                throw Error('No Connection Exist')
-            }
             try {
-                const connectionObj = await connection.newStream(FileProtocol.PROTOCOL)
+                const connectionObj = await _getStreamConnection()
                 const meta: SchemaProtocol.Meta = await FileProtocol.receiveMeta({connection: connectionObj, id});
                 connectionObj.stream.close()
                 return meta;
@@ -127,6 +127,9 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
         },
         getNode() {
             return node;
+        },
+        close() {
+            node.stop()
         }
     };
 }

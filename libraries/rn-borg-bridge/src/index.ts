@@ -1,8 +1,8 @@
 import {Borg, createClient} from '@functionland/borg'
 import {observableToAsyncGenerator} from "./utils";
 import {eventBaseStreamToPromise, postLog as log, register} from "./bridge";
-import type {RPCRequest, RPCResponse} from "../../rn-borg-types";
-import {MessageType, RPCStatusType} from "../../rn-borg-types";
+import type {RPCRequest, RPCResponse} from "../types";
+import {MessageType, RPCStatusType} from "../types";
 
 
 async function main() {

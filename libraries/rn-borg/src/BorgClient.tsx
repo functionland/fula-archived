@@ -5,7 +5,7 @@ import {View} from 'react-native';
 import {fileReader2} from "./utils";
 import {messageHandler, bridge} from "./bridge";
 import {template} from "./template";
-import {RPCStatusType} from "../../rn-borg-types";
+import {RPCStatusType} from "rn-borg-bridge/types";
 
 export const BorgContext = createContext<Borg | null>(null);
 

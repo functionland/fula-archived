@@ -3,8 +3,8 @@ import {base64} from "rfc4648";
 import type {SchemaProtocol} from "../../../protocols/file";
 import {EventEmitter} from "events";
 import {concatArrayBuffers} from "./utils";
-import type {Chunk, RPCRequest, RPCResponse} from "../../rn-borg-types";
-import {ChunkStatusType, MessageType, RPCStatusType} from "../../rn-borg-types";
+import type {Chunk, RPCRequest, RPCResponse} from "../types";
+import {ChunkStatusType, MessageType, RPCStatusType} from "../types";
 
 
 let adaptor = {}

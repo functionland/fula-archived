@@ -25,7 +25,6 @@ export async function getIPFS() {
 const noise = new Noise();
 
 async function main() {
-  const peerId = await PeerId.create({bits:2048,keyType:'Ed25519'})
   const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
     resolveLibp2p(
       Libp2p.create({

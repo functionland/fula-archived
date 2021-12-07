@@ -1,18 +1,14 @@
 import Libp2p from 'libp2p';
-import Bootstrap from 'libp2p-bootstrap';
 import wrtc from 'wrtc';
-import Websockets from 'libp2p-websockets';
-import filters from 'libp2p-websockets/src/filters';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
-import { NOISE } from 'libp2p-noise';
+import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
-import ipfs from 'ipfs';
+import ipfs, { IPFS } from 'ipfs';
 import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
-import IPFS from 'ipfs-core/src/components';
-import { FileProtocol, SchemaProtocol } from '@functionland/protocols';
+import { FileProtocol, SchemaProtocol } from '@functionland/file-protocol';
 import { resolveLater } from 'async-later';
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
@@ -26,6 +22,8 @@ export async function getIPFS() {
   return ipfsPromise;
 }
 
+const noise = new Noise();
+
 async function main() {
   const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
     resolveLibp2p(
@@ -33,34 +31,25 @@ async function main() {
         peerId,
         addresses: {
           listen: [
-            // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-            // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-            // '/ip4/0.0.0.0/tcp/0',
-            // '/ip4/0.0.0.0/tcp/0/ws',
-            `/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`,
-            // `/ip4/3.14.71.57/tcp/9090/ws/p2p-webrtc-star/`,
-            // '/dns4/server.fx.land/tcp/9090/ws/p2p-webrtc-star/',
-            // '/dns4/server.fx.land/tcp/443/wss/p2p-webrtc-star/',
+            '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+            '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
           ],
         },
         modules: {
-          transport: [Websockets, WebRTCStar],
+          transport: [WebRTCStar],
           streamMuxer: [Mplex],
           connEncryption: [NOISE],
         },
         config: {
           transport: {
-            [Websockets.prototype[Symbol.toStringTag]]: {
-              filter: filters.all,
-            },
             [WebRTCStar.prototype[Symbol.toStringTag]]: {
               wrtc, // You can use `wrtc` when running in Node.js
             },
           },
           peerDiscovery: {
-            [Bootstrap.tag]: {
-              enabled: true,
-              list: config.Bootstrap,
+            autoDial:false,
+            [WebRTCStar.prototype[Symbol.toStringTag]]: {
+              enabled: false,
             },
           },
         },
@@ -102,20 +91,8 @@ async function main() {
 
   FileProtocol.incomingFiles.subscribe(async ({ getContent, meta, declareId }) => {
     const { cid: file } = await ipfsNode.add(
-      // map(
-      //   async (bytes: Uint8Array) =>
-      //     encrypt({
-      //       message: await createMessage({ binary: bytes }),
-      //       passwords: ['weeeee weeee'],
-      //       armor: false,
-      //     }),
-      //   getContent()
-      // )
       getContent()
     );
-    for await (const chunk of ipfsNode.cat(file)) {
-      console.log(String(chunk));
-    }
     const { cid } = await ipfsNode.add(SchemaProtocol.File.toBinary({ contentPath: file.toString(), meta }));
     console.log('done');
     declareId(cid.toString());
@@ -149,11 +126,7 @@ async function main() {
 
       try {
         const { stream } = await connection.newStream([FileProtocol.PROTOCOL]);
-        await pipe([message], stream, async function (source) {
-          for await (const message of source) {
-            console.info(String(message));
-          }
-        });
+        await pipe([message], stream);
       } catch (err) {
         console.error('Could not negotiate chat protocol stream with peer', err);
       }

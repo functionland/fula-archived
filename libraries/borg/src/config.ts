@@ -1,31 +1,33 @@
 // @ts-ignore
-import Websockets from 'libp2p-websockets';
+import WebRTCStar from 'libp2p-webrtc-star';
+import { NOISE, Noise } from "@chainsafe/libp2p-noise"
 // @ts-ignore
-import filters from 'libp2p-websockets/src/filters'; 
-// @ts-ignore
-import WebRTCStar from 'libp2p-webrtc-star'; 
-// @ts-ignore
-import { NOISE } from 'libp2p-noise'; 
-// @ts-ignore
-import Mplex from 'libp2p-mplex'; 
+import Mplex from 'libp2p-mplex';
+import PeerId from 'peer-id';
+import {constructorOptions, Libp2pOptions} from "libp2p";
+import {SIG_SERVER} from "./constant";
 
+const noise = new Noise();
 
-export function configure(config={}): any {
+export async function configure(config = {}): Promise<Libp2pOptions & constructorOptions> {
+  const peerId = await PeerId.create({ bits: 2048, keyType: 'Ed25519' })
   return {
     addresses: {
-      listen: [`/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star/`],
+      listen: SIG_SERVER,
     },
+    peerId,
     modules: {
-      transport: [Websockets, WebRTCStar],
+      transport: [WebRTCStar],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
     },
     config: {
-      transport: {
-        [Websockets.prototype[Symbol.toStringTag]]: {
-          filter: filters.all,
-        },
-      },
+      peerDiscovery: {
+        autoDial:false,
+        [WebRTCStar.prototype[Symbol.toStringTag]]: {
+          enabled: false,
+        }
+      }
     },
     ...config,
   };

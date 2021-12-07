@@ -3,6 +3,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/approved-packages.schema.json",
   "packages": [
     {
+      "name": "@babel/core",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@babel/plugin-transform-runtime",
       "allowedCategories": [ "production" ]
     },
@@ -19,6 +23,14 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@chainsafe/libp2p-noise",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@esbuild-plugins/esm-externals",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@esbuild-plugins/node-globals-polyfill",
       "allowedCategories": [ "production" ]
     },
@@ -28,7 +40,11 @@
     },
     {
       "name": "@functionland/borg",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "@functionland/file-protocol",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "@functionland/graph",
@@ -37,6 +53,10 @@
     {
       "name": "@functionland/protocols",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "@functionland/rn-borg-bridge",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "@ipld/dag-cbor",
@@ -87,6 +107,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "base-64",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "buffer",
       "allowedCategories": [ "production" ]
     },
@@ -95,8 +119,16 @@
       "allowedCategories": [ "prototypes" ]
     },
     {
+      "name": "core-js",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "debug",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "es-module-lexer",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "esbuild",
@@ -135,6 +167,18 @@
       "allowedCategories": [ "prototypes" ]
     },
     {
+      "name": "event",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "events",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "expo-file-system",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "fastestsmallesttextencoderdecoder",
       "allowedCategories": [ "production" ]
     },
@@ -147,11 +191,19 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "ipfs-core-types",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "ipfs-repo",
       "allowedCategories": [ "production" ]
     },
     {
       "name": "it-pipe",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "jest-expo",
       "allowedCategories": [ "production" ]
     },
     {
@@ -161,6 +213,10 @@
     {
       "name": "libp2p-bootstrap",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-interfaces",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "libp2p-mplex",
@@ -195,6 +251,10 @@
       "allowedCategories": [ "production", "prototypes" ]
     },
     {
+      "name": "multiaddr",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "multiformats",
       "allowedCategories": [ "production" ]
     },
@@ -219,20 +279,40 @@
       "allowedCategories": [ "production", "prototypes" ]
     },
     {
+      "name": "peer-info",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "prettier",
       "allowedCategories": [ "prototypes" ]
     },
     {
       "name": "react",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "react-dom",
       "allowedCategories": [ "prototypes" ]
     },
     {
+      "name": "react-native",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "react-native-webview",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "react-scripts",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "rfc4648",
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "rn-borg-bridge",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "rxjs",
@@ -253,6 +333,10 @@
     {
       "name": "typescript",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "vite",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "web-vitals",

@@ -13,11 +13,11 @@
   "approvedPackagesPolicy": {
 
     "reviewCategories": [
-      "production", 
+      "production",
       "tools",
       "prototypes"
     ],
-  
+
     "ignoredNpmScopes": ["@types"]
   },
 
@@ -64,8 +64,20 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@functionland/protocols",
-      "projectFolder": "libraries/protocols",
+      "packageName": "@functionland/rn-borg-bridge",
+      "projectFolder": "libraries/rn-borg-bridge",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/rn-borg",
+      "projectFolder": "libraries/rn-borg",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/file-protocol",
+      "projectFolder": "protocols/file",
       "reviewCategory": "production",
       "shouldPublish": true
     },
@@ -86,12 +98,12 @@
     },
     {
       "packageName": "react-esbuild",
-      "projectFolder": "apps/react-esbuild",
+      "projectFolder": "examples/react-esbuild",
       "reviewCategory": "prototypes"
     },
     {
       "packageName": "react-cra",
-      "projectFolder": "apps/react-cra",
+      "projectFolder": "examples/react-cra",
       "reviewCategory": "prototypes"
     }
   ]

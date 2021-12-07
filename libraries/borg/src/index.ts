@@ -1,70 +1,135 @@
 // @ts-ignore
-import { FileProtocol } from '@functionland/protocols'; 
-// @ts-ignore
-import { configure } from './config';
-// @ts-ignore
-import Libp2p from 'libp2p'; 
-import type PeerId from 'peer-id';
-import 'fastestsmallesttextencoderdecoder';
+import type {SchemaProtocol} from "@functionland/file-protocol";
+import {FileProtocol} from '@functionland/file-protocol';
+import {configure} from './config';
+import Libp2p, {Connection, constructorOptions, Libp2pOptions} from 'libp2p';
+import PeerId from 'peer-id';
+import {SIG_MULTIADDRS} from "./constant";
 
 
-export async function client(config?: any) {
-  let node: Libp2p;
-  let conf: any;
-  let listener: PeerId;
+// types
 
-  if (config) conf = configure(config);
-  else conf = configure();
+declare type FileId = string
 
-  node = await Libp2p.create(conf);
-  // node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
-  await node.start();
+export interface Borg {
+    connect: (peerId: string) => Promise<boolean>
+    sendFile: (file: File) => Promise<FileId>
+    sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
+    receiveFile: (fileId: FileId) => Promise<File>
+    receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
+    receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
+    getNode: () => Libp2p
+    close: () => void
+}
 
-  return {
-    async connect(listenerId: PeerId) {
-        listener = listenerId;
-    },
-    async sendFile(file: any): Promise<string> {
-      if (!listener) {
-        throw 'listener not found';
-      }
-      const id = await FileProtocol.sendFile({ to: listener, node, file });
-      return id;
-    },
-    async receiveFile(id: string) {
-      if (!listener) {
-        throw 'listener not found';
-      }
-      let content = '';
-      const decoder = new TextDecoder();
-      for await (const chunk of FileProtocol.receiveContent({ from: listener, node, id })) {
-        content += decoder.decode(chunk);
-        console.log(content);
-      }
-      return content;
-    },
-    async receiveMeta(id: string) {
-      if (!listener) {
-        throw 'listener not found';
-      }
-      let content = '';
-      const meta = await FileProtocol.receiveMeta({ from: listener, node, id });
-      content = JSON.stringify(
-        {
-          ...meta,
-          size: Number(meta.size),
-          lastModified: Number(meta.lastModified),
-        },
-        null,
-        2
-      );
-      return content;
-    },
-    async connectionHandler(handlerName: string | symbol, handler: (...args: any[]) => void) {
-      node.connectionManager.on(handlerName, handler);
-    },
-    async nodeHandler(handlerName: string | symbol, handler: (...args: any[]) => void) {
-      node.on(handlerName, handler);
+// end of types
+
+export async function createClient(config?: Libp2pOptions & constructorOptions): Promise<Borg> {
+    let node: Libp2p;
+    let conf: any;
+    let connection: Connection | undefined;
+    let serverPeerId: PeerId
+
+    conf = await configure(config);
+    node = await Libp2p.create(conf);
+    node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+    await node.start();
+
+    const _getStreamConnection = async () => {
+        if (!serverPeerId) {
+            throw Error('no server peer found')
+        }
+        if (!node) {
+            throw Error('node not ready')
+        }
+        if (!connection || connection.stat.status !== 'open') {
+            throw Error('Server Unreachable')
+        }
+        return await connection.newStream(FileProtocol.PROTOCOL)
     }
-  };
+
+    return {
+        async connect(peer: string) {
+            serverPeerId = PeerId.createFromB58String(peer)
+            node.peerStore.addressBook.set(serverPeerId, SIG_MULTIADDRS)
+            try {
+                await node.ping(serverPeerId)
+                // TODO make sure connection stay open by listening to node connection events
+                connection = await node.dial(serverPeerId)
+                return true;
+            } catch (e) {
+                console.log(e)
+                return false
+            }
+        },
+        async sendFile(file) {
+            try {
+                const connectionObj = await _getStreamConnection()
+                const fileId = await FileProtocol.sendFile({connection: connectionObj, file});
+                connectionObj.stream.close()
+                return fileId
+            } catch (e) {
+                console.log(e)
+                throw new Error((e as Error).message)
+            }
+        },
+        async sendStreamFile(source, meta: SchemaProtocol.Meta) {
+            try {
+                const connectionObj = await _getStreamConnection()
+                const fileId = await FileProtocol.streamFile({connection: connectionObj, source, meta});
+                connectionObj.stream.close()
+                return fileId
+            } catch (e) {
+                console.log(e)
+                throw new Error((e as Error).message)
+            }
+        },
+        async receiveFile(id: FileId) {
+            try {
+                const connectionObj = await _getStreamConnection()
+                const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
+                const connectionObj2 = await _getStreamConnection()
+                const source = FileProtocol.receiveContent({connection: connectionObj2, id})
+                let content: Array<Uint8Array> = [];
+                for await (const chunk of source) {
+                    content.push(Uint8Array.from(chunk));
+                }
+                const blob = new Blob(content, {type: meta.type})
+                connectionObj.stream.close()
+                connectionObj2.stream.close()
+                return new File([blob], meta.name, {type: meta.type, lastModified: meta.lastModified});
+            } catch (e) {
+                throw Error((e as Error).message)
+            }
+
+        },
+        async receiveStreamFile(id: FileId) {
+            try {
+                const connectionObj = await _getStreamConnection()
+                const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
+                const connectionObj2 = await _getStreamConnection()
+                const source = FileProtocol.receiveContent({connection: connectionObj2, id})
+                return {source, meta};
+            } catch (e) {
+                throw Error((e as Error).message)
+            }
+
+        },
+        async receiveMeta(id: string) {
+            try {
+                const connectionObj = await _getStreamConnection()
+                const meta: SchemaProtocol.Meta = await FileProtocol.receiveMeta({connection: connectionObj, id});
+                connectionObj.stream.close()
+                return meta;
+            } catch (e) {
+                throw new Error((e as Error).message)
+            }
+        },
+        getNode() {
+            return node;
+        },
+        close() {
+            node.stop()
+        }
+    };
 }

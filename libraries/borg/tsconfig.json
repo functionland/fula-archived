@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es6",
+    "moduleResolution": "Node",
+    "lib": ["ES2019","DOM"],
+    "allowJs": true,
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules","dist", "scripts"]
+}

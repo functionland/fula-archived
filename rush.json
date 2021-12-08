@@ -1,0 +1,110 @@
+
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
+
+  "rushVersion": "5.52.0",
+
+  "pnpmVersion": "6.7.1",
+
+  "pnpmOptions": {},
+
+  "nodeSupportedVersionRange": ">=14.17.5",
+
+  "approvedPackagesPolicy": {
+
+    "reviewCategories": [
+      "production",
+      "tools",
+      "prototypes"
+    ],
+
+    "ignoredNpmScopes": ["@types"]
+  },
+
+  "gitPolicy": {},
+
+  "repository": {
+
+    "url": "https://github.com/functionland/borg",
+
+    "defaultBranch": "main",
+
+    "defaultRemote": "origin"
+  },
+
+  "eventHooks": {
+
+    "preRushInstall": [],
+
+
+    "postRushInstall": [],
+
+
+    "preRushBuild": [],
+
+
+    "postRushBuild": []
+  },
+
+  "variants": [],
+
+  "telemetryEnabled": false,
+
+  "projects": [
+    {
+      "packageName": "async-later",
+      "projectFolder": "libraries/async-later",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/borg",
+      "projectFolder": "libraries/borg",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/rn-borg-bridge",
+      "projectFolder": "libraries/rn-borg-bridge",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/rn-borg",
+      "projectFolder": "libraries/rn-borg",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/file-protocol",
+      "projectFolder": "protocols/file",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@functionland/fx",
+      "projectFolder": "tools/cli",
+      "reviewCategory": "prototypes"
+    },
+    {
+      "packageName": "@functionland/server",
+      "projectFolder": "apps/server",
+      "reviewCategory": "production"
+    },
+    {
+      "packageName": "@functionland/signal",
+      "projectFolder": "apps/signal",
+      "reviewCategory": "production"
+    },
+    {
+      "packageName": "react-esbuild",
+      "projectFolder": "examples/react-esbuild",
+      "reviewCategory": "prototypes"
+    },
+    {
+      "packageName": "react-cra",
+      "projectFolder": "examples/react-cra",
+      "reviewCategory": "prototypes"
+    }
+  ]
+}

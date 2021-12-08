@@ -1,0 +1,41 @@
+{
+  "name": "@functionland/rn-borg-bridge",
+  "version": "0.2.3",
+  "description": "run borg in webview!",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "src",
+  "scripts": {
+    "start": "vite",
+    "build": "node scripts/build.js",
+    "lint": "eslint src --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/functionland/graph.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/functionland/graph/issues"
+  },
+  "homepage": "https://github.com/functionland/graph#readme",
+  "dependencies": {
+    "@functionland/borg": "^0.4.0",
+    "events": "^3.3.0",
+    "buffer": "~6.0.3",
+    "rxjs": "~7.4.0",
+    "rfc4648": "~1.5.0"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.0",
+    "@esbuild-plugins/node-modules-polyfill": "^0.1.1",
+    "debug": "^4.3.2",
+    "es-module-lexer": "^0.4.1",
+    "esbuild": "^0.12.1",
+    "vite": "^2.1.5",
+    "eslint": "~8.4.1",
+    "@typescript-eslint/eslint-plugin": "~5.6.0",
+    "@typescript-eslint/parser": "~5.6.0"
+  }
+}

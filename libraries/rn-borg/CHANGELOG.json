@@ -1,0 +1,22 @@
+{
+  "name": "@functionland/rn-borg",
+  "entries": [
+    {
+      "version": "0.2.3",
+      "tag": "@functionland/rn-borg_v0.2.3",
+      "date": "Tue, 30 Nov 2021 16:00:51 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "clean up type's and use enum instead of plain text"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/rn-borg-bridge\" from `0.2.2` to `0.2.3`"
+          }
+        ]
+      }
+    }
+  ]
+}

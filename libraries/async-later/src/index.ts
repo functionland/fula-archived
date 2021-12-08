@@ -1,7 +1,11 @@
 export type Resolve<T> = (value?: T | PromiseLike<T>) => void;
 
 export interface ObservableLike<T> {
-  subscribe(next: (value?: T) => void, error: (error: any) => void, complete: () => void):any;
+  subscribe(
+    next: (value?: T) => void,
+    error: (error: any) => void,
+    complete: () => void
+  ): any;
 }
 
 export * from './resolve-later';

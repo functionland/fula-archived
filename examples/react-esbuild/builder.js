@@ -34,7 +34,7 @@ const buildParams = {
   sourcemap: true,
   logLevel: 'error',
   incremental: true,
-  define:{'global':'window'}
+  define: { global: 'window' }
 }
 ;(async () => {
   const builder = await build(buildParams)

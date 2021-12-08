@@ -1,2 +1,2 @@
-import Borg from "./BorgClient";
+import Borg from './BorgClient';
 export default Borg;

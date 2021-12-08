@@ -1,5 +1,4 @@
 import { HandlerProps } from 'libp2p';
-// @ts-ignore
 import { toAsyncIterable } from 'async-later';
 import * as File from './handlers';
 import * as Schema from './schema';

@@ -1,11 +1,11 @@
 import pipe from 'it-pipe';
-import type {MuxedStream} from 'libp2p';
-import {Observable, Observer, Subject} from 'rxjs';
-import {consume, map, pipeline} from 'streaming-iterables';
-import {resolveLater, toAsyncIterable} from 'async-later';
-import {Response} from '../';
-import {Meta, Request} from '../schema';
-import {PROTOCOL} from '../constants';
+import type { MuxedStream } from 'libp2p';
+import { Subject } from 'rxjs';
+import { consume, map, pipeline } from 'streaming-iterables';
+import { resolveLater, toAsyncIterable } from 'async-later';
+import { Response } from '../';
+import { Meta, Request } from '../schema';
+import { PROTOCOL } from '../constants';
 
 export const incomingFiles = new Subject<{
     meta: Meta;
@@ -34,7 +34,7 @@ export async function sendFile({connection, file}: {
         throw Error('Protocol mismatched')
     }
 
-    let {name, type, size, lastModified} = file;
+    const {name, type, size, lastModified} = file;
 
     const streamSendFile = async function* () {
         yield Request.toBinary({
@@ -58,6 +58,7 @@ export async function sendFile({connection, file}: {
         }
     };
 
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return pipe(streamSendFile, connection.stream, async function (source: any) {
         for await (const message of source) {
             return String(message); // id
@@ -75,7 +76,7 @@ export async function streamFile({connection, source, meta}: {
     if (connection.protocol !== PROTOCOL) {
         throw Error('Protocol mismatched')
     }
-    let {name, type, size, lastModified} = meta;
+    const {name, type, size, lastModified} = meta;
     const streamSendFile = async function* () {
         yield Request.toBinary({
             type: {
@@ -92,6 +93,7 @@ export async function streamFile({connection, source, meta}: {
             yield value
         }
     };
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return pipe(streamSendFile, connection.stream, async function (_source: any) {
         for await (const message of _source) {
             return String(message); // id

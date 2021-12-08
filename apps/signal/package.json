@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "start": "star-signal",
-    "build":""
+    "build":"",
+    "lint": ""
   },
   "license": "MIT",
   "devDependencies": {

@@ -1,7 +1,6 @@
 import { build } from 'esbuild';
 import babel from 'esbuild-plugin-babel';
 
-
 build({
   entryPoints: ['src/index.ts'],
   platform: 'browser',
@@ -11,7 +10,7 @@ build({
   sourcemap: true,
   plugins: [babel()],
   outfile: 'dist/browser/esm.js',
-  tsconfig:'./tsconfig.browser.json'
+  tsconfig: './tsconfig.browser.json'
 });
 
 build({
@@ -21,7 +20,7 @@ build({
   bundle: true,
   sourcemap: true,
   outfile: 'dist/node/cjs.js',
-  tsconfig:'./tsconfig.node.json'
+  tsconfig: './tsconfig.node.json'
 });
 
 build({
@@ -32,5 +31,5 @@ build({
   bundle: true,
   sourcemap: true,
   outfile: 'dist/node/esm.js',
-  tsconfig:'./tsconfig.node.json'
+  tsconfig: './tsconfig.node.json'
 });

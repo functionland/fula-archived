@@ -12,7 +12,7 @@ esbuild.build({
   plugins: [babel()],
   outfile: 'dist/browser/esm.js',
   define: {
-    global: 'globalThis',
+    global: 'globalThis'
   }
 });
 
@@ -24,22 +24,21 @@ esbuild.build({
   sourcemap: true,
   outfile: 'dist/node/cjs.js',
   define: {
-    global: 'globalThis',
+    global: 'globalThis'
   },
-  inject: [path.resolve('scripts/node-globals.mjs')],
+  inject: [path.resolve('scripts/node-globals.mjs')]
 });
 
 esbuild.build({
   entryPoints: ['src/index.ts'],
   platform: 'node',
-  format:'esm',
+  format: 'esm',
   target: 'node14',
   bundle: true,
   sourcemap: true,
   outfile: 'dist/node/esm.js',
   define: {
-    global: 'globalThis',
+    global: 'globalThis'
   },
-  inject: [path.resolve('scripts/node-globals.mjs')],
+  inject: [path.resolve('scripts/node-globals.mjs')]
 });
-

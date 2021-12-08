@@ -22,13 +22,12 @@ export function firstValue<T>(iterable?: Iterable<T> | AsyncIterable<T>) {
 }
 
 async function _lastValue<T>(iterable: Iterable<T> | AsyncIterable<T>) {
-  let value: T;
+  let value: T | undefined;
   let wasEmpty = true;
   for await (value of iterable) {
     wasEmpty = false;
   }
-  if (!wasEmpty) {
-    // @ts-ignore
+  if (!wasEmpty && value) {
     return value;
   }
   throw new ReferenceError('Cannot get last value of empty iterable');

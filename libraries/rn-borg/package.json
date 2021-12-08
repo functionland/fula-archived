@@ -13,7 +13,11 @@
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
     "jest-expo": "~41.0.0-beta.0",
-    "typescript": "~4.0.0"
+    "typescript": "~4.0.0",
+    "eslint": "~8.4.1",
+    "@typescript-eslint/eslint-plugin": "~5.6.0",
+    "@typescript-eslint/parser": "~5.6.0"
+
   },
   "peerDependencies": {
     "react": "16.13.1",
@@ -28,6 +32,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"no build\""
+    "build": "echo \"no build\"",
+    "lint": "eslint src --fix"
   }
 }

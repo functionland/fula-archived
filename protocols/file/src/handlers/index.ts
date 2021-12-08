@@ -6,14 +6,14 @@ import { Request } from '../schema';
 import { save } from './save';
 import { retrieve } from './retrieve';
 import { getMeta } from './meta';
-import {PROTOCOL} from '../constants'
+import { PROTOCOL } from '../constants';
 
 export const handleFile: ProtocolHandler = async ({ stream }) => {
   let response: Response = Promise.resolve(Response.EMPTY);
   await pipe(stream, async function (source) {
     const [streamHead, streamTail] = partition(
       1,
-      map(message => message.slice(), source)
+      map((message) => message.slice(), source)
     );
     const request = Request.fromBinary(await firstValue(streamHead));
     switch (request.type.oneofKind) {
@@ -35,4 +35,4 @@ export const handleFile: ProtocolHandler = async ({ stream }) => {
 export { incomingFiles, sendFile, streamFile } from './save';
 export { setContentRetrievalMethod, receiveContent } from './retrieve';
 export { setMetaRetrievalMethod, receiveMeta } from './meta';
-export {PROTOCOL}
+export { PROTOCOL };

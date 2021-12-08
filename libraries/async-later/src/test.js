@@ -1,11 +1,11 @@
 import test from 'tape';
-import { pipeline, map, consume } from 'streaming-iterables';
+import { consume, map, pipeline } from 'streaming-iterables';
 import {
-  resolveLater,
-  toAsyncIterable,
   concurrently,
   iterateLater,
-  partition
+  partition,
+  resolveLater,
+  toAsyncIterable
 } from '.';
 
 test('resolveLater', async (t) => {
@@ -15,51 +15,47 @@ test('resolveLater', async (t) => {
 });
 
 test('toAsyncIterable', async (t) => {
-  for await (const value of toAsyncIterable(42)) {
+  for await (const value of toAsyncIterable(42))
     t.equal(value, 42, 'T iterates');
-  }
-  for await (const value of toAsyncIterable(Promise.resolve(42))) {
+
+  for await (const value of toAsyncIterable(Promise.resolve(42)))
     t.equal(value, 42, 'Promise<T> iterates');
-  }
-  for await (const value of toAsyncIterable([42])) {
+
+  for await (const value of toAsyncIterable([42]))
     t.equal(value, 42, 'T[] with one element iterates');
-  }
-  for await (const value of toAsyncIterable([])) {
+
+  for await (const value of toAsyncIterable([]))
     t.fail('T[] with no element should not iterate');
-  }
+
   let current = 0;
-  for await (const value of toAsyncIterable([0, 1, 2])) {
+  for await (const value of toAsyncIterable([0, 1, 2]))
     t.equal(value, current++, 'T[] with multiple elements iterates');
-  }
+
   current = 0;
   for await (const value of toAsyncIterable([
     Promise.resolve(0),
     1,
     Promise.resolve(2)
-  ])) {
+  ]))
     t.equal(
       value,
       current++,
       '(Promise<T>| T)[] with multiple elements iterates'
     );
-  }
 });
 
 test('iterateLater empty', async (t) => {
   const [iterable, _, complete] = iterateLater();
   complete();
-  for await (const value of iterable) {
+  for await (const value of iterable)
     t.fail('Empty iterable should not iterate');
-  }
 });
 
 test('iterateLater single value', async (t) => {
   const [iterable, next, complete] = iterateLater();
   next(42);
   complete();
-  for await (const value of iterable) {
-    t.equal(value, 42);
-  }
+  for await (const value of iterable) t.equal(value, 42);
 });
 
 test('iterateLater simple', async (t) => {
@@ -69,9 +65,8 @@ test('iterateLater simple', async (t) => {
   next(2);
   complete();
   let current = 0;
-  for await (const value of iterable) {
+  for await (const value of iterable)
     t.equal(value, current++, `Pass ${current}`);
-  }
 });
 
 const delay = (milliseconds) =>
@@ -116,37 +111,36 @@ const randomDuration = () => Math.round(Math.random() * 40);
 
 test('partition', async (t) => {
   let [p1, p2] = partition(42, toAsyncIterable([]));
-  for await (const value of p1) {
+  for await (const value of p1)
     t.fail(
       `First partition of empty iterable should also be empty, received: ${value}`
     );
-  }
-  for await (const value of p2) {
+
+  for await (const value of p2)
     t.fail(
       `Second partition of empty iterable should also be empty, received: ${value}`
     );
-  }
+
   [p1, p2] = partition(1, toAsyncIterable([42]));
-  for await (const value of p1) {
+  for await (const value of p1)
     t.equal(
       value,
       42,
       'First partition of iterable with single value yield the value'
     );
-  }
-  for await (const value of p2) {
+
+  for await (const value of p2)
     t.fail(
       `Second partition of iterable with single value should be empty, received: ${value}`
     );
-  }
+
   [p1, p2] = partition(1, toAsyncIterable([0, 1, 2, 3, 4, 5, 6]));
   let current = 0;
-  for await (const value of p1) {
+  for await (const value of p1)
     t.equal(value, current++, `Pass ${current} of first partition`);
-  }
-  for await (const value of p2) {
+
+  for await (const value of p2)
     t.equal(value, current++, `Pass ${current} of second partition`);
-  }
 });
 
 test('concurrently', async (t) => {

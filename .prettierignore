@@ -30,3 +30,7 @@ temp
 
 # Prettier reformats code blocks inside Markdown, which affects rendered output
 *.md
+
+# auto generated files
+.idea
+.vscode

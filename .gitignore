@@ -114,6 +114,9 @@ storybook-static/
 .yalc
 yalc.lock
 
-# rush 
+# rush
 .rush
 pnpm-lock.yaml
+
+#jetbraines
+.idea

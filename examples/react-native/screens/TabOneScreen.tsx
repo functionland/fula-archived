@@ -45,6 +45,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
 
     const onSend = async (e: any) => {
         try {
+            //@ts-ignore
             setFileId(await borg.sendFile(image.uri))
             console.log("asdasdasd")
             console.log(fileId)
@@ -56,6 +57,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
     const onReceiveFile = async (e: any) => {
         try {
             console.log("reseived called")
+            //@ts-ignore
             const file = await borg.receiveFile(fileId)
             // console.log(await blobToBase64(file))
             console.log(file)
@@ -68,6 +70,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
 
     const onReceiveMeta = async (e: any) => {
         try {
+            //@ts-ignore
             setOutput(await borg.receiveMeta(fileId))
         } catch (ee) {
             console.log(ee)

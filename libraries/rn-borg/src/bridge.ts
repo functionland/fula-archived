@@ -1,6 +1,6 @@
-import {EventEmitter} from "events";
-import {Observable, Observer} from "rxjs";
-import {generateUUID} from "./utils";
+import { EventEmitter } from "events";
+import { Observable, Observer } from 'rxjs/dist/types';
+import { generateUUID } from "./utils";
 import {
     Chunk,
     ChunkStatusType,
@@ -10,7 +10,7 @@ import {
     RPCRequest,
     RPCResponse,
     RPCStatusType
-} from "../../rn-borg-types";
+} from "../../rn-borg-bridge/types";
 import {SchemaProtocol} from "../../../protocols/file";
 
 const emitter = new EventEmitter()
@@ -75,7 +75,7 @@ export const eventBaseStreamToPromise = (transferId: string) => {
 
 export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
     return {
-        async streamSend(transferId: string, iterator: Iterator<String>, meta: SchemaProtocol.Meta) {
+        async streamSend(transferId: string, iterator: Iterator<string>, meta: SchemaProtocol.Meta) {
             postMessage({
                 id: transferId,
                 type: MessageType.StreamChunk,
@@ -83,6 +83,7 @@ export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
                 status: ChunkStatusType.START,
                 data: ""
             })
+            // eslint-disable-next-line no-constant-condition
             while (true) {
                 const {value, done} = await iterator.next();
                 if (done) {
@@ -104,9 +105,8 @@ export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
                 })
             }
         },
-        async RPC(func: string, args: Array<any>) {
+        async RPC(func: string, args: Array<string>) {
             return new Promise<RPCResponse>((resolve, reject) => {
-                // @ts-ignore
                 const id = generateUUID(10)
                 postMessage({
                     id,
@@ -121,8 +121,7 @@ export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
                 })
             })
         },
-        async RPCStreamResponse(func: string, args: Array<any>) {
-            // @ts-ignore
+        async RPCStreamResponse(func: string, args: Array<string>) {
             const id = generateUUID(10)
             postMessage({
                 id,
@@ -132,19 +131,20 @@ export function bridge(postMessage: (m: RPCRequest | Chunk) => void) {
             })
             return eventBaseStreamToPromise(id)
         },
-        RPCStreamArgs(func: string, args: Array<any>, {
+        async RPCStreamArgs(func: string, args: Array<string>, {
             iterator,
             meta
-        }: { iterator: Iterator<any>, meta: SchemaProtocol.Meta }) {
-            return new Promise<RPCResponse>(async (resolve, reject) => {
-                const id = generateUUID(10)
-                postMessage({
-                    id,
-                    function: func,
-                    args,
-                    type: MessageType.RPCRequest
-                })
-                await this.streamSend(id, iterator, meta)
+        }: { iterator: Iterator<never>, meta: SchemaProtocol.Meta }) {
+            const id = generateUUID(10)
+            postMessage({
+                id,
+                function: func,
+                args,
+                type: MessageType.RPCRequest
+            })
+            await this.streamSend(id, iterator, meta)
+            return new Promise<RPCResponse>((resolve, reject) => {
+
                 emitter.once(id, (data: RPCResponse) => {
                     if (data.status === RPCStatusType.failed)
                         return reject

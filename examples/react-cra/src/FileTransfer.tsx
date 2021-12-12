@@ -59,7 +59,7 @@ export const FileTransfer = ({...props}: FileTransferProps) => {
             return
         }
         const meta =  {name:selectedFile.name,type:selectedFile.type,lastModified:selectedFile.lastModified,size:selectedFile.size}
-        const id = await borgClient.sendStreamFile(fileReader2(selectedFile),meta); // @ts-ignore
+        const id = await borgClient.sendStreamFile(fileReader2(selectedFile),meta);
         setFileId(id);
     }
 

@@ -25,15 +25,15 @@ A personal server is a commodity hardware (PC, Raspberry Pi, etc.) that's kept *
 
 To achieve this, we are developing protocols to accommodate client-server programming with minimal effort on developer's side:
 
-- [File Protocol](packages/protocols/file): Send and receive files in a browser or an app **(stage: prototype)**
-- [Data Protocol](packages/protocols/data): Database interface over at client-side; facilitates describing linked JSON documents and having them saved/retrieved **(stage: design draft)**
-- [AI Protocol](packages/protocols/ai): Map-Reduce stack for distributed processing **(stage: ideation)**
+- [File Protocol](protocols/file): Send and receive files in a browser or an app **(stage: prototype)**
+- [Data Protocol](protocols/data): Database interface over at client-side; facilitates describing linked JSON documents and having them saved/retrieved **(stage: design draft)**
+- [AI Protocol](protocols/ai): Map-Reduce stack for distributed processing **(stage: ideation)**
 
 ## Architecture
 
 ![box architecture](https://user-images.githubusercontent.com/1758649/126281564-a3a5aea9-50a6-4ae9-ae2b-439977d57980.jpg)
 
-An app talks with the server(s) by invoking APIs from `@functionland/graph` library. The Graph library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB for data persistance and S3 for file storage.
+An app talks with the server(s) by invoking APIs from `@functionland/borg` library. The Borg library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB for data persistence and S3 for file storage.
 
 On the server side, data or file will be saved on a private IPFS instance. There is also a public IPFS instance which comes to play in sharing: when the end user requests to share some data, an encrypted copy will be saved on the public IPFS network, anyone with whom the key has been shared can access the data.
 
@@ -43,10 +43,18 @@ The **box** stack can provide backup guarantees by having the data pinned on mul
 
 | Name | Description |
 | --- | --- |
-| [protocols](packages/protocols) | Libp2p protocols for the box stack |
-| [server](packages/server) | Reference server implementation in Node.js |
-| [graph](packages/graph) | Client library for using the protocols from browser and react native |
-| [cli](packages/cli) | **fx** CLI for developers and sys admins |
+| [protocols](protocols) | Libp2p protocols for the box stack |
+| [server](apps/server) | Reference server implementation in Node.js |
+| [borg](libraries/borg) | Client library for using the protocols from browser |
+| [rn-borg](libraries/rn-borg) | Client library ported for react native |
+
+
+## Examples
+
+| Name | Description |
+| --- | --- |
+| [react](examples/react-cra) | Example of using borg client and box server |
+| [react-native](examples/react-native) | Example of using borg client in react-native and box server |
 
 ## License
 

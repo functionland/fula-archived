@@ -5,18 +5,27 @@ import { View } from 'react-native';
 import { fileReader2 } from './utils';
 import { messageHandler, bridge } from './bridge';
 import { template } from './template';
-import { RPCStatusType } from '@functionland/rn-borg-bridge/types';
+import {Message, RPCStatusType} from '@functionland/rn-borg-bridge/types';
 
 export const BorgContext = createContext({});
 
-interface Borg {}
+interface Borg {
+  start: () => Promise<string>
+  connect: (peerId:string) => Promise<string>
+  sendFile: (uri:string) => Promise<string>
+  receiveFile: (fileId: string) => Promise<string>
+  receiveMeta: (fileId: string) => Promise<string>
+}
 
 export default function Borg(props: any) {
   const webViewRef = useRef(null);
 
-  const postMessage = (message: any) => {
+  const postMessage = (message: Message) => {
     if (webViewRef && webViewRef.current)
-      webViewRef.current.postMessage(JSON.stringify(message));
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      { // @ts-ignore
+        webViewRef.current.postMessage(JSON.stringify(message));
+      }
     else throw Error('webview not Found');
   };
   const rpc = bridge(postMessage);
@@ -34,16 +43,17 @@ export default function Borg(props: any) {
       return response.payload;
     },
     async sendFile(uri: string): Promise<string> {
-      return new Promise(async (resolve, reject) => {
-        const reader = fileReader2(uri);
-        const iterator = reader[Symbol.asyncIterator]();
-        const obj = await iterator.next();
-        const meta = obj.value;
+      const reader = fileReader2(uri);
+      const iterator = reader[Symbol.asyncIterator]();
+      const obj = await iterator.next();
+      const meta = obj.value;
+      const response = await rpc.RPCStreamArgs('sendFile', [], {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const response = await rpc.RPCStreamArgs('sendFile', [], {
-          iterator,
-          meta
-        });
+        iterator,
+        meta
+      });
+      return new Promise((resolve, reject) => {
         if (response.status === RPCStatusType.done && response.payload)
           resolve(response.payload);
         else reject(response.payload);
@@ -51,12 +61,11 @@ export default function Borg(props: any) {
     },
 
     async receiveFile(fileId: string): Promise<string> {
-      return new Promise(async (resolve, reject) => {
-        const { source, meta } = await rpc.RPCStreamResponse('receiveFile', [
-          fileId
-        ]);
-        let result = '';
-        // @ts-ignore
+      const { source, meta } = await rpc.RPCStreamResponse('receiveFile', [
+        fileId
+      ]);
+      let result = '';
+      return new Promise((resolve, reject) => {
         source.subscribe({
           next: (value: string) => {
             result += value;

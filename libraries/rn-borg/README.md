@@ -19,18 +19,19 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
+
+
 <div align="center">
 
 
 <h3 align="center">Borg Client</h3>
 
   <p align="center">
-    The Borg library abstracts away the protocols and `libp2p` connection, and exposes APIs similar to MongoDB
-    for data persistence and S3 for file storage
-    <br />
+    The Borg library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB
+    for data persistence and S3 for file storage. this package bridge borg functionality to react native using webview.
+
   </p>
 </div>
-
 
 
 ### Built With
@@ -54,11 +55,11 @@ not available, so you become public node that can accessed from anywhere.
 
 Install NPM package
    ```sh
-   npm install @functionland/borg --save
+   npm install @functionland/rn-borg --save
    ```
 or using CDN
   ```html
-<script src="https://cdn.jsdelivr.net/npm/@functionland/borg/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@functionland/rn-borg@0.2.2/dist/index.js"></script>
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -66,30 +67,56 @@ or using CDN
 
 <!-- USAGE EXAMPLES -->
 ## Usage
- Start borg and use file storage of [borg-server](/apps/server)
-   ```js
-    import {Borg, createClient} from '@functionland/borg'
+ borg client will be
 
-    // Create a borg client 
-    const borgClient = await createClient();
-    // ...
-    // connect to a borg server by its base58 string PeerId
-    await borgClient.connect(serverId)
-    // send file and get cid
-    // selectedFile send file use StreamReader interface or AsyncItrable and get cid
-    // meta {name,type,lastModified,size}
-    const FileCid = await borgClient.sendStreamFile(selectedFile,meta);
-    // recive meta data 
-    const data = await borgClient.receiveMeta(fileId);
-    // recive file using cid
-    const data = await borgClient.receiveFile(FileCid);
-    let reader = new FileReader();
-    reader.readAsDataURL(data);
-    reader.onloadend = (e) => setContent(reader.result)
+   ```js
+    // import provider
+import Borg, {BorgContext} from '@functionland/rn-borg';
+import React, {useContext} from 'react'
+import {View} from 'react-native'
+
+// add Borg Provider
+const TopLevelComponent = (props) => {
+  return (
+          <View>
+            <Borg>
+              <App/>
+            </Borg>
+          </View>
+  )
+}
+
+// Use rn Borg
+const App = (props) => {
+  borg = useContext(BorgContext)
+
+  async function connect() {
+    await borg.start()
+    await borg.connect(serverId)
+  }
+
+  const onSend = async (e: any) => {
+    let fileId = await borg.sendFile(image.uri)
+    console.log(fileId)
+  }
+
+  const onReceiveFile = async (e: any) => {
+    const file = await borg.receiveFile(fileId)
+    console.log(await blobToBase64(file))
+  }
+
+  const onReceiveMeta = async (e: any) => {
+    const meta =await borg.receiveMeta(fileId)
+    console.log(meta)
+  }
+}
+
+AppRegistry.registerComponent('WhateverName', () => TopLevelComponent)
+
    ```
 
 
-_For more examples, please refer to the [Examples](/examples/react-cra)_
+_For more examples, please refer to the [Examples](/examples/react-native)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -133,11 +160,35 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-See [`LICENSE`](/LICENSE) for more information.
+See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
+
+[comment]: <> (<!-- CONTACT -->)
+
+[comment]: <> (## Contact)
+
+[comment]: <> (Your Name - [@twitter_handle]&#40;https://twitter.com/twitter_handle&#41; - email@email_client.com)
+
+[comment]: <> (Project Link: [https://github.com/github_username/repo_name]&#40;https://github.com/github_username/repo_name&#41;)
+
+[comment]: <> (<p align="right">&#40;<a href="#top">back to top</a>&#41;</p>)
+
+
+
+[comment]: <> (<!-- ACKNOWLEDGMENTS -->)
+
+[comment]: <> (## Acknowledgments)
+
+[comment]: <> (* []&#40;&#41;)
+
+[comment]: <> (* []&#40;&#41;)
+
+[comment]: <> (* []&#40;&#41;)
+
+[comment]: <> (<p align="right">&#40;<a href="#top">back to top</a>&#41;</p>)
 
 
 

@@ -120,7 +120,7 @@ so you become public node that can accessed from anywhere.
 This is an example of how to list things you need to use the software and how to install them.
 * rush
   ```sh
-  npm install rush -g
+  npm install -g @microsoft/rush
   ```
 
 ### Installation
@@ -131,7 +131,7 @@ This is an example of how to list things you need to use the software and how to
    ```
 2. Install dependencies packages and build
    ```sh
-   rush install
+   rush update
    rush build
    ```
 

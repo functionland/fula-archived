@@ -97,11 +97,6 @@
       "reviewCategory": "production"
     },
     {
-      "packageName": "react-esbuild",
-      "projectFolder": "examples/react-esbuild",
-      "reviewCategory": "prototypes"
-    },
-    {
       "packageName": "react-cra",
       "projectFolder": "examples/react-cra",
       "reviewCategory": "prototypes"

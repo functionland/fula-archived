@@ -1,15 +1,16 @@
-import Libp2p from 'libp2p';
+import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
 import wrtc from 'wrtc';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
-import {NOISE, Noise} from "@chainsafe/libp2p-noise"
-import PeerId from 'peer-id';
+import { NOISE, Noise } from "@chainsafe/libp2p-noise"
 import pipe from 'it-pipe';
 import ipfs, { IPFS } from 'ipfs';
 import Repo from 'ipfs-repo';
-import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import { FileProtocol, SchemaProtocol } from '@functionland/file-protocol';
 import { resolveLater } from 'async-later';
+import _debug from 'debug';
+const debug = _debug('server')
+
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
@@ -22,13 +23,12 @@ export async function getIPFS() {
   return ipfsPromise;
 }
 
-const noise = new Noise();
+new Noise();
 
-async function main() {
-  const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
+export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
+  const createLibp2 = () => {
     resolveLibp2p(
       Libp2p.create({
-        peerId,
         addresses: {
           listen: [
             '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
@@ -53,6 +53,7 @@ async function main() {
             },
           },
         },
+        ...config
       })
     );
     return libp2pPromise;
@@ -60,18 +61,16 @@ async function main() {
 
   resolveIpfs(
     ipfs.create({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       libp2p: createLibp2,
       repo: new Repo('./.ipfs'),
+      peerId: config?.peerId
     })
   );
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
-
-  libp2pNode.connectionManager.on('peer:connect', connection => {
-    console.log(`Connected to ${connection.remotePeer.toB58String()}!`);
-  });
 
   libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 
@@ -94,16 +93,16 @@ async function main() {
       getContent()
     );
     const { cid } = await ipfsNode.add(SchemaProtocol.File.toBinary({ contentPath: file.toString(), meta }));
-    console.log('done');
+    debug('done');
     declareId(cid.toString());
     const cat = async cid => {
       for await (const chunk of ipfsNode.cat(cid)) {
-        console.log(SchemaProtocol.File.fromBinary(chunk));
+        debug(SchemaProtocol.File.fromBinary(chunk));
       }
     };
     const ls = async cid => {
       for await (const chunk of ipfsNode.ls(cid)) {
-        console.log(chunk);
+        debug(chunk);
         chunk.type !== 'file' && (await ls(chunk.cid));
         chunk.type === 'file' && (await cat(chunk.cid));
       }
@@ -128,14 +127,14 @@ async function main() {
         const { stream } = await connection.newStream([FileProtocol.PROTOCOL]);
         await pipe([message], stream);
       } catch (err) {
-        console.error('Could not negotiate chat protocol stream with peer', err);
+        debug('Could not negotiate chat protocol stream with peer', err);
       }
     });
   });
 }
 
-async function graceful() {
-  console.log('\nStopping server...');
+export async function graceful() {
+  debug('\nStopping server...');
   const ipfs = await getIPFS();
   await ipfs.stop();
   process.exit(0);
@@ -144,4 +143,4 @@ async function graceful() {
 process.on('SIGTERM', graceful);
 process.on('SIGINT', graceful);
 
-main();
+

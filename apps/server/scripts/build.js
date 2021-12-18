@@ -10,11 +10,11 @@ const external = Object.keys(packages.dependencies).filter(
 );
 
 build({
-  entryPoints: ['src/app.ts'],
+  entryPoints: ['src/index.ts'],
   platform: 'node',
   target: 'node14',
   bundle: true,
   sourcemap: true,
-  outfile: 'dist/app.js',
+  outfile: 'dist/index.js',
   external
 });

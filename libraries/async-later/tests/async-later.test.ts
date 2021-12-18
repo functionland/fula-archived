@@ -6,7 +6,7 @@ import {
   partition,
   resolveLater,
   toAsyncIterable
-} from '.';
+} from '../src';
 
 test('resolveLater', async (t) => {
   const [promise, resolve] = resolveLater();
@@ -107,7 +107,7 @@ const randomDuration = () => Math.round(Math.random() * 40);
   ['slower inflow', () => 30, () => 10, 5],
   ['slower outflow', () => 10, () => 30, 15],
   ['random inflow/outflow speed', randomDuration, randomDuration, 50]
-].map((args) => testIterateLaterWith(...args));
+].map((args) => testIterateLaterWith(args[0], args[1], args[2], args[3]));
 
 test('partition', async (t) => {
   let [p1, p2] = partition(42, toAsyncIterable([]));
@@ -121,6 +121,8 @@ test('partition', async (t) => {
       `Second partition of empty iterable should also be empty, received: ${value}`
     );
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   [p1, p2] = partition(1, toAsyncIterable([42]));
   for await (const value of p1)
     t.equal(
@@ -134,6 +136,8 @@ test('partition', async (t) => {
       `Second partition of iterable with single value should be empty, received: ${value}`
     );
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   [p1, p2] = partition(1, toAsyncIterable([0, 1, 2, 3, 4, 5, 6]));
   let current = 0;
   for await (const value of p1)

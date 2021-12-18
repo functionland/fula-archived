@@ -2,15 +2,21 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "target": "ES2020",
-    "module": "ES2020",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "lib": ["ES2019"],
     "allowJs": true,
-    "rootDir": "src",
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".", // This must be specified if "paths" is.
   },
-  "exclude": ["dist", "scripts", "src/**/*.js"]
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

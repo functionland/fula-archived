@@ -2,10 +2,6 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
       "module": "CommonJS",
-      "outDir": "./dist/browser",
-      "baseUrl": ".", // This must be specified if "paths" is.
-      "paths": {
-        "async-later": ["node_modules/async-later/dist/node"] // This mapping is relative to "baseUrl"
-      }
+      "outDir": "./dist/node"
     }
   }

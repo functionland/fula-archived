@@ -3,9 +3,8 @@
   "version": "0.3.2",
   "description": "",
   "types": "src/index.ts",
-  "main": "./dist/node/cjs.js",
+  "main": "./dist/node/esm.js",
   "module": "./dist/node/esm.js",
-  "type": "module",
   "browser": "./dist/browser/esm.js",
   "scripts": {
     "build": "node scripts/build.mjs",

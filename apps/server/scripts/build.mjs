@@ -1,6 +1,6 @@
-const { build } = require('esbuild');
-const path = require('path');
-const fs = require('fs');
+import { build } from 'esbuild';
+import path from 'path';
+import fs from 'fs';
 
 const packages = JSON.parse(
   fs.readFileSync(path.resolve('./package.json'), { encoding: 'utf8' })
@@ -12,9 +12,14 @@ const external = Object.keys(packages.dependencies).filter(
 build({
   entryPoints: ['src/index.ts'],
   platform: 'node',
-  target: 'node14',
+  format: 'cjs',
   bundle: true,
   sourcemap: true,
   outfile: 'dist/index.js',
-  external
+  external: [
+      'wrtc',
+      'libp2p',
+      'leveldown',
+      '@functionland/file-protocol'
+  ]
 });

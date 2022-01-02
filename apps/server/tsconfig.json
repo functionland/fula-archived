@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "Node",
     "lib": ["es2019", "dom"],
@@ -11,6 +11,9 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "rootDir": "./",
+    "baseUrl": "./"
   },
   "include": [
     "src/**/*",

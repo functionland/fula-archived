@@ -1,17 +1,26 @@
-  {
-    "compilerOptions": {
-      "downlevelIteration": true,
-      "target": "ES2020",
-      "moduleResolution": "Node",
-      "lib": [
-        "es2019",
-        "dom"
-      ],
-      "allowJs": true,
-      "rootDir": "src",
-      "strict": true,
-      "noImplicitAny": false,
-      "resolveJsonModule": true,
-      "allowSyntheticDefaultImports": true,
-    }
-  }
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "rootDir": "./",
+    "baseUrl": "./",
+    "moduleResolution": "node",
+    "lib": ["ES2019"],
+    "allowJs": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts"
+  ]
+}

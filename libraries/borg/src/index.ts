@@ -1,4 +1,3 @@
-// @ts-ignore
 import type {SchemaProtocol} from "@functionland/file-protocol";
 import {FileProtocol} from '@functionland/file-protocol';
 import {configure} from './config';
@@ -8,7 +7,6 @@ import {SIG_MULTIADDRS} from "./constant";
 
 
 // types
-
 declare type FileId = string
 
 export interface Borg {
@@ -24,14 +22,12 @@ export interface Borg {
 
 // end of types
 
-export async function createClient(config?: Libp2pOptions & constructorOptions): Promise<Borg> {
-    let node: Libp2p;
-    let conf: any;
+export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>): Promise<Borg> {
+    const conf = await configure(config);
+    const node = await Libp2p.create(conf);
     let connection: Connection | undefined;
     let serverPeerId: PeerId
 
-    conf = await configure(config);
-    node = await Libp2p.create(conf);
     node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
     await node.start();
 
@@ -90,7 +86,7 @@ export async function createClient(config?: Libp2pOptions & constructorOptions):
                 const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
                 const connectionObj2 = await _getStreamConnection()
                 const source = FileProtocol.receiveContent({connection: connectionObj2, id})
-                let content: Array<Uint8Array> = [];
+                const content: Array<Uint8Array> = [];
                 for await (const chunk of source) {
                     content.push(Uint8Array.from(chunk));
                 }

@@ -2,7 +2,7 @@ import test from 'tape';
 import { main, graceful, getLibp2p, getIPFS } from '../src/app';
 import Libp2p from 'libp2p';
 import WebRTCStar from 'libp2p-webrtc-star';
-import { NOISE, Noise } from '@chainsafe/libp2p-noise/dist/src';
+import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 import wrtc from 'wrtc';
 import Mplex from 'libp2p-mplex';
 import { File, Blob } from '@web-std/file';
@@ -65,7 +65,12 @@ test('Test Server Functionality', async function (t) {
   const client = await createClient();
   await client.start();
   try {
-    client.peerStore.addressBook.set(await node.peerId, node.multiaddrs);
+    node.multiaddrs.map(x=>{
+      console.log(x)
+      console.log(node.peerId.toB58String())
+    })
+    console.log(ipfs.swarm.localAddrs)
+    client.peerStore.addressBook.set(node.peerId, node.multiaddrs);
     const conn = await client.dial(await node.peerId);
     t.pass('connection ready');
     let stream = await conn.newStream(FileProtocol.PROTOCOL);

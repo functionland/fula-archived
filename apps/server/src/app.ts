@@ -2,14 +2,18 @@ import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
 import wrtc from 'wrtc';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
-import { NOISE, Noise } from "@chainsafe/libp2p-noise"
+import {NOISE, Noise} from "@chainsafe/libp2p-noise"
+import PeerId from 'peer-id';
 import pipe from 'it-pipe';
 import ipfs, { IPFS } from 'ipfs';
 import Repo from 'ipfs-repo';
+import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import { FileProtocol, SchemaProtocol } from '@functionland/file-protocol';
 import { resolveLater } from 'async-later';
-import _debug from 'debug';
-const debug = _debug('server')
+import debug from 'debug';
+
+
+debug.enabled('*')
 
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
@@ -26,9 +30,11 @@ export async function getIPFS() {
 new Noise();
 
 export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
-  const createLibp2 = () => {
+  const peerId = await PeerId.create({bits:2048,keyType:'Ed25519'})
+  const createLibp2 = ({ peerId, config }: { peerId: PeerId; config: IPFSConfig }) => {
     resolveLibp2p(
       Libp2p.create({
+        peerId,
         addresses: {
           listen: [
             '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',

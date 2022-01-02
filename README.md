@@ -61,6 +61,7 @@ The **box** stack can provide backup guarantees by having the data pinned on mul
 [MIT](LICENSE)
 
 ## Related Publications and News
+
 - https://filecoin.io/blog/posts/249k-for-17-projects-from-dorahacks-filecoin-grant-hackathon/
 - https://dev.to/fx/google-photos-open-source-alternative-with-react-native-80c
 - https://hackernoon.com/were-building-an-open-source-google-photos-alternative-with-react-native-zw4537pa

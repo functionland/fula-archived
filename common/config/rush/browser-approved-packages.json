@@ -59,6 +59,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@functionland/server",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@ipld/dag-cbor",
       "allowedCategories": [ "production" ]
     },
@@ -96,11 +100,15 @@
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "@typescript-eslint/parser",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "@web-std/file",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "async-later",
@@ -111,12 +119,20 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "browserify",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "buffer",
       "allowedCategories": [ "production" ]
     },
     {
       "name": "chokidar",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "chromedriver",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "core-js",
@@ -139,8 +155,12 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "esbuild-runner",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "eslint",
-      "allowedCategories": [ "prototypes" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "eslint-config-airbnb",
@@ -149,6 +169,10 @@
     {
       "name": "eslint-config-prettier",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "eslint-config-recommended",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "eslint-plugin-import",
@@ -267,6 +291,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "nyc",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "openpgp",
       "allowedCategories": [ "production" ]
     },
@@ -319,7 +347,15 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "selenium-webdriver",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "streaming-iterables",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tap-spec",
       "allowedCategories": [ "production" ]
     },
     {
@@ -328,6 +364,18 @@
     },
     {
       "name": "tape",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "testling",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "ts-node",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tsify",
       "allowedCategories": [ "production" ]
     },
     {
@@ -341,6 +389,10 @@
     {
       "name": "web-vitals",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "webdriver-manager",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "wrtc",

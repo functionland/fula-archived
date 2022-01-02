@@ -1,22 +1,26 @@
 {
   "compilerOptions": {
     "downlevelIteration": true,
-    "target": "ES2020",
-    "module": "commonjs",
-    "moduleResolution": "Node",
+    "rootDir": "./",
+    "baseUrl": "./",
+    "moduleResolution": "node",
     "lib": ["ES2019"],
     "allowJs": true,
     "strict": true,
+    "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "baseUrl": ".", // This must be specified if "paths" is.
+    "importHelpers": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",
     "tests/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "scripts"
   ]
 }

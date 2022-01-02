@@ -6,7 +6,7 @@
   "types": "src",
   "scripts": {
     "start": "nodemon --watch dist",
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.mjs",
     "lint": "eslint src --fix",
     "test": "nyc --reporter=lcov --require ts-node/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text"
   },

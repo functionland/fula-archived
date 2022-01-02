@@ -1,8 +1,10 @@
 import {graceful, main} from "./app";
-import _debug from "debug";
-const debug = _debug('server')
+import debug from "debug";
+debug.enabled('*')
 
 main().catch(async (t) => {
+    console.log(t)
     debug('We Crashed!' + t.message)
+    console.log('we fucked')
     await graceful()
 });

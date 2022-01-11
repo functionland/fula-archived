@@ -23,6 +23,7 @@ await build({
   ],
   external: [
     '@chainsafe/libp2p-noise',
+    'libp2p'
   ]
 });
 

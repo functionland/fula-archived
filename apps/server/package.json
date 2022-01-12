@@ -8,7 +8,8 @@
     "start": "nodemon --watch dist",
     "build": "node scripts/build.mjs",
     "lint": "eslint src --fix",
-    "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text"
+    "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
+    "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,7 @@
     "async-later": "^0.1.5",
     "@functionland/file-protocol": "^0.3.0",
     "@ipld/dag-json": "^7.0.5",
-    "ipfs": "^0.55.4",
+    "ipfs": "^0.59.0",
     "ipfs-repo": "^9.1.6",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.31.5",
@@ -39,7 +40,9 @@
     "peer-id": "^0.14.6",
     "streaming-iterables": "^6.0.0",
     "wrtc": "^0.4.7",
-    "ipfs-core-types": "~0.8.1"
+    "ipfs-core-types": "~0.8.1",
+    "orbit-db": "~0.28.0",
+    "libp2p-gossipsub":"0.12.1"
   },
   "devDependencies": {
     "esbuild": "^0.12.1",

@@ -34,3 +34,6 @@ temp
 # auto generated files
 .idea
 .vscode
+
+# Ignore json files
+*.json

@@ -20,6 +20,8 @@ build({
       'wrtc',
       'libp2p',
       'leveldown',
-      '@functionland/file-protocol'
+      '@functionland/file-protocol',
+      'ipfs',
+      'ipfs-core'
   ]
 });

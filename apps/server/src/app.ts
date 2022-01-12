@@ -5,11 +5,13 @@ import Mplex from 'libp2p-mplex';
 import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
-import ipfs, { IPFS } from 'ipfs';
+import * as IPFS from 'ipfs';
 import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import { FileProtocol, SchemaProtocol } from '@functionland/file-protocol';
 import { resolveLater } from 'async-later';
+import OrbitDB from 'orbit-db';
+import GossipSub from 'libp2p-gossipsub'
 import debug from 'debug';
 
 
@@ -17,7 +19,8 @@ debug.enabled('*')
 
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
-const [ipfsPromise, resolveIpfs] = resolveLater<IPFS>();
+const [ipfsPromise, resolveIpfs] = resolveLater<IPFS.IPFS>();
+const [orbitDBPromise, resolveOrbitDB] = resolveLater<OrbitDB>();
 
 export async function getLibp2p() {
   return libp2pPromise;
@@ -26,7 +29,9 @@ export async function getLibp2p() {
 export async function getIPFS() {
   return ipfsPromise;
 }
-
+export async function getOrbitDb(){
+  return orbitDBPromise;
+}
 new Noise();
 
 export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
@@ -45,6 +50,7 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
           transport: [WebRTCStar],
           streamMuxer: [Mplex],
           connEncryption: [NOISE],
+          pubsub: GossipSub
         },
         config: {
           transport: {
@@ -66,17 +72,25 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
   };
 
   resolveIpfs(
-    ipfs.create({
+    IPFS.create({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       libp2p: createLibp2,
-      repo: new Repo('./.ipfs'),
+      repo: './.ipfs',
       peerId: config?.peerId
     })
   );
+  
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
+  console.log("IPFS Version: ",await ipfsNode.version());
+  console.log("resolveIpfs done")
+
+
+  resolveOrbitDB(OrbitDB.createInstance(ipfsNode));
+  console.log('Initial OrbitDb....');
+  const orbitDB= await getOrbitDb();
 
   libp2pNode.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
 

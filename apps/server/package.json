@@ -42,7 +42,8 @@
     "wrtc": "^0.4.7",
     "ipfs-core-types": "~0.8.1",
     "orbit-db": "~0.28.0",
-    "libp2p-gossipsub":"0.12.1"
+    "libp2p-gossipsub":"0.12.1",
+    "graphql-tag":"2.12.6"
   },
   "devDependencies": {
     "esbuild": "^0.12.1",

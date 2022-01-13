@@ -9,7 +9,8 @@
     "build": "node scripts/build.mjs",
     "lint": "eslint src --fix",
     "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text"
+    "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",
+    "test:graphql": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/graphql.test.{ts,js} | tap-spec; nyc report ---reporter=text"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,8 @@
     "ipfs-core-types": "~0.8.1",
     "orbit-db": "~0.28.0",
     "libp2p-gossipsub":"0.12.1",
-    "graphql-tag":"2.12.6"
+    "graphql-tag":"2.12.6",
+    "graphql":"16.2.0"
   },
   "devDependencies": {
     "esbuild": "^0.12.1",

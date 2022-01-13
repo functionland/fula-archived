@@ -156,6 +156,8 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
 export async function graceful() {
   debug('\nStopping server...');
   const ipfs = await getIPFS();
+  const orbitDB= await getOrbitDb();
+  await orbitDB.stop();
   await ipfs.stop();
   process.exit(0);
 }

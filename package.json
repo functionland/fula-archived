@@ -1,0 +1,21 @@
+{
+  "name": "borg-monorepo",
+  "version": "0.1.0",
+  "scripts": {
+    "update": "rush update",
+    "build": "rush build",
+    "test:server": "cd apps/server && rushx test",
+    "serve:server": "cd apps/server && rushx start",
+    "serve:client": "cd examples/react-cra && rushx start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/functionland/borg.git"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/functionland/borg#readme",
+  "devDependencies": {
+    "@microsoft/rush": "^5.59.2",
+    "rush": "0.0.2"
+  }
+}

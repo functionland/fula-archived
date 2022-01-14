@@ -1,1 +1,3 @@
-export const PROTOCOL = 'fx/file/0.1.0';
+import { version } from '../package.json'
+
+export const PROTOCOL = `fx/file/${version}`;

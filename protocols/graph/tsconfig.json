@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "rootDir": "./",
+    "baseUrl": "./",
+    "moduleResolution": "node",
+    "lib": ["ES2019"],
+    "allowJs": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts"
+  ]
+}

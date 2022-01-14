@@ -15,6 +15,24 @@ type Filter = (Object) => boolean
 
 type Fields = Array<string>
 
+type Atom = {
+    name: {
+        value: "ne" | "gt" | "gte" | "lt" | "lte" | "eq"
+    },
+    value: {
+        value: string
+    }
+}
+
+type FilterField = {
+    name: {
+        value: string
+    },
+    value: {
+        fields: Array<Atom>
+    }
+}
+
 export const getCollection = (def: DefinitionNode): CollectionName => def.name?.value
 
 export const getFilter = (def: DefinitionNode): Filter => {
@@ -33,6 +51,8 @@ export const getFilter = (def: DefinitionNode): Filter => {
                     return doc[fieldName] <= atom.value.value
                 case "eq":
                     return doc[fieldName] == atom.value.value
+                default:
+                    throw `Not implemented operator ${atom.name.value}`
             }
         }
     }
@@ -40,8 +60,8 @@ export const getFilter = (def: DefinitionNode): Filter => {
     const filterFields: Array<FilterField> = def.selectionSet.selections[0].arguments[0].value.fields
 
     return (doc: Object) => {
-        const parialResults = filterFields.map((field) => evaluate(field.value.fields[0].value, field.name.value)(doc))
-        return parialResults.reduce((p, c) => p && c, false) || false
+        const partialResults = filterFields.map((field) => evaluate(field.value.fields[0], field.name.value)(doc))
+        return partialResults.reduce((p, c) => p && c, true) || false
     }
 }
 // value: Object

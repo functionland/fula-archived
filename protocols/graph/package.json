@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
-    "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto",
+    "build:proto": "protoc --ts_out src/schema --proto_path src/schema/ src/schema/index.proto",
     "lint": "eslint src --fix"
   },
   "license": "MIT",

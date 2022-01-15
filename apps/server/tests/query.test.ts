@@ -86,16 +86,15 @@ test('Integration Test With Orbit Db', async function (t) {
             _id: obj.key,
             ...obj
         }));
-        const addedList = await Promise.all(promises)
-            .catch(error => t.fail(JSON.stringify(error)))
-        t.pass(`Sample Data Inserted ${JSON.stringify(addedList, null, 2)}`)
+        await Promise.all(promises)
+            .catch(error => t.error(error))
+        t.pass(`Sample Data Inserted`)
 
         const gqlquery = parse(testQuery1)
         t.ok(gqlquery.kind === Kind.DOCUMENT, 'Test Query parsed and validated')
         const defs = gqlquery.definitions.filter(def => def.operation === OperationTypeNode.QUERY);
         const result = await runQuery(orbitDB, defs[0]);
-        console.log(result)
-        t.deepEqual(result,expected1)
+        t.deepEqual(result,expected1, 'runQuery Returns expected data')
     } catch (error) {
         t.error(error);
     }

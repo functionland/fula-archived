@@ -83,9 +83,6 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
-  console.log("IPFS Version: ",await ipfsNode.version());
-  console.log("resolveIpfs done")
-
 
   resolveOrbitDB(OrbitDB.createInstance(ipfsNode));
   console.log('Initial OrbitDb....');

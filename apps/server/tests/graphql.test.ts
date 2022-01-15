@@ -88,7 +88,6 @@ test('Graphgql parser', async function (t) {
         t.ok(gqlquery.kind === Kind.DOCUMENT, 'Test Query parsed and validated')
         const defs = gqlquery.definitions.filter(def => def.operation === OperationTypeNode.QUERY);
         const result = await runQuery(orbitDB, defs[0]);
-        console.log(result)
         t.deepEqual(result,expected)
     } catch (error) {
         t.error(error);

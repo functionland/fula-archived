@@ -3,34 +3,9 @@ import {
     OperationTypeNode,
     FieldNode
 } from "graphql"
+import {CollectionName, Doc, Fields, Filter, FilterField} from "./types";
 
-type GQL_AST = any
 
-type Doc = Record<string, string | number>
-
-type CollectionName = string
-
-type Filter = (Object) => boolean
-
-type Fields = Array<string>
-
-type Atom = {
-    name: {
-        value: "ne" | "gt" | "gte" | "lt" | "lte" | "eq"
-    },
-    value: {
-        value: string
-    }
-}
-
-type FilterField = {
-    name: {
-        value: string
-    },
-    value: {
-        fields: Array<Atom>
-    }
-}
 
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
@@ -60,7 +35,7 @@ export const getFilter = (def: OperationDefinitionNode): Filter => {
 
     const filterFields: Array<FilterField> = def.selectionSet.selections[0].arguments[0].value.fields
 
-    return (doc: Object) => {
+    return (doc: Doc) => {
         const partialResults = filterFields.map((field) => evaluate(field)(doc))
         return partialResults.reduce((p, c) => p && c, true) || false
     }

@@ -6,7 +6,6 @@ import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import PeerId from 'peer-id';
 import pipe from 'it-pipe';
 import * as IPFS from 'ipfs';
-import Repo from 'ipfs-repo';
 import type { Config as IPFSConfig } from 'ipfs-core-types/src/config';
 import { FileProtocol, SchemaProtocol } from '@functionland/file-protocol';
 import { resolveLater } from 'async-later';
@@ -80,7 +79,7 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
       peerId: config?.peerId
     })
   );
-  
+
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
@@ -117,12 +116,12 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
     declareId(cid.toString());
     const cat = async cid => {
       for await (const chunk of ipfsNode.cat(cid)) {
-        debug(SchemaProtocol.File.fromBinary(chunk));
+        debug(SchemaProtocol.File.fromBinary(chunk).toString());
       }
     };
     const ls = async cid => {
       for await (const chunk of ipfsNode.ls(cid)) {
-        debug(chunk);
+        debug(chunk.toString());
         chunk.type !== 'file' && (await ls(chunk.cid));
         chunk.type === 'file' && (await cat(chunk.cid));
       }

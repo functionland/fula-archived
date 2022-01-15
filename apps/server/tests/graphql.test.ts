@@ -8,30 +8,25 @@ import {
     OperationTypeNode,
     SelectionSetNode,
     SelectionNode,
-    FieldNode
-} from "graphql/language/ast"
+    FieldNode,
+    parse, Kind
+} from "graphql"
 
 import {runQuery} from '../src/engine'
+import {Query} from "ipfs-repo/dist/src/idstore";
 
-const gqlquery: DocumentNode = gql`
-    query {
-        profile{
-        name
-        
-    }
-}`;
-const gqlqueryFilter: DocumentNode = gql`
-    query profile(where:{
-        and:[{
-            age:{gt:10}
-        },{
-            age:{lt:30}
-        }]
+const gqlqueryString = `
+  query  { profile (filter: { 
+    name: { ne: "mehdi" },
+    age: { gt: 10 }
     }){
-        name
-        
-    }`;
-const gqlMutation:DocumentNode=gql`
+      name
+      age
+      }
+    }  
+`;
+
+const gqlMutation=`
 mutation profile(input:[{
     name:'keyvan'
     }]){
@@ -94,21 +89,13 @@ test('Graphgql parser', async function (t) {
         const addedList = await Promise.all(promises)
             .catch(error => t.fail(JSON.stringify(error)))
         console.log('addedList:',addedList);
-
-        const gqlResult=await Promise.all(gqlquery.definitions.map(def => {
-            return runQuery(orbitDB,def);
-        }));
-        console.log("gqlResult",JSON.stringify(gqlResult,null,2));
-
-        
+        const gqlquery = parse(gqlqueryString)
+        const defs = gqlquery.definitions.filter(def => def.operation === OperationTypeNode.QUERY);
+        return runQuery(orbitDB,defs[0]);
     } catch (error) {
-        t.fail("Failed:" + JSON.stringify(error));
-    } finally {
-        // init
-        // t.teardown(async () => {
-        //     await graceful();
-        // });
+        t.error(error);
     }
+
     t.pass('OrbitDb doc done!!!');
     //Kill the main
     try {

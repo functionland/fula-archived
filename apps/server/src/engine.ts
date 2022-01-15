@@ -1,17 +1,16 @@
 import {
-    DocumentNode,
-    DefinitionNode,
     OperationDefinitionNode,
     OperationTypeNode,
-    SelectionNode,
     FieldNode
-} from "graphql/language/ast"
+} from "graphql"
 
 type GQL_AST = any
 
+type Doc = Record<string, string | number>
+
 type CollectionName = string
 
-type Filter = (Object) => boolean 
+type Filter = (Object) => boolean
 
 type Fields = Array<string>
 
@@ -33,12 +32,12 @@ type FilterField = {
     }
 }
 
-export const getCollection = (def: DefinitionNode): CollectionName => def.name?.value
+export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
-export const getFilter = (def: DefinitionNode): Filter => {
+export const getFilter = (def: OperationDefinitionNode): Filter => {
     const evaluate = (atom: Atom, fieldName: string) => {
-        return (doc: Object) => {
-            switch(atom.name.value){
+        return (doc: Doc) => {
+            switch (atom.name.value) {
                 case "ne":
                     return doc[fieldName] != atom.value.value
                 case "gt":
@@ -64,49 +63,31 @@ export const getFilter = (def: DefinitionNode): Filter => {
         return partialResults.reduce((p, c) => p && c, true) || false
     }
 }
-// value: Object
-//     kind: "ObjectValue"
-//     fields: Array (1 item)
-//     0: Object
-//         kind: "ObjectField"
-//         name: Object {kind: "Name", value: "ne"}
-//         value: Object
-//             kind: "StringValue"
-//             value: "mehdi"
-//             block: false
 
-export const getFields = (gqlAST: DocumentNode): Fields => {}
+export const getFields = (def: OperationDefinitionNode): Fields => {
+    return def.selectionSet.selections[0].selectionSet.selections.map(node => node.name.value)
+}
 
-export async function runQuery(orbitDB: any, gqlAST: DocumentNode) {
-    console.log("GQLAST", gqlAST)
-    const def=(gqlAST.definitions[0] as OperationDefinitionNode);
+export const selector = (res, def) => {
+    return res.map(item => {
+        return getFields(def)
+            .filter(key => key in item)
+            .reduce((obj2, key) => {obj2[key] = item[key]; return  obj2},{});
+    })
+
+}
+
+export async function runQuery(orbitDB: any, def: OperationDefinitionNode) {
     if (def.operation !== OperationTypeNode.QUERY)
         throw 'operation is not query';
-    
-    // load orbitDB collection
+
     const collectionName = getCollection(def)
     const db = await orbitDB.docs(collectionName);
     await db.load();
+    const res = db.query(getFilter(def))
+    const subsetRes = selector(res,def)
 
-
-    // const result: [] = db.get('');
-    const result = db.query(getFilter(def))
-
-    const data=result.map(row => {
-        return def.selectionSet.selections.map((selection: SelectionNode) => {
-            return {
-                field: (selection as FieldNode).name.value,
-                value: row[`${(selection as FieldNode).name.value}`]
-            }
-        })
-    });
     return {
-        [`${def.name?.value}`]: data.map(row=>{
-            return row.reduce((obj,item)=>{
-                //ts-ingnore
-                obj[`${item.field}`]=item.value;
-                return obj;
-            },{})
-        })
+        [collectionName]:subsetRes
     }
 }

@@ -10,7 +10,8 @@
     "lint": "eslint src --fix",
     "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
     "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:graphql": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/graphql.test.{ts,js} | tap-spec; nyc report ---reporter=text"
+    "test:graphql": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/graphql.test.{ts,js} | tap-spec; nyc report ---reporter=text",
+    "test:sel": "nyc --reporter=lcov --require esbuild-runner/register tape $TEST_PATH | tap-spec; nyc report ---reporter=text"
   },
   "repository": {
     "type": "git",

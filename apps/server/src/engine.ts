@@ -35,7 +35,9 @@ type FilterField = {
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
 export const getFilter = (def: OperationDefinitionNode): Filter => {
-    const evaluate = (atom: Atom, fieldName: string) => {
+    const evaluate = (field) => {
+        const fieldName = field.name.value
+        const atom = field.value.fields[0]
         return (doc: Doc) => {
             switch (atom.name.value) {
                 case "ne":
@@ -59,7 +61,7 @@ export const getFilter = (def: OperationDefinitionNode): Filter => {
     const filterFields: Array<FilterField> = def.selectionSet.selections[0].arguments[0].value.fields
 
     return (doc: Object) => {
-        const partialResults = filterFields.map((field) => evaluate(field.value.fields[0], field.name.value)(doc))
+        const partialResults = filterFields.map((field) => evaluate(field)(doc))
         return partialResults.reduce((p, c) => p && c, true) || false
     }
 }

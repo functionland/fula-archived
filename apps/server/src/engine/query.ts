@@ -33,11 +33,7 @@ const evaluate = (field) => {
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
 export const reGetFilter = (rootNode: ObjectField): Filter => {
-    const isLeaf = (node: ObjectField): boolean => {
-        console.log(node)
-        // return Object.keys(node.value).filter(key => key !== 'fields' && key !== 'values').length === 0
-        return node.value.kind === 'ObjectValue'
-    }
+    const isLeaf = (node: ObjectField): boolean => node.value.kind === 'ObjectValue'
 
     // check if node is a leaf
     if(isLeaf(rootNode)) return evaluate(rootNode)
@@ -45,8 +41,6 @@ export const reGetFilter = (rootNode: ObjectField): Filter => {
     // the node is not leaf
     // return recursively
     const nodeLabel = rootNode.name.value
-
-    console.log('processing: ', nodeLabel)
 
     // children filters for 'or'/'and' may be an ObjectValue insted of ListValue
     // since the evaluation of 'or'/'and' operators with just one argument is unnecessary, we only consider ListValue
@@ -63,15 +57,14 @@ export const reGetFilter = (rootNode: ObjectField): Filter => {
 
 export const getFilter = (def: OperationDefinitionNode): Filter => {
 
+    const fields = def.selectionSet.selections[0].arguments[0].value.fields
+    let filter
+    if(fields.length === 1)
+        filter = reGetFilter(fields[0])
+    else if (fields.length > 1)
+        filter = (doc: Doc) => fields.reduce((prev, curr) => prev && reGetFilter(curr)(doc), true)
 
-    
-
-    const filterFields: Array<FilterField> = def.selectionSet.selections[0].arguments[0].value.fields
-
-    return (doc: Doc) => {
-        const partialResults = filterFields.map((field) => evaluate(field)(doc))
-        return partialResults.reduce((p, c) => p && c, true) || false
-    }
+    return filter
 }
 
 export const getFields = (def: OperationDefinitionNode): Fields => {

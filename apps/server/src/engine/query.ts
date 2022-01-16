@@ -1,37 +1,70 @@
 import {
     OperationDefinitionNode,
     OperationTypeNode,
-    FieldNode
+    FieldNode,
+    ObjectValue,
+    ObjectField
 } from "graphql"
 import {CollectionName, Doc, Fields, Filter, FilterField} from "./types";
 
-
+const evaluate = (field) => {
+    const fieldName = field.name.value
+    const atom = field.value.fields[0]
+    return (doc: Doc) => {
+        switch (atom.name.value) {
+            case "ne":
+                return doc[fieldName] != atom.value.value
+            case "gt":
+                return doc[fieldName] > atom.value.value
+            case "lt":
+                return doc[fieldName] < atom.value.value
+            case "gte":
+                return doc[fieldName] >= atom.value.value
+            case "lte":
+                return doc[fieldName] <= atom.value.value
+            case "eq":
+                return doc[fieldName] == atom.value.value
+            default:
+                throw `Not implemented operator ${atom.name.value}`
+        }
+    }
+}
 
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
-export const getFilter = (def: OperationDefinitionNode): Filter => {
-    const evaluate = (field) => {
-        const fieldName = field.name.value
-        const atom = field.value.fields[0]
-        return (doc: Doc) => {
-            switch (atom.name.value) {
-                case "ne":
-                    return doc[fieldName] != atom.value.value
-                case "gt":
-                    return doc[fieldName] > atom.value.value
-                case "lt":
-                    return doc[fieldName] < atom.value.value
-                case "gte":
-                    return doc[fieldName] >= atom.value.value
-                case "lte":
-                    return doc[fieldName] <= atom.value.value
-                case "eq":
-                    return doc[fieldName] == atom.value.value
-                default:
-                    throw `Not implemented operator ${atom.name.value}`
-            }
-        }
+export const reGetFilter = (rootNode: ObjectField): Filter => {
+    const isLeaf = (node: ObjectField): boolean => {
+        console.log(node)
+        // return Object.keys(node.value).filter(key => key !== 'fields' && key !== 'values').length === 0
+        return node.value.kind === 'ObjectValue'
     }
+
+    // check if node is a leaf
+    if(isLeaf(rootNode)) return evaluate(rootNode)
+
+    // the node is not leaf
+    // return recursively
+    const nodeLabel = rootNode.name.value
+
+    console.log('processing: ', nodeLabel)
+
+    // children filters for 'or'/'and' may be an ObjectValue insted of ListValue
+    // since the evaluation of 'or'/'and' operators with just one argument is unnecessary, we only consider ListValue
+    const childrenNodes = rootNode.value.values
+    switch (nodeLabel){
+        case 'or':
+            return (doc) => childrenNodes.map(node => node.fields[0]).reduce((prev, curr) => prev || reGetFilter(curr)(doc), false)
+        case 'and':
+            return (doc) => childrenNodes.map(node => node.fields[0]).reduce((prev, curr) => prev && reGetFilter(curr)(doc), true)
+        default:
+            throw `Not implemented AST node ${nodeLabel}`
+    }
+}
+
+export const getFilter = (def: OperationDefinitionNode): Filter => {
+
+
+    
 
     const filterFields: Array<FilterField> = def.selectionSet.selections[0].arguments[0].value.fields
 

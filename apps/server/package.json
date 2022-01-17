@@ -45,7 +45,9 @@
     "orbit-db": "~0.28.0",
     "libp2p-gossipsub":"0.12.1",
     "graphql-tag":"2.12.6",
-    "graphql":"16.2.0"
+    "graphql":"16.2.0",
+    "graphql-type-json":"0.3.2",
+    "graphql-tools":"8.2.0"
   },
   "devDependencies": {
     "esbuild": "^0.12.1",

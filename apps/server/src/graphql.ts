@@ -2,6 +2,7 @@ import { GraphQLJSON,GraphQLJSONObject } from 'graphql-type-json';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import { getOrbitDb } from '../src/app';
+import {_reGetFilter} from './engine/query'
 
 const typeDefs = `
     scalar JSON
@@ -46,7 +47,8 @@ export const resolvers = {
             const orbitDB = await getOrbitDb();
             const db = await orbitDB.docs(input.collection);
             await db.load();
-            const result = db.get('');
+            // const result = db.get('');
+            const result = db.query(_reGetFilter(input.filter))
             return result;
         } catch (error) {
             throw error;

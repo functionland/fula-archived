@@ -5,32 +5,67 @@ import {
     ObjectValue,
     ObjectField
 } from "graphql"
-import {CollectionName, Doc, Fields, Filter, FilterField} from "./types";
+import {CollectionName, Doc, Fields, Filter, FilterField, ReadInput, FieldFilter, LogicalFilterKeys, FilterKeys} from "./types";
 
-const evaluate = (field) => {
-    const fieldName = field.name.value
-    const atom = field.value.fields[0]
-    return (doc: Doc) => {
-        switch (atom.name.value) {
-            case "ne":
-                return doc[fieldName] != atom.value.value
-            case "gt":
-                return doc[fieldName] > atom.value.value
-            case "lt":
-                return doc[fieldName] < atom.value.value
-            case "gte":
-                return doc[fieldName] >= atom.value.value
-            case "lte":
-                return doc[fieldName] <= atom.value.value
-            case "eq":
-                return doc[fieldName] == atom.value.value
-            default:
-                throw `Not implemented operator ${atom.name.value}`
-        }
-    }
+const evaluate = (leaf: FieldFilter) => {
+
+    const partialFieldFilters = Object.entries(leaf)
+    const partailEvals = partialFieldFilters.map(([fieldName, atom]) => (doc: Doc) => {
+        // multiple field operators e.g: {$gt: 10, $lt: 30}
+        const ops = Object.entries(atom)
+        return ops.reduce((prev, curr) => {
+            const [op, value] = curr
+
+            if(!value)
+                throw `bad query`
+            
+            switch (op) {
+                case "__ne":
+                    return prev && doc[fieldName] != value
+                case "__gt":
+                    return prev && doc[fieldName] > value
+                case "__lt":
+                    return prev && doc[fieldName] < value
+                case "__gte":
+                    return prev && doc[fieldName] >= value
+                case "__lte":
+                    return prev && doc[fieldName] <= value
+                case "__eq":
+                    return prev && doc[fieldName] == value
+                default:
+                    throw `Not implemented operator ${op}`
+            }
+        }, true)
+        
+    })
+
+    return (doc: Doc) => partailEvals.reduce((prev, curr) => prev && curr(doc), true)
 }
 
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
+
+export const _reGetFilter = (rootNode: ReadInput): Filter => {
+    const isLeaf = (node: ReadInput): boolean => Object.keys(node).map(key => !key.startsWith("__")).reduce((prev, curr) => prev && curr, true)
+
+    // check if node is a leaf
+    if(isLeaf(rootNode)) return evaluate(rootNode as FieldFilter)
+
+    // the node is not a leaf
+    // return recursively
+    
+    // find root operator
+    const op = Object.keys(rootNode).filter(key => key.startsWith("__"))[0]
+    const childrenNodes = rootNode[op]
+    
+    switch (op){
+        case "__or":
+            return (doc) => childrenNodes.reduce((prev, curr) => prev || _reGetFilter(curr)(doc), false)
+        case "__and":
+            return (doc) => childrenNodes.reduce((prev, curr) => prev && _reGetFilter(curr)(doc), true)
+        default:
+                throw `Not implemented operator ${op}`
+    }
+}
 
 export const reGetFilter = (rootNode: ObjectField): Filter => {
     const isLeaf = (node: ObjectField): boolean => node.value.kind === 'ObjectValue'

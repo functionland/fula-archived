@@ -32,6 +32,10 @@ const evaluate = (leaf: FieldFilter) => {
                     return prev && doc[fieldName] <= value
                 case "__eq":
                     return prev && doc[fieldName] == value
+                case "__in":
+                    return typeof value === "object" && prev && value.indexOf(doc[fieldName]) >= 0
+                case "__nin":
+                    return typeof value === "object" && prev && value.indexOf(doc[fieldName]) < 0
                 default:
                     throw `Not implemented operator ${op}`
             }

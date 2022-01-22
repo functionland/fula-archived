@@ -49,6 +49,9 @@ const evaluate = (leaf: FieldFilter) => {
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
 export const _reGetFilter = (rootNode: ReadInput): Filter => {
+    if(Object.keys(rootNode).length === 0)
+        return (doc) => true
+    
     const isLeaf = (node: ReadInput): boolean => Object.keys(node).map(key => !isLogical(key)).some(Boolean)
 
     // check if node is a leaf
@@ -112,6 +115,9 @@ export const getFields = (def: OperationDefinitionNode): Fields => {
 
 export const selector = (res, def) => {
     return res.map(item => {
+        if(typeof item !== 'object')
+            return item
+
         return getFields(def)
             .filter(key => key in item)
             .reduce((obj2, key) => {obj2[key] = item[key]; return  obj2},{});

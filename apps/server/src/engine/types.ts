@@ -41,4 +41,4 @@ export type OrOp = {
 }
 export type ReadInput = AndOp | OrOp | FieldFilter 
 
-export const isLogical = (op: string) => Object.values(LogicalFilterKeys).indexOf(op) >= 0
+export const isLogical = (op: string) => Object.values(LogicalFilterKeys).indexOf(op as LogicalFilterKeys) >= 0

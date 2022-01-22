@@ -24,8 +24,8 @@ export type FilterField = {
     }
 }
 
-export enum FilterKeys {GT="$gt", LT="$lt", GTE="$gte", LTE="$lte", EQ="$eq", NEQ="$neq", IN="$in", NIN="$nin"}
-export enum LogicalFilterKeys {AND="$and", OR="$or"}
+export enum FilterKeys {GT="gt", LT="lt", GTE="gte", LTE="lte", EQ="eq", NE="ne", IN="in", NIN="nin"}
+export enum LogicalFilterKeys {AND="and", OR="or"}
 export type FilterValues = string | number | Array<string | number>
 export type FieldFilterValue = {
     [key in FilterKeys]?: FilterValues
@@ -40,3 +40,5 @@ export type OrOp = {
     "$or": Array<ReadInput>
 }
 export type ReadInput = AndOp | OrOp | FieldFilter 
+
+export const isLogical = (op: string) => Object.values(LogicalFilterKeys).indexOf(op) >= 0

@@ -5,7 +5,7 @@ import {
     ObjectValue,
     ObjectField
 } from "graphql"
-import {CollectionName, Doc, Fields, Filter, FilterField, ReadInput, FieldFilter, LogicalFilterKeys, FilterKeys} from "./types";
+import {CollectionName, Doc, Fields, Filter, FilterField, ReadInput, FieldFilter, LogicalFilterKeys, FilterKeys, isLogical} from "./types";
 
 const evaluate = (leaf: FieldFilter) => {
 
@@ -20,21 +20,21 @@ const evaluate = (leaf: FieldFilter) => {
                 throw `bad query`
             
             switch (op) {
-                case "__ne":
+                case FilterKeys.NE:
                     return prev && doc[fieldName] != value
-                case "__gt":
+                case FilterKeys.GT:
                     return prev && doc[fieldName] > value
-                case "__lt":
+                case FilterKeys.LT:
                     return prev && doc[fieldName] < value
-                case "__gte":
+                case FilterKeys.GTE:
                     return prev && doc[fieldName] >= value
-                case "__lte":
+                case FilterKeys.LTE:
                     return prev && doc[fieldName] <= value
-                case "__eq":
+                case FilterKeys.EQ:
                     return prev && doc[fieldName] == value
-                case "__in":
+                case FilterKeys.IN:
                     return typeof value === "object" && prev && value.indexOf(doc[fieldName]) >= 0
-                case "__nin":
+                case FilterKeys.NIN:
                     return typeof value === "object" && prev && value.indexOf(doc[fieldName]) < 0
                 default:
                     throw `Not implemented operator ${op}`
@@ -43,13 +43,13 @@ const evaluate = (leaf: FieldFilter) => {
         
     })
 
-    return (doc: Doc) => partailEvals.reduce((prev, curr) => prev && curr(doc), true)
+    return (doc: Doc) => partailEvals.map(pe => pe(doc)).every(Boolean)
 }
 
 export const getCollection = (def: OperationDefinitionNode): CollectionName => (def.selectionSet.selections[0] as FieldNode).name.value
 
 export const _reGetFilter = (rootNode: ReadInput): Filter => {
-    const isLeaf = (node: ReadInput): boolean => Object.keys(node).map(key => !key.startsWith("__")).reduce((prev, curr) => prev && curr, true)
+    const isLeaf = (node: ReadInput): boolean => Object.keys(node).map(key => !isLogical(key)).some(Boolean)
 
     // check if node is a leaf
     if(isLeaf(rootNode)) return evaluate(rootNode as FieldFilter)
@@ -58,14 +58,14 @@ export const _reGetFilter = (rootNode: ReadInput): Filter => {
     // return recursively
     
     // find root operator
-    const op = Object.keys(rootNode).filter(key => key.startsWith("__"))[0]
+    const op = Object.keys(rootNode).filter(key => isLogical(key))[0]
     const childrenNodes = rootNode[op]
     
     switch (op){
-        case "__or":
-            return (doc) => childrenNodes.reduce((prev, curr) => prev || _reGetFilter(curr)(doc), false)
-        case "__and":
-            return (doc) => childrenNodes.reduce((prev, curr) => prev && _reGetFilter(curr)(doc), true)
+        case LogicalFilterKeys.OR:
+            return (doc) => childrenNodes.map(node => _reGetFilter(node)(doc)).some(Boolean)
+        case LogicalFilterKeys.AND:
+            return (doc) => childrenNodes.map(node => _reGetFilter(node)(doc)).every(Boolean)
         default:
                 throw `Not implemented operator ${op}`
     }

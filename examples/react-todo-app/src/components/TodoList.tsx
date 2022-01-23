@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
+import * as grapgql from 'graphql'
 import TodoForm from './TodoForm';
 import Todo, { TODO } from './Todo';
-
+import { useLazyQuery } from '../hooks/UseLazyQuery';
+const query=grapgql.parse(`
+  query{
+    read(input:{
+      collection:todo
+    }){
+      id
+      text
+      isComplete
+    }
+  } 
+`)
 function TodoList() {
   const [todos, setTodos] = useState<TODO[]>([]);
-
+const [loadTodos,{data,loading,error}]=useLazyQuery(query);
   const addTodo = (todo: TODO) => {
     if (!todo.text || /^\s*$/.test(todo.text)) {
       return;
@@ -14,6 +26,7 @@ function TodoList() {
 
     setTodos(newTodos);
     console.log(...todos);
+    loadTodos();
   };
 
   const updateTodo = (newValue: TODO) => {

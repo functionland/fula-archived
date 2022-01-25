@@ -1,5 +1,6 @@
 import type {SchemaProtocol} from "@functionland/file-protocol";
 import {FileProtocol} from '@functionland/file-protocol';
+import {PROTOCOL as GRAPH_PROTOCOL, Request, Result, submitQuery} from '@functionland/graph-protocol'
 import {configure} from './config';
 import Libp2p, {Connection, constructorOptions, Libp2pOptions} from 'libp2p';
 import PeerId from 'peer-id';
@@ -16,6 +17,7 @@ export interface Borg {
     receiveFile: (fileId: FileId) => Promise<File>
     receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
     receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
+    graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
     getNode: () => Libp2p
     close: () => void
 }
@@ -28,10 +30,10 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
     let connection: Connection | undefined;
     let serverPeerId: PeerId
 
-    node.handle(FileProtocol.PROTOCOL, FileProtocol.handleFile);
+    node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
     await node.start();
 
-    const _getStreamConnection = async () => {
+    const _getStreamConnection = async (protocol?:string) => {
         if (!serverPeerId) {
             throw Error('no server peer found')
         }
@@ -40,6 +42,9 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         }
         if (!connection || connection.stat.status !== 'open') {
             throw Error('Server Unreachable')
+        }
+        if (protocol) {
+            return await connection.newStream(protocol)
         }
         return await connection.newStream(FileProtocol.PROTOCOL)
     }
@@ -117,6 +122,23 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
                 const meta: SchemaProtocol.Meta = await FileProtocol.receiveMeta({connection: connectionObj, id});
                 connectionObj.stream.close()
                 return meta;
+            } catch (e) {
+                throw new Error((e as Error).message)
+            }
+        },
+        async graphql(query: string, _variableValues?: never, _operationName?: string){
+            try {
+                const variableValues = _variableValues?_variableValues:null
+                const operationName = _operationName?_operationName:null
+                const connectionObj = await _getStreamConnection(GRAPH_PROTOCOL)
+                const req = Request.fromJson({
+                    query,
+                    variableValues,
+                    operationName
+                })
+                const res = await submitQuery({connection: connectionObj, req});
+                connectionObj.stream.close()
+                return Result.toJson(<Result>res);
             } catch (e) {
                 throw new Error((e as Error).message)
             }

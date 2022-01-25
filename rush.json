@@ -82,6 +82,12 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@functionland/graph-protocol",
+      "projectFolder": "protocols/graph",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
       "packageName": "@functionland/fx",
       "projectFolder": "tools/cli",
       "reviewCategory": "prototypes"

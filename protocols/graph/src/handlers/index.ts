@@ -2,10 +2,8 @@ import pipe from 'it-pipe';
 import { partition, firstValue } from 'async-later';
 import { map } from 'streaming-iterables';
 import { ProtocolHandler, Response } from '../';
-import { Request } from '../schema';
-import { save } from './save';
-import { retrieve } from './retrieve';
-import { getMeta } from './meta';
+import {Request} from '../schema';
+import { resolve } from './resolve';
 import { PROTOCOL } from '../constants';
 
 export const handler: ProtocolHandler = async ({ stream }) => {
@@ -16,23 +14,11 @@ export const handler: ProtocolHandler = async ({ stream }) => {
       map((message) => message.slice(), source)
     );
     const request = Request.fromBinary(await firstValue(streamHead));
-    switch (request.type.oneofKind) {
-      case 'send':
-        response = save({ meta: request.type.send, bytes: streamTail });
-        break;
-      case 'receive':
-        response = retrieve(request.type.receive);
-        break;
-      case 'meta':
-        response = getMeta({ id: request.type.meta });
-        break;
-    }
+    response = resolve({query: request.query,operationName: request.operationName, variableValues: request.variableValues})
   });
   await pipe((await response) || Response.EMPTY, stream);
   await pipe([], stream); // Close the stream
 };
 
-export { incomingFiles, sendFile, streamFile } from './save';
-export { setContentRetrievalMethod, receiveContent } from './retrieve';
-export { setMetaRetrievalMethod, receiveMeta } from './meta';
+export { setQueryResolutionMethod, submitQuery } from './resolve';
 export { PROTOCOL };

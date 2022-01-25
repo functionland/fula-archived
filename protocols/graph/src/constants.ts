@@ -1,2 +1,2 @@
 const version = process.env.npm_package_version;
-export const PROTOCOL = `fx/file/${version}`;
+export const PROTOCOL = `fx/graph/${version}`;

@@ -1,6 +1,6 @@
 {
-  "name": "@functionland/file-protocol",
-  "version": "0.3.2",
+  "name": "@functionland/graph-protocol",
+  "version": "0.1.0",
   "description": "",
   "types": "src/index.ts",
   "main": "./dist/node/cjs.cjs",
@@ -9,19 +9,15 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
-    "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto",
+    "build:proto": "protoc --ts_out src/schema --ts_opt generate_dependencies --proto_path src/schema/ src/schema/*.proto",
     "lint": "eslint src --fix"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
-    "@ipld/dag-cbor": "^5.0.5",
-    "@ipld/dag-json": "^7.0.0",
     "@protobuf-ts/runtime": "^1.0.13",
     "async-later": "0.1.7",
     "it-pipe": "^1.1.0",
     "multiformats": "^8.0.6",
-    "pako": "^2.0.3",
     "rxjs": "^7.1.0",
     "streaming-iterables": "^6.0.0",
     "peer-id": "~0.15.3",
@@ -52,8 +48,7 @@
         "default":"./dist/browser/esm.js"
       },
       "node": {
-        "require":"./dist/node/cjs.cjs",
-        "import":"./dist/node/esm.js"
+        "default":"./dist/node/cjs.cjs"
       }
     }
   }

@@ -1,13 +1,5 @@
 import test from 'tape';
 import { main, graceful, getLibp2p, getIPFS, getOrbitDb } from '../src/app';
-import Libp2p from 'libp2p';
-import WebRTCStar from 'libp2p-webrtc-star';
-import { NOISE, Noise } from '@chainsafe/libp2p-noise';
-import wrtc from 'wrtc';
-import Mplex from 'libp2p-mplex';
-import { File, Blob } from '@web-std/file';
-import { FileProtocol } from '@functionland/file-protocol';
-import { Key } from 'openpgp';
 
 const dbObj = [
     {
@@ -143,7 +135,7 @@ test('OrbitDB document test', async function (t) {
         const containQuery = await db.get('eh');
         console.log('containQuery:',containQuery);
         const query = dbObj.map(obj => db.get(obj.value.name));
-        
+
         const result = await Promise.all(query);
         result.map((res, index) => {
             console.log('Result:', res[0]);
@@ -166,5 +158,5 @@ test('OrbitDB document test', async function (t) {
      } catch (error) {
          console.log('graceful',error);
      }
-   
+
 });

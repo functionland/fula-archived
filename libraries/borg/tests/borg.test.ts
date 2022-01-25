@@ -4,7 +4,7 @@ import test from 'tape';
 import WebRTCStar from 'libp2p-webrtc-star';
 import { createClient } from '../src';
 
-const serverId = 'QmQ45PBtSPW5ZT91Yyiegnbt6ESptoFEj11fB4JhHSnPqi';
+const serverId = 'QmasMjMGPNuAtwMsAR4cNPV5jGYiFLjcNzJy1k38ukXSTS';
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,
@@ -81,10 +81,7 @@ test('Setup', async function (t) {
 
     client.close();
   } catch (e) {
-    t.fail(e.message);
+    t.error(e);
   }
 
-  t.teardown(async () => {
-    // await graceful();
-  });
 });

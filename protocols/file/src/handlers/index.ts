@@ -8,7 +8,7 @@ import { retrieve } from './retrieve';
 import { getMeta } from './meta';
 import { PROTOCOL } from '../constants';
 
-export const handleFile: ProtocolHandler = async ({ stream }) => {
+export const handler: ProtocolHandler = async ({ stream }) => {
   let response: Response = Promise.resolve(Response.EMPTY);
   await pipe(stream, async function (source) {
     const [streamHead, streamTail] = partition(

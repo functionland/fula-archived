@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "google/protobuf/struct.proto";
+package graph;
+
+message Request {
+  string query = 1;
+  google.protobuf.Value variable_values = 2;
+  string operation_name = 3;
+}
+
+message Result {
+  google.protobuf.Value data = 1;
+}

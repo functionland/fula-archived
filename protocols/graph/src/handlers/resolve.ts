@@ -1,13 +1,13 @@
 import pipe from 'it-pipe';
 import { MuxedStream } from 'libp2p';
-import { Request, JSONResponse } from '../schema';
-import { Response } from '../';
+import {Response} from '../';
 import { PROTOCOL } from '../constants';
+import {Request, Result} from "../schema/graph";
 
-type Resolve = ({query}: {query: string}) => Response;
+export type Resolve = (Request) => Response;
 
 const resolveNotSupported: Resolve = () => {
-    throw new Error('This node does not support file content retrieval');
+    throw new Error('This node does not support graphql');
 };
 
 export let resolve = resolveNotSupported;
@@ -16,15 +16,15 @@ export function setQueryResolutionMethod(method: Resolve) {
     resolve = method;
 }
 
-export async function submitQuery({connection, query}: {
+export async function submitQuery({connection, req}: {
     connection: { stream: MuxedStream, protocol: string };
-    query: string
-}) {
+    req: Request
+}): Promise<Result|undefined> {
     if (connection.protocol !== PROTOCOL) {
         throw new Error('Protocol mismatched')
     }
     const streamQuerySubmission = async function* () {
-        yield Request.toBinary({ query });
+        yield Request.toBinary(req);
     };
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -34,6 +34,6 @@ export async function submitQuery({connection, query}: {
         }
     });
     for await (const result of queryResult) {
-        return JSON.parse(JSONResponse.fromBinary(result).json);
+        return Result.fromBinary(result);
     }
 }

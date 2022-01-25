@@ -39,6 +39,48 @@ export type AndOp = {
 export type OrOp = {
     "$or": Array<ReadInput>
 }
-export type ReadInput = AndOp | OrOp | FieldFilter 
+export type ReadInput = AndOp | OrOp | FieldFilter
 
 export const isLogical = (op: string) => Object.values(LogicalFilterKeys).indexOf(op as LogicalFilterKeys) >= 0
+
+export type ReadArgs = {
+    input: {
+        collection: string,
+        filter: any
+    }
+}
+export type CreateArgs = {
+    input: {
+        collection: string,
+        values: any[]
+    }
+}
+export type UpdateArgs = {
+    input: {
+        collection: string,
+        values: any[]
+    }
+}
+export type UpdateQueryArgs = {
+    input: {
+        collection: string,
+        value: any,
+        filter: any
+    }
+}
+export type DeleteArgs = {
+    input: {
+        collection: string,
+        ids: any[]
+    }
+}
+
+
+export interface IResolvers {
+    read: (ReadArgs) => Promise<unknown>
+    create: (CreateArgs) => Promise<unknown>
+    update: (UpdateArgs) => Promise<unknown>
+    updateQuery: (UpdateQueryArgs) => Promise<unknown>
+    delete: (DeleteArgs) => Promise<unknown>
+}
+

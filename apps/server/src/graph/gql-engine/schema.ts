@@ -1,9 +1,6 @@
-import { GraphQLJSON, GraphQLJSONObject } from 'graphql-type-json';
-import { makeExecutableSchema } from 'graphql-tools';
+import {GraphQLJSON, GraphQLJSONObject} from "graphql-type-json";
+import {makeExecutableSchema} from "graphql-tools";
 
-import { getOrbitDb } from '../src/app';
-import { _reGetFilter } from './engine/query'
-import { create, read, update, updateQuery, remove } from './engine'
 const typeDefs = `
     scalar JSON
     scalar JSONObject
@@ -37,19 +34,10 @@ const typeDefs = `
         updateQuery (input:UpdateQueryInput!):[JSON]
         delete (input:DeleteInput!):[ID!]
     }
-`;
-
+`
 const typeResolvers = {
     JSON: GraphQLJSON,
     JSONObject: GraphQLJSONObject,
 };
 
 export const schema = makeExecutableSchema({ typeDefs, resolvers: typeResolvers });
-
-export const resolvers = {
-    read,
-    create,
-    update,
-    updateQuery,
-    remove
-};

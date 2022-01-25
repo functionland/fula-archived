@@ -1,3 +1,2 @@
-import { version } from '../package.json'
-
+const version = process.env.npm_package_version;
 export const PROTOCOL = `fx/file/${version}`;

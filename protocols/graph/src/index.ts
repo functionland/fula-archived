@@ -15,7 +15,8 @@ export const Response = {
   }
 };
 
-export { Graph as GraphProtocol, Schema as GraphSchema };
+export * from './schema'
+export * from './handlers'
 
 export default {
   Graph,

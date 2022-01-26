@@ -12,7 +12,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "tslib" : ["./node_modules/tslib/tslib.d.ts"]
+    }
   },
   "include": [
     "src/**/*",

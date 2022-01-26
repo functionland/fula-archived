@@ -4,7 +4,7 @@ import test from 'tape';
 import WebRTCStar from 'libp2p-webrtc-star';
 import { createClient } from '../src';
 
-const serverId = 'QmQ45PBtSPW5ZT91Yyiegnbt6ESptoFEj11fB4JhHSnPqi';
+const serverId = 'QmasMjMGPNuAtwMsAR4cNPV5jGYiFLjcNzJy1k38ukXSTS';
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,
@@ -25,7 +25,7 @@ async function* testFileGenerator() {
 }
 
 test('Setup', async function (t) {
-  t.plan(6);
+  t.plan(7);
   try {
     const client = await createClient();
     t.pass('Client ready');
@@ -78,13 +78,28 @@ test('Setup', async function (t) {
       await testFile.text(),
       'Content Most be the same'
     );
+    const query = `mutation {
+                    create(
+                      input: {
+                        collection: "profile"
+                        values: [{ _id: "6", age: 33, name: "jamshid", key: "6" }]
+                      }
+                    ) {
+                      _id
+                      name
+                      age
+                      key
+                    }
+                  }`
 
+    const result = await client.graphql(query)
+    const expected = {
+      data: {create: [{_id: '6', name: 'jamshid', age: 33, key: '6'}]}
+    }
+    t.deepEqual(result, expected, 'Graphql using query')
     client.close();
   } catch (e) {
-    t.fail(e.message);
+    t.error(e);
   }
 
-  t.teardown(async () => {
-    // await graceful();
-  });
 });

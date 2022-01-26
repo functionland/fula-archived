@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
-    "build:proto": "protoc --ts_out src/schema --proto_path src/schema/ src/schema/index.proto",
+    "build:proto": "protoc --ts_out src/schema --ts_opt generate_dependencies --proto_path src/schema/ src/schema/*.proto",
     "lint": "eslint src --fix"
   },
   "license": "MIT",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.1.0",
     "@esbuild-plugins/node-modules-polyfill": "^0.1.1",
+    "tslib": "^2.3.1",
     "@protobuf-ts/plugin": "^1.0.13",
     "@types/bl": "^5.0.1",
     "@types/pako": "^1.0.1",
@@ -47,8 +48,7 @@
         "default":"./dist/browser/esm.js"
       },
       "node": {
-        "require":"./dist/node/cjs.cjs",
-        "import":"./dist/node/esm.js"
+        "default":"./dist/node/cjs.cjs"
       }
     }
   }

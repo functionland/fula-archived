@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-message Request {
-  string query = 1;
-}
-
-message JSONResponse{
-  string json = 1;
-}

@@ -37,7 +37,7 @@
 		"@esbuild-plugins/node-globals-polyfill": "^0.1.0",
 		"@esbuild-plugins/node-modules-polyfill": "^0.1.1",
 		"@esbuild-plugins/esm-externals": "^0.0.6",
-		"@functionland/server" : "^0.1.0",
+		"@functionland/box" : "^0.1.0",
 		"wrtc": "^0.4.7",
 		"libp2p-webrtc-star": "^0.22.2",
 		"magic-string": "^0.25.7",

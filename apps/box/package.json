@@ -1,5 +1,5 @@
 {
-  "name": "@functionland/server",
+  "name": "@functionland/box",
   "version": "0.1.0",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",

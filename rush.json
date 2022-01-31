@@ -59,7 +59,7 @@
     },
     {
       "packageName": "@functionland/borg",
-      "projectFolder": "libraries/borg",
+      "projectFolder": "libraries/borg-client",
       "reviewCategory": "production",
       "shouldPublish": true
     },
@@ -93,8 +93,8 @@
       "reviewCategory": "prototypes"
     },
     {
-      "packageName": "@functionland/server",
-      "projectFolder": "apps/server",
+      "packageName": "@functionland/box",
+      "projectFolder": "apps/box",
       "reviewCategory": "production"
     },
     {

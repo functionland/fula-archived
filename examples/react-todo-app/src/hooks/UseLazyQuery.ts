@@ -1,6 +1,7 @@
 
-import React, {useState} from 'react'
+import React, {useState,useContext} from 'react'
 import { DocumentNode, GraphQLError } from 'graphql';
+import {BorgContext} from '../providers/BorgProvider'
 export declare type OperationVariables = Record<string, any>;
 export interface TypedDocumentNode<Result = {
     [key: string]: any;
@@ -11,7 +12,7 @@ export interface TypedDocumentNode<Result = {
     __variablesType?: Variables;
 }
 export interface QueryLazyOptions<TVariables> {
-    variables?: TVariables;
+    variables?: TVariables | undefined;
 }
 export interface GraphError {
     graphQLErrors: ReadonlyArray<GraphQLError>;
@@ -32,15 +33,28 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
     const [data,setData]=useState<TData>();
     const [error,setError]=useState<GraphError>();
     const [loading,setLoading]=useState<boolean>(false);
-
+    const borg = useContext(BorgContext);
     const request = (options?: QueryLazyOptions<TVariables>): void => {
         try {
-            setLoading(true);
+            if(borg && query.loc?.source?.body){
+                setLoading(true);
+                // @ts-ignore
+                borg.graphql(query.loc?.source?.body,options?.variables,query?.definitions?.[0]?.name?.value).then(query=>{
+                    console.log("request:",data);
+                    setData({
+                        ...((query as any)?.data||{})
+                    });
+                }).catch(error=>{
+                    console.log("request error:",error);
+                    setError(error);
+                }).finally(()=>{
+                    setLoading(false);
+                });
+            }
             console.log("request",query);
         } catch (error) {
-            console.log(error)
-        }finally{
-            setLoading(true);
+            console.log(error);
+            setLoading(false);
         }
     }
     return [request,{data,error,loading}]

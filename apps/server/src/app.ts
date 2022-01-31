@@ -27,7 +27,7 @@ export async function getOrbitDb(){
 }
 
 
-export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
+export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   const createLibp2 = ( config: Libp2pOptions ) => {
     resolveLibp2p(
@@ -53,19 +53,23 @@ export async function main(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   registerFile(libp2pNode,ipfsNode)
   registerGraph(libp2pNode, orbitDB)
-
+  return {
+    stop: async () => await graceful()
+  }
 }
 
 export async function graceful() {
   debug('\nStopping server...');
   const ipfs = await getIPFS();
   const orbitDB= await getOrbitDb();
+  const libp2p = await getLibp2p();
   await orbitDB.stop();
   await ipfs.stop();
-  process.exit(0);
+  await libp2p.stop()
+  return
+  // process.exit(0);
 }
 
-process.on('SIGTERM', graceful);
-process.on('SIGINT', graceful);
+
 
 

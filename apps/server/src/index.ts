@@ -1,10 +1,15 @@
-import {graceful, main} from "./app";
+import {app} from "./app";
 import debug from "debug";
 debug.enabled('*')
 
-main().catch(async (t) => {
-    console.log(t)
-    debug('We Crashed!' + t.message)
-    console.log('we fucked')
-    await graceful()
-});
+const main = async () => {
+    const p = await app()
+    const stop = async () => {
+        await p.stop()
+        process.exit(9)
+    }
+    process.on('SIGTERM', stop);
+    process.on('SIGINT', stop);
+}
+
+main()

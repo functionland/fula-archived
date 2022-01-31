@@ -32,19 +32,6 @@ esbuild.build({
 esbuild.build({
   entryPoints: ['src/index.ts'],
   platform: 'node',
-  target: 'node14',
-  bundle: true,
-  sourcemap: true,
-  outfile: 'dist/node/esm.js',
-  define: {
-    global: 'globalThis'
-  },
-  inject: [path.resolve('scripts/node-globals.js')]
-});
-
-esbuild.build({
-  entryPoints: ['src/index.ts'],
-  platform: 'node',
   format: 'cjs',
   target: 'node14',
   bundle: true,

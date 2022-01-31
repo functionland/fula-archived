@@ -1,5 +1,5 @@
 import test from 'tape';
-import { main, graceful, getLibp2p, getIPFS,getOrbitDb } from '../src/app';
+import { app, graceful, getLibp2p, getIPFS,getOrbitDb } from '../src/app';
 
 import { File, Blob } from '@web-std/file';
 import { FileProtocol } from '@functionland/file-protocol';
@@ -9,9 +9,7 @@ import {testFile, testFileGenerator} from "./test-data";
 test('Test Server Functionality', async function (t) {
   t.plan(8);
   // create borg server
-  main().catch((e) => {
-    t.fail(e);
-  });
+  const p = await app()
   const node = await getLibp2p();
   const ipfs = await getIPFS();
   const client = await createClient();
@@ -68,10 +66,5 @@ test('Test Server Functionality', async function (t) {
   } catch (e) {
     t.error(e);
   }
-
-  t.teardown(async () => {
-    await client.stop();
-    await graceful();
-  });
-
+  await p.stop()
 });

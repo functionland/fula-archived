@@ -34,7 +34,6 @@ export async function sendFile({connection, file}: {
         console.log('Protocol mismatched')
         throw Error('Protocol mismatched')
     }
-    console.log('are u run?')
     const {name, type, size, lastModified} = file;
     console
     const streamSendFile = async function* () {
@@ -102,3 +101,4 @@ export async function streamFile({connection, source, meta}: {
     });
 
 }
+

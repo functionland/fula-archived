@@ -45,7 +45,8 @@
   "exports":{
     ".":{
       "browser": {
-        "default":"./dist/browser/esm.js"
+        "import":"./dist/browser/esm.js",
+        "require": "./dist/browser/cjs.js"
       },
       "node": {
         "default":"./dist/node/cjs.cjs"

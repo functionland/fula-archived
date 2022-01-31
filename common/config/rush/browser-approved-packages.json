@@ -43,12 +43,20 @@
       "allowedCategories": [ "production", "prototypes" ]
     },
     {
+      "name": "@functionland/box",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@functionland/file-protocol",
       "allowedCategories": [ "production" ]
     },
     {
       "name": "@functionland/graph",
       "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "@functionland/graph-protocol",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "@functionland/protocols",
@@ -207,6 +215,22 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "graphql",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "graphql-tag",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "graphql-tools",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "graphql-type-json",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "husky",
       "allowedCategories": [ "prototypes" ]
     },
@@ -237,6 +261,10 @@
     {
       "name": "libp2p-bootstrap",
       "allowedCategories": [ "production", "prototypes" ]
+    },
+    {
+      "name": "libp2p-gossipsub",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "libp2p-interfaces",
@@ -296,6 +324,10 @@
     },
     {
       "name": "openpgp",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "orbit-db",
       "allowedCategories": [ "production" ]
     },
     {
@@ -376,6 +408,10 @@
     },
     {
       "name": "tsify",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tslib",
       "allowedCategories": [ "production" ]
     },
     {

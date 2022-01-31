@@ -16,12 +16,5 @@ build({
   bundle: true,
   sourcemap: true,
   outfile: 'dist/index.js',
-  external: [
-      'wrtc',
-      'libp2p',
-      'leveldown',
-      '@functionland/file-protocol',
-      'ipfs',
-      'ipfs-core'
-  ]
+    external
 });

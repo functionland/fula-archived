@@ -59,7 +59,7 @@
     },
     {
       "packageName": "@functionland/borg",
-      "projectFolder": "libraries/borg",
+      "projectFolder": "libraries/borg-client",
       "reviewCategory": "production",
       "shouldPublish": true
     },
@@ -82,13 +82,19 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@functionland/graph-protocol",
+      "projectFolder": "protocols/graph",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
       "packageName": "@functionland/fx",
       "projectFolder": "tools/cli",
       "reviewCategory": "prototypes"
     },
     {
-      "packageName": "@functionland/server",
-      "projectFolder": "apps/server",
+      "packageName": "@functionland/box",
+      "projectFolder": "apps/box",
       "reviewCategory": "production"
     },
     {

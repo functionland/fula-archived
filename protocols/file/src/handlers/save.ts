@@ -31,11 +31,11 @@ export async function sendFile({connection, file}: {
     file: File;
 }): Promise<string> {
     if (connection.protocol !== PROTOCOL) {
+        console.log('Protocol mismatched')
         throw Error('Protocol mismatched')
     }
-
     const {name, type, size, lastModified} = file;
-
+    console
     const streamSendFile = async function* () {
         yield Request.toBinary({
             type: {
@@ -101,3 +101,4 @@ export async function streamFile({connection, source, meta}: {
     });
 
 }
+

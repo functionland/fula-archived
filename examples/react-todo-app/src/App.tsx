@@ -30,7 +30,6 @@ function App() {
       // console.log(`Found peer ${peerId.toB58String()}`);
       // setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
     });
-    console.log("borgClient:",borgClient)
     setBorgClient(borgClient);
   }
   const connect = async () => {

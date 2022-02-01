@@ -1,5 +1,5 @@
 
-import React, {useState,useContext} from 'react'
+import React, {useState,useContext, useCallback} from 'react'
 import { DocumentNode, GraphQLError } from 'graphql';
 import {BorgContext} from '../providers/BorgProvider'
 export declare type OperationVariables = Record<string, any>;
@@ -34,7 +34,7 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
     const [error,setError]=useState<GraphError>();
     const [loading,setLoading]=useState<boolean>(false);
     const borg = useContext(BorgContext);
-    const request = (options?: QueryLazyOptions<TVariables>): void => {
+    const request =useCallback((options?: QueryLazyOptions<TVariables>): void => {
         try {
             if(borg && query.loc?.source?.body){
                 setLoading(true);
@@ -56,6 +56,6 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
             console.log(error);
             setLoading(false);
         }
-    }
+    },[borg]);
     return [request,{data,error,loading}]
 }

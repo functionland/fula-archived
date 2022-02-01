@@ -1,56 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import * as grapgql from 'graphql'
 import TodoForm from './TodoForm';
 import Todo, { TODO } from './Todo';
 import { useLazyQuery } from '../hooks/UseLazyQuery';
-const readQuery = grapgql.parse(`
-  query {
-    read(input:{
-      collection:"todo",
-      filter:{}
-    }){
-      id
-      text
-      isComplete
-    }
-  } 
-`)
-const createMutation = grapgql.parse(`
-  mutation addTodo($values:JSON){
-    create(input:{
-      collection:"todo",
-      values: $values
-    }){
-      id
-      text
-      isComplete
-    }
-  }
-`);
-const updateMutation = grapgql.parse(`
-  mutation updateTodo($values:JSON){
-    create(input:{
-      collection:"todo",
-      values: $values
-    }){
-      id
-      text
-      isComplete
-    }
-  }
-`);
-const deleteMutation = grapgql.parse(`
-  mutation deleteTodo($values:JSON){
-    create(input:{
-      collection:"todo",
-      ids: $values
-    }){
-      id
-      text
-      isComplete
-    }
-  }
-`);
+import { readQuery, createMutation, updateMutation, deleteMutation } from '../queries/ToDo'
+
 function TodoList() {
   const [todos, setTodos] = useState<TODO[]>([]);
   const [readTodos, readTodoStatus] = useLazyQuery(readQuery);
@@ -67,6 +20,10 @@ function TodoList() {
     if (readTodoStatus.data?.read)
       setTodos(readTodoStatus.data?.read);
   }, [readTodoStatus]);
+
+  useEffect(() => {
+    console.log("createTodoStatus", createTodoStatus);
+  }, [createTodoStatus]);
 
   const addTodo = (todo: TODO) => {
     if (!todo.text || /^\s*$/.test(todo.text)) {

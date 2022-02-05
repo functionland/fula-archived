@@ -26,7 +26,9 @@ const Todo = ({ todos, completeTodo, removeTodo, updateTodo }: Props): JSX.Eleme
       ...todo
     });
     setEdit({
-      ...todo
+      id:'',
+      text:'',
+      isComplete:false
     });
   };
 

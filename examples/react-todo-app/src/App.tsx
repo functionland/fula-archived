@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Borg, createClient } from '@functionland/borg'
 import TodoList from './components/TodoList';
 import { BorgProvider } from './providers/BorgProvider'
 
 function App() {
+  const inputRef = useRef<any>(null);
   const [borgClient, setBorgClient] = useState<Borg>();
-  const [output, setOutput] = useState("");
+  const [connecting, setConnecting] = useState(false);
   const [serverId, setServerId] = useState("12D3KooWGDhpz99eeyyU3uWCXm5N91LYbVLV7p2x2kCeRXeh6aQ7")
   const [connectionStaus, setConnectionStaus] = useState(false)
 
@@ -15,14 +16,14 @@ function App() {
     const node = borgClient.getNode()
 
     node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-      if(connection.remotePeer.toB58String()===serverId)
+      if (connection.remotePeer.toB58String() === serverId)
         setTimeout(() => {
           setConnectionStaus(true)
         }, 100);
       console.log(`Connected to ${connection.remotePeer.toB58String()}`);
     });
     node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-      if(connection.remotePeer.toB58String()===serverId)
+      if (connection.remotePeer.toB58String() === serverId)
         setConnectionStaus(false);
       console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
     });
@@ -34,31 +35,65 @@ function App() {
   }
   const connect = async () => {
     console.log("connecting to borg...!")
-    if (!borgClient) {
+    try {
+      setConnecting(true);
+      if (!borgClient) {
         console.log("borg is not mounted!")
         return
-    }
-    try {
-        if(await borgClient.connect(serverId))
-          console.log("borg is connected!")
-        else
-          console.log(`borg unable to connect!`)
+      }
+      if (await borgClient.connect(serverId))
+        console.log("borg is connected!")
+      else
+        console.log(`borg unable to connect!`)
     } catch (e) {
-        console.log(`connect error`,e)
+      console.log(`connect error`, e)
+    } finally {
+      setConnecting(false);
     }
-} 
+  }
   useEffect(() => {
     startBorg();
+    inputRef?.current?.focus();
   }, []);
 
-  useEffect(()=>{
-    connect();
-  },[borgClient]);
+  useEffect(() => {
+    //connect();
+  }, [borgClient]);
+  const handleChange = (e: any) => {
+    setServerId(e.target.value);
+  };
+  const handleConnect = (e: any) => {
+    e.preventDefault();
+    setConnecting(prev => {
+      if (!prev) {
+        connect();
+        return !prev
+      }
+      return prev;
+    })
 
+  };
   return (
     <div className='todo-app'>
       <BorgProvider borg={borgClient}>
-        {connectionStaus?<TodoList />:null}
+        {connectionStaus ? <TodoList /> : <div className='connect-container'>
+          <div className='app-header'>
+            {!connecting ? <h1>Connect to BOX!</h1> : null}
+            {connecting ? <div className='lds-ellipsis'><div></div><div></div><div></div><div></div></div> : null}
+          </div>
+          <input
+            placeholder='Enter your server Id'
+            value={serverId}
+            onChange={handleChange}
+            name='text'
+            ref={inputRef}
+            className='todo-input'
+          />
+          <button disabled={!borgClient} onClick={handleConnect} className='todo-button'>
+            Connect
+          </button>
+
+        </div>}
       </BorgProvider>
     </div>
   );

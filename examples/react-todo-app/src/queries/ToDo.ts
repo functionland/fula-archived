@@ -26,7 +26,7 @@ export const createMutation = grapgql.parse(`
 `);
 export const updateMutation = grapgql.parse(`
   mutation updateTodo($values:JSON){
-    create(input:{
+    update(input:{
       collection:"todo",
       values: $values
     }){
@@ -38,13 +38,9 @@ export const updateMutation = grapgql.parse(`
 `);
 export const deleteMutation = grapgql.parse(`
   mutation deleteTodo($values:JSON){
-    create(input:{
+    delete(input:{
       collection:"todo",
       ids: $values
-    }){
-      id
-      text
-      isComplete
-    }
+    })
   }
 `);

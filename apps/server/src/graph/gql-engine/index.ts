@@ -32,7 +32,7 @@ export const executeAndSelect = async (
     variableValues: Maybe<{ [p: string]: unknown }>,
     operationName: Maybe<string>
 ) => {
-    console.log(operationName, variableValues)
+    //onsole.log("operationName,variableValues",operationName, variableValues)
     const res = await execute({
         operationName,
         variableValues,
@@ -41,6 +41,6 @@ export const executeAndSelect = async (
         rootValue: resolvers
     });
     const def = query.definitions[0]
-    console.log(res, def)
+    console.log("query result:",JSON.stringify(res,null,2))
     return selector(res, def)
 }

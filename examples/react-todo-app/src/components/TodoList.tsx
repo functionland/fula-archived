@@ -6,24 +6,24 @@ import { readQuery, createMutation, updateMutation, deleteMutation } from '../qu
 
 function TodoList() {
   const [todos, setTodos] = useState<TODO[]>([]);
-  const [readTodos, readTodoStatus] = useLazyQuery(readQuery);
-  const [createTodo, createTodoStatus] = useLazyQuery(createMutation);
-  const [updateTodoMutation, updateTodoStatus] = useLazyQuery(updateMutation);
-  const [deleteTodoMutation, deleteTodoStatus] = useLazyQuery(deleteMutation);
+  const [readTodos, { data: readData }] = useLazyQuery(readQuery);
+  const [createTodo, { data: createData }] = useLazyQuery(createMutation);
+  const [updateTodoMutation, { data: updateData }] = useLazyQuery(updateMutation);
+  const [deleteTodoMutation, { data: deleteData }] = useLazyQuery(deleteMutation);
 
   useEffect(() => {
     readTodos();
   }, []);
 
   useEffect(() => {
-    console.log("readTodoStatus", readTodoStatus);
-    if (readTodoStatus.data?.read)
-      setTodos(readTodoStatus.data?.read);
-  }, [readTodoStatus]);
+    console.log("readTodoStatus", readData);
+    if (readData?.read)
+      setTodos(readData?.read);
+  }, [readData]);
 
   useEffect(() => {
-    console.log("createTodoStatus", createTodoStatus);
-  }, [createTodoStatus]);
+    console.log("createTodoStatus", createData);
+  }, [createData]);
 
   const addTodo = (todo: TODO) => {
     if (!todo.text || /^\s*$/.test(todo.text)) {
@@ -77,7 +77,7 @@ function TodoList() {
   return (
     <>
       <h1>Functionland Todo App</h1>
-      <h4>Exprience graph protocol on the BOX!</h4>
+      <h4>Experience graph protocol on the BOX!</h4>
       <TodoForm onSubmit={addTodo} />
       <Todo
         todos={todos}

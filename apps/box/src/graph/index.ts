@@ -5,7 +5,6 @@ import {parse} from "graphql";
 import {toAsyncIterable} from "async-later";
 
 export const registerGraph = (libp2pNode, orbitDBNode) => {
-    console.log('how fucked')
     libp2pNode.handle(PROTOCOL, handler);
     const resolvers = createResolver(orbitDBNode)
     setQueryResolutionMethod(async (req: Request) => {

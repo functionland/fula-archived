@@ -1,5 +1,5 @@
 import test from 'tape';
-import { main, graceful, getLibp2p, getIPFS, getOrbitDb } from '../src/app';
+import { app, graceful, getLibp2p, getIPFS, getOrbitDb } from '../src/app';
 import {queryResultMap, testData, testFile} from "./test-data";
 import {connect, createClient} from "./helper";
 import {PROTOCOL, submitQuery, Request, Result} from "@functionland/graph-protocol";
@@ -7,10 +7,9 @@ import {PROTOCOL, submitQuery, Request, Result} from "@functionland/graph-protoc
 
 
 test('Graphgql on OrbitDB test', async function (t) {
+  t.plan(9)
+  const p = await app();
   try {
-    main().catch((e) => {
-      t.fail(e);
-    });
     const node = await getLibp2p();
     const ipfs = await getIPFS();
     const orbitDB = await getOrbitDb();
@@ -50,11 +49,10 @@ test('Graphgql on OrbitDB test', async function (t) {
       });
       t.deepEqual(Result.toJson(<Result>expected), testData.expected, `should pass ${testData.name} query`)
     }
-    t.end();
 
   } catch (error) {
     console.log('error', error);
     t.end(error);
   }
-  t.teardown(graceful)
+  await p.stop()
 });

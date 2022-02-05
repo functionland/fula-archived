@@ -49,11 +49,11 @@
   "exports":{
     ".":{
       "browser": {
-        "default":"./dist/browser/esm.js"
+        "import":"./dist/browser/esm.js",
+        "require": "./dist/browser/cjs.js"
       },
       "node": {
-        "require":"./dist/node/cjs.cjs",
-        "import":"./dist/node/esm.js"
+        "default":"./dist/node/cjs.cjs"
       }
     }
   }

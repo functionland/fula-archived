@@ -3,9 +3,12 @@ import WebRTCStar from 'libp2p-webrtc-star';
 import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 import wrtc from 'wrtc';
 import Mplex from 'libp2p-mplex';
+import Protector from "libp2p/src/pnet"
+import * as fs from 'fs';
 
 new Noise();
-
+const swarmKey1 = fs.readFileSync('.ipfs/sw.key')
+console.log(swarmKey1)
 export const createClient = async () =>{
     const node = await Libp2p.create({
         addresses: {
@@ -17,7 +20,8 @@ export const createClient = async () =>{
         modules: {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
-            connEncryption: [NOISE]
+            connEncryption: [NOISE],
+            connProtector:new Protector(swarmKey1)
         },
         config: {
             transport: {

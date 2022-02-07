@@ -112,6 +112,12 @@
       "projectFolder": "examples/react-todo-app",
       "reviewCategory": "prototypes"
 
+    },
+    {
+      "packageName": "build-helpers",
+      "projectFolder": "tools/build-helpers",
+      "shouldPublish": true,
+      "reviewCategory": "production"
     }
   ]
 }

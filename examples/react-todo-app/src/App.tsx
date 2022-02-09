@@ -8,7 +8,7 @@ function App() {
   const inputRef = useRef<any>(null);
   const [borgClient, setBorgClient] = useState<Borg>();
   const [connecting, setConnecting] = useState(false);
-  const [serverId, setServerId] = useState("12D3KooWGDhpz99eeyyU3uWCXm5N91LYbVLV7p2x2kCeRXeh6aQ7")
+  const [serverId, setServerId] = useState("")
   const [connectionStaus, setConnectionStaus] = useState(false)
 
   const startBorg = async () => {
@@ -16,10 +16,15 @@ function App() {
     const node = borgClient.getNode()
 
     node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-      if (connection.remotePeer.toB58String() === serverId)
+      setServerId(srvId=>{
+        if (connection.remotePeer.toB58String() === srvId)
         setTimeout(() => {
           setConnectionStaus(true)
         }, 100);
+        localStorage.setItem("serverId",srvId||"")
+        return srvId;
+      })
+     
       console.log(`Connected to ${connection.remotePeer.toB58String()}`);
     });
     node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
@@ -53,11 +58,13 @@ function App() {
   }
   useEffect(() => {
     startBorg();
+    setServerId(localStorage.getItem("serverId")||"");
     inputRef?.current?.focus();
   }, []);
 
   useEffect(() => {
-    //connect();
+    if(serverId)
+      connect()
   }, [borgClient]);
   const handleChange = (e: any) => {
     setServerId(e.target.value);

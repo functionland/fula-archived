@@ -1,7 +1,9 @@
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import { build } from 'esbuild';
+import {clean} from 'build-helpers'
 
+clean()
 await build({
   entryPoints: ['src/index.ts'],
   platform: 'browser',

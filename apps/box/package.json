@@ -52,6 +52,7 @@
     "graphql-tools":"8.2.0"
   },
   "devDependencies": {
+    "build-helpers": "^0.0.1",
     "esbuild": "^0.12.1",
     "@web-std/file": "^3.0.0",
     "esbuild-runner": "^2.2.1",

@@ -2,8 +2,9 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import { build } from 'esbuild';
 import browserify from 'browserify';
-import fs from 'fs'
+import {clean} from 'build-helpers'
 
+clean()
 await build({
   entryPoints: ['tests/borg.test.ts'],
   platform: 'browser',

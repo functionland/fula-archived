@@ -12,3 +12,12 @@ services:
     command: rushx start
     ports:
       - 3000:3000
+
+  react-todo-app:
+    build: .
+    working_dir: /borg/examples/react-todo-app
+    command: rushx start
+    environment:
+      PORT: 3001
+    ports:
+      - 3001:3001

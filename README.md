@@ -80,10 +80,11 @@ To get started in development with this monorepo use the following steps.
   $ cd apps/box && rushx start
 ```
 
-3. Run demo app
+3. Run demo apps
 
 ```
   $ cd examples/react-cra && rushx start
+  $ cd examples/react-do-app && rushx start
 ```
 
 
@@ -94,9 +95,9 @@ To get started in development with this monorepo use the following steps.
   $ docker-compose -f docker-compose.dev.yaml up
 ```
 
-### Run the demo app
+### Run the demo apps
 
-Open a browser and navigate to ```http://localhost:3000```
+Open a browser and navigate to ```http://localhost:3000``` and ```http://localhost:3001```
 
 ## License
 

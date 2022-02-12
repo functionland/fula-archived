@@ -121,3 +121,7 @@ pnpm-lock.yaml
 #jetbraines
 .idea
 /apps/box/orbitdb/
+
+#vim
+*.swp
+*.swo

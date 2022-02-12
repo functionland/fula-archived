@@ -56,6 +56,49 @@ The **box** stack can provide backup guarantees by having the data pinned on mul
 | [react](examples/react-cra) | Example of using borg client and box server |
 | [react-native](examples/react-native) | Example of using borg client in react-native and box server |
 
+## Development
+
+To get started in development with this monorepo use the following steps.
+
+### Prerequisites
+
+  * [nodejs](https://nodejs.org/en/) version 16.13.2
+
+  * [rush](https://www.npmjs.com/package/@microsoft/rush) monorepo tool
+
+### Local development on host OS
+
+1.  Install & Build deps
+
+```
+  $ rush update && rush build
+```
+
+2. Run box app.
+
+```
+  $ cd apps/box && rushx start
+```
+
+3. Run demo apps
+
+```
+  $ cd examples/react-cra && rushx start
+  $ cd examples/react-do-app && rushx start
+```
+
+
+
+### Local development in docker container
+
+```
+  $ docker-compose -f docker-compose.dev.yaml up
+```
+
+### Run the demo apps
+
+Open a browser and navigate to ```http://localhost:3000``` and ```http://localhost:3001```
+
 ## License
 
 [MIT](LICENSE)

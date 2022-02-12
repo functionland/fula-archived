@@ -22,8 +22,9 @@ function TodoForm(props: Props) {
 
     props?.onSubmit?.({
       id: `${Math.floor(Math.random() * 10000)}`,
+      isComplete:false,
+      ...(props.edit??{}),
       text: input,
-      isComplete:props.edit?props.edit.isComplete:false
     });
     setInput('');
   };

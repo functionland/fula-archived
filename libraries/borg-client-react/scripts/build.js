@@ -24,6 +24,7 @@ await build({
     })
   ],
   external: [
+    'react'
   ]
 });
 

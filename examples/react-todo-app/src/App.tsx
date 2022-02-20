@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Borg, createClient } from '@functionland/borg'
 import TodoList from './components/TodoList';
-import { BorgProvider } from './providers/BorgProvider'
+import { BorgProvider } from '@functionland/borg-client-react'
 
 function App() {
   const inputRef = useRef<any>(null);

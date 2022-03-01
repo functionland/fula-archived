@@ -6,8 +6,14 @@ import Mplex from 'libp2p-mplex';
 import PeerId from 'peer-id';
 import { constructorOptions, Libp2pOptions } from 'libp2p';
 import { SIG_SERVER } from './constant';
+import Protector from "libp2p/src/pnet"
 
 const noise = new Noise();
+const enc = new TextEncoder();
+const stringSwKey = `/key/swarm/psk/1.0.0/
+/base16/
+5693ff3ca2f6c71a2773aacec4307d15cf496fe2ef8753507a28e7c14265a7bd`
+const swkey = enc.encode(stringSwKey)
 
 export async function configure(
   config = {}
@@ -21,7 +27,8 @@ export async function configure(
     modules: {
       transport: [WebRTCStar],
       streamMuxer: [Mplex],
-      connEncryption: [NOISE]
+      connEncryption: [NOISE],
+      connProtector:new Protector(swkey)
     },
     config: {
       peerDiscovery: {

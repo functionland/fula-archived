@@ -13,3 +13,6 @@ export const clean = () => {
     }
 }
 
+
+export default {clean}
+

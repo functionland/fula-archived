@@ -1,7 +1,7 @@
 {
-	"name": "@functionland/borg",
+	"name": "@functionland/fula",
 	"version": "0.4.0",
-	"description": "Interface with a borg server from the browser!",
+	"description": "Interface with a fula server from the browser!",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "src/index.ts",
@@ -13,14 +13,14 @@
 	  },
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/functionland/borg/tree/main/libraries/borg"
+		"url": "https://github.com/functionland/fula/tree/main/libraries/fula"
 	},
 	"author": "",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/functionland/borg/issues"
+		"url": "https://github.com/functionland/fula/issues"
 	},
-	"homepage": "https://github.com/functionland/borg#readme",
+	"homepage": "https://github.com/functionland/fula#readme",
 	"dependencies": {
 		"@functionland/file-protocol": "^0.3.2",
 		"@functionland/graph-protocol": "^0.1.0",

@@ -3,7 +3,7 @@ import {Platform, StyleSheet, Image} from 'react-native';
 import {TextInput, Button} from 'react-native';
 import {View} from '../components/Themed';
 import {RootTabScreenProps} from '../types';
-import {BorgContext} from '@functionland/rn-borg/src/BorgClient';
+import {BorgContext} from '@functionland/rn-fula';
 import * as ImagePicker from 'expo-image-picker';
 
 interface Meta {
@@ -26,17 +26,17 @@ interface FileMeta {
 }
 
 export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>) {
-    const [serverId, setServerId] = useState('QmemhZwyV9LhEv14qWYWdQqcYctQwxyBzutPUeU2DtYMgY')
+    const [serverId, setServerId] = useState('12D3KooWGwcKB18qSsq3AxPw9nUfpEMyePAiA1q8gqq92yuWEKKt')
     const [fileId, setFileId] = useState('QmYLgtbQ4je2PVzxFFg2zeEPjv5z1LxFXZ5g6D4X3j1erq')
     const [output, setOutput] = useState('')
     const [image, setImage] = useState(null);
-    const borg = useContext(BorgContext)
+    const fula = useContext(BorgContext)
     const onSubmit = async (e: any) => {
         try {
             // @ts-ignore
-            await borg.start()
+            await fula.start()
             // @ts-ignore
-            await borg.connect(serverId)
+            await fula.connect(serverId)
         } catch (e) {
             console.log(e)
         }
@@ -46,7 +46,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
     const onSend = async (e: any) => {
         try {
             //@ts-ignore
-            setFileId(await borg.sendFile(image.uri))
+            setFileId(await fula.sendFile(image.uri))
             console.log("asdasdasd")
             console.log(fileId)
         } catch (ee) {
@@ -58,7 +58,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
         try {
             console.log("reseived called")
             //@ts-ignore
-            const file = await borg.receiveFile(fileId)
+            const file = await fula.receiveFile(fileId)
             // console.log(await blobToBase64(file))
             console.log(file)
             setImage({uri:file})
@@ -71,7 +71,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
     const onReceiveMeta = async (e: any) => {
         try {
             //@ts-ignore
-            setOutput(await borg.receiveMeta(fileId))
+            setOutput(await fula.receiveMeta(fileId))
         } catch (ee) {
             console.log(ee)
         }

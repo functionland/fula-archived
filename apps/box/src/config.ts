@@ -4,6 +4,8 @@ import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
 import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import {Libp2pOptions} from "libp2p";
+import Protector from "libp2p/src/pnet"
+import * as fs from 'fs';
 
 new Noise();
 

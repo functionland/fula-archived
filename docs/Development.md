@@ -11,13 +11,13 @@ project structure:
 |example   | Example Of how to use libraries|
 |libraries | Developer's Libraries|
 |protocols | Borg protocols describe how libp2p node communicates with each other|
-|tools     | dope tools for handling borg|
+|tools     | dope tools for handling fula|
 Note: project structure is flat maximum depth of packages set by 2. 
 
 ## Getting started
 1. Clone repository 
 ```sh
-  git clone https://github.com/functionland/borg
+  git clone https://github.com/functionland/fula
 ```
 
 2. Install rush globally

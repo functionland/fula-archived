@@ -8,7 +8,7 @@ buildscript {
         targetSdkVersion = 30
     }
     repositories {
-        google()
+        maven { url 'https://maven.google.com' }
         jcenter()
     }
     dependencies {
@@ -31,7 +31,7 @@ allprojects {
             url("$rootDir/../node_modules/jsc-android/dist")
         }
 
-        google()
+        maven { url 'https://maven.google.com' }
         jcenter()
         maven { url 'https://www.jitpack.io' }
     }

@@ -6,7 +6,7 @@ import {clean} from 'build-helpers'
 
 clean()
 await build({
-  entryPoints: ['tests/borg.test.ts'],
+  entryPoints: ['tests/fula.test.ts'],
   platform: 'browser',
   target: 'es2018',
   format: 'cjs',

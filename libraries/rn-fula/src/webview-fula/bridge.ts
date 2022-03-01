@@ -10,6 +10,7 @@ import {ChunkStatusType, MessageType, RPCStatusType} from "../types";
 let adaptor = {}
 
 export const register = (obj: Object) => {
+    postLog('seg' + JSON.stringify(obj))
     adaptor = {...adaptor, ...obj}
 }
 
@@ -18,6 +19,7 @@ let emitter = new EventEmitter()
 // Listening to message come from react native
 document.addEventListener("message", async function (event: any) {
     const data: RPCRequest | Chunk = JSON.parse(event.data)
+    postLog(JSON.stringify(adaptor))
     switch (data.type) {
         case MessageType.RPCRequest: {
             try {

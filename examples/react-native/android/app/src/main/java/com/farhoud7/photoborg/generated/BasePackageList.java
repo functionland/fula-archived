@@ -1,4 +1,4 @@
-package com.farhoud7.photoborg.generated;
+package com.farhoud7.photofula.generated;
 
 import java.util.Arrays;
 import java.util.List;

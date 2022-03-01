@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
-    "@functionland/rn-borg": "^0.1.0",
+    "@functionland/rn-fula": "../../libraries/rn-fula",
+    "@react-native-community/cli-platform-android": "~7.0.1",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
@@ -53,6 +54,6 @@
     "typescript": "~4.0.0"
   },
   "private": true,
-  "name": "photo-borg",
+  "name": "fula-rn-example",
   "version": "1.0.0"
 }

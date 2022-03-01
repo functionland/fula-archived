@@ -28,7 +28,7 @@
 
   <p align="center">
     The Borg library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB
-    for data persistence and S3 for file storage. this package bridge borg functionality to react native using webview.
+    for data persistence and S3 for file storage. this package bridge fula functionality to react native using webview.
 
   </p>
 </div>
@@ -55,11 +55,11 @@ not available, so you become public node that can accessed from anywhere.
 
 Install NPM package
    ```sh
-   npm install @functionland/rn-borg --save
+   npm install @functionland/rn-fula --save
    ```
 or using CDN
   ```html
-<script src="https://cdn.jsdelivr.net/npm/@functionland/rn-borg@0.2.2/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@functionland/rn-fula@0.2.2/dist/index.js"></script>
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -67,11 +67,11 @@ or using CDN
 
 <!-- USAGE EXAMPLES -->
 ## Usage
- borg client will be
+ fula client will be
 
    ```js
     // import provider
-import Borg, {BorgContext} from '@functionland/rn-borg';
+import Borg, {BorgContext} from '@functionland/rn-fula';
 import React, {useContext} from 'react'
 import {View} from 'react-native'
 
@@ -88,25 +88,25 @@ const TopLevelComponent = (props) => {
 
 // Use rn Borg
 const App = (props) => {
-  borg = useContext(BorgContext)
+  fula = useContext(BorgContext)
 
   async function connect() {
-    await borg.start()
-    await borg.connect(serverId)
+    await fula.start()
+    await fula.connect(serverId)
   }
 
   const onSend = async (e: any) => {
-    let fileId = await borg.sendFile(image.uri)
+    let fileId = await fula.sendFile(image.uri)
     console.log(fileId)
   }
 
   const onReceiveFile = async (e: any) => {
-    const file = await borg.receiveFile(fileId)
+    const file = await fula.receiveFile(fileId)
     console.log(await blobToBase64(file))
   }
 
   const onReceiveMeta = async (e: any) => {
-    const meta =await borg.receiveMeta(fileId)
+    const meta =await fula.receiveMeta(fileId)
     console.log(meta)
   }
 }
@@ -133,7 +133,7 @@ _For more examples, please refer to the [Examples](/examples/react-native)_
 - [ ] Encryption
 
 
-See the [open issues](https://github.com/functionland/borg/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/functionland/fula/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -195,15 +195,15 @@ See `LICENSE` for more information.
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/functionland/borg/graphs/contributors
+[contributors-url]: https://github.com/functionland/fula/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/functionland/borg/network/members
+[forks-url]: https://github.com/functionland/fula/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/functionland/borg/stargazers
+[stars-url]: https://github.com/functionland/fula/stargazers
 [issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/functionland/borg/issues
+[issues-url]: https://github.com/functionland/fula/issues
 [license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/functionland/borg/blob/main/LICENSE
+[license-url]: https://github.com/functionland/fula/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png

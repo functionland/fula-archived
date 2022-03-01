@@ -7,13 +7,7 @@ import {Libp2pOptions} from "libp2p";
 import Protector from "libp2p/src/pnet"
 import * as fs from 'fs';
 
-
-
 new Noise();
-
-const swarmKey1 = fs.readFileSync('.ipfs/sw.key')
-
-console.log(swarmKey1)
 
 export const defConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
     return {
@@ -28,8 +22,7 @@ export const defConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
-            pubsub: GossipSub,
-            connProtector:new Protector(swarmKey1)
+            pubsub: GossipSub
         },
         config: {
             transport: {

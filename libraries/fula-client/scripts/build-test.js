@@ -5,7 +5,7 @@ import browserify from 'browserify';
 import fs from 'fs'
 
 await build({
-  entryPoints: ['tests/borg.test.ts'],
+  entryPoints: ['tests/fula.test.ts'],
   platform: 'browser',
   target: 'es2018',
   format: 'cjs',

@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { fileReader2 } from './utils';
 import { messageHandler, bridge } from './bridge';
 import { template } from './template';
-import {Message, RPCStatusType} from '@functionland/rn-borg-bridge/types';
+import {Message, RPCStatusType} from '../types';
 
 export const BorgContext = createContext({});
 
@@ -17,7 +17,7 @@ interface Borg {
   receiveMeta: (fileId: string) => Promise<string>
 }
 
-export default function Borg(props: any) {
+export function Borg(props: any) {
   const webViewRef = useRef(null);
 
   const postMessage = (message: Message) => {
@@ -33,12 +33,13 @@ export default function Borg(props: any) {
   const onMessage = (event: { nativeEvent: { data: string } }) =>
     messageHandler(event);
 
-  const borg: Borg = {
+  const fula: Borg = {
     async start() {
       const response = await rpc.RPC('start', []);
       return response.payload;
     },
     async connect(peerId: string) {
+      console.log('connect called')
       const response = await rpc.RPC('connect', [peerId]);
       return response.payload;
     },
@@ -90,14 +91,14 @@ export default function Borg(props: any) {
         <WebView
           style={styles.container}
           ref={webViewRef}
-          source={{ html: template(), baseUrl: 'https://localhost' }}
+          source={{ uri:'https://192.168.1.10:3000' }}
           onMessage={onMessage}
           onError={(e) => console.log(e)}
           originWhitelist={['*']}
           javaScriptEnabled
         />
       </View>
-      <BorgContext.Provider value={borg}>{props.children}</BorgContext.Provider>
+      <BorgContext.Provider value={fula}>{props.children}</BorgContext.Provider>
     </>
   );
 }

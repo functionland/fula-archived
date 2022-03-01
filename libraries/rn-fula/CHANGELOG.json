@@ -1,9 +1,9 @@
 {
-  "name": "@functionland/rn-borg",
+  "name": "@functionland/rn-fula",
   "entries": [
     {
       "version": "0.2.3",
-      "tag": "@functionland/rn-borg_v0.2.3",
+      "tag": "@functionland/rn-fula_v0.2.3",
       "date": "Tue, 30 Nov 2021 16:00:51 GMT",
       "comments": {
         "patch": [
@@ -13,7 +13,7 @@
         ],
         "dependency": [
           {
-            "comment": "Updating dependency \"@functionland/rn-borg-bridge\" from `0.2.2` to `0.2.3`"
+            "comment": "Updating dependency \"@functionland/rn-fula-bridge\" from `0.2.2` to `0.2.3`"
           }
         ]
       }

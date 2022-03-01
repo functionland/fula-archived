@@ -54,11 +54,11 @@ not available, so you become public node that can accessed from anywhere.
 
 Install NPM package
    ```sh
-   npm install @functionland/borg --save
+   npm install @functionland/fula --save
    ```
 or using CDN
   ```html
-<script src="https://cdn.jsdelivr.net/npm/@functionland/borg/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@functionland/fula/dist/index.js"></script>
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -66,23 +66,23 @@ or using CDN
 
 <!-- USAGE EXAMPLES -->
 ## Usage
- Start borg and use file storage of [borg-server](/apps/server)
+ Start fula and use file storage of [fula-server](/apps/server)
    ```js
-    import {Borg, createClient} from '@functionland/borg'
+    import {Borg, createClient} from '@functionland/fula'
 
-    // Create a borg client 
-    const borgClient = await createClient();
+    // Create a fula client 
+    const fulaClient = await createClient();
     // ...
-    // connect to a borg server by its base58 string PeerId
-    await borgClient.connect(serverId)
+    // connect to a fula server by its base58 string PeerId
+    await fulaClient.connect(serverId)
     // send file and get cid
     // selectedFile send file use StreamReader interface or AsyncItrable and get cid
     // meta {name,type,lastModified,size}
-    const FileCid = await borgClient.sendStreamFile(selectedFile,meta);
+    const FileCid = await fulaClient.sendStreamFile(selectedFile,meta);
     // recive meta data 
-    const data = await borgClient.receiveMeta(fileId);
+    const data = await fulaClient.receiveMeta(fileId);
     // recive file using cid
-    const data = await borgClient.receiveFile(FileCid);
+    const data = await fulaClient.receiveFile(FileCid);
     let reader = new FileReader();
     reader.readAsDataURL(data);
     reader.onloadend = (e) => setContent(reader.result)
@@ -106,7 +106,7 @@ _For more examples, please refer to the [Examples](/examples/react-cra)_
 - [ ] Encryption
 
 
-See the [open issues](https://github.com/functionland/borg/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/functionland/fula/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -144,15 +144,15 @@ See [`LICENSE`](/LICENSE) for more information.
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/functionland/borg/graphs/contributors
+[contributors-url]: https://github.com/functionland/fula/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/functionland/borg/network/members
+[forks-url]: https://github.com/functionland/fula/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/functionland/borg/stargazers
+[stars-url]: https://github.com/functionland/fula/stargazers
 [issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/functionland/borg/issues
+[issues-url]: https://github.com/functionland/fula/issues
 [license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/functionland/borg/blob/main/LICENSE
+[license-url]: https://github.com/functionland/fula/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png

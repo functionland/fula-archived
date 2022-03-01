@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import './FileTransfer.css';
-import {Borg, createClient} from '@functionland/borg'
+import {Borg, createClient} from '@functionland/fula'
 import {SchemaProtocol} from "../../../protocols/file";
 import {rejects} from "assert";
 import {base64} from "rfc4648";
@@ -17,7 +17,7 @@ interface FileTransferProps {
  * Primary UI component for user interaction
  */
 export const FileTransfer = ({...props}: FileTransferProps) => {
-    const [borgClient, setBorgClient] = useState<Borg>();
+    const [fulaClient, setBorgClient] = useState<Borg>();
     const [output, setOutput] = useState("");
     const [serverId, setServerId] = useState("QmNi7CkBYtzt8vaDhFFXZ29dzaK5FdMWdiG1cxnJYDQLKB")
     const [selectedFile, setSelectedFile] = useState<File|null>(null)
@@ -25,8 +25,8 @@ export const FileTransfer = ({...props}: FileTransferProps) => {
     const [content, setContent] = useState("")
 
     async function startBorg() {
-        const borgClient = await createClient();
-        const node = borgClient.getNode()
+        const fulaClient = await createClient();
+        const node = fulaClient.getNode()
 
         node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
             console.log(`Connected to ${connection.remotePeer.toB58String()}`);
@@ -38,39 +38,39 @@ export const FileTransfer = ({...props}: FileTransferProps) => {
             console.log(`Found peer ${peerId.toB58String()}`);
             setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
         });
-        return borgClient
+        return fulaClient
     }
 
     const connect = async () => {
-        if (!borgClient) {
-            console.log("borg not connected")
+        if (!fulaClient) {
+            console.log("fula not connected")
             return
         }
         try {
-            await borgClient.connect(serverId)
+            await fulaClient.connect(serverId)
         } catch (e) {
             console.log(`error is ${e}`)
         }
 
     }
     const sendFile = async () => {
-        if (!borgClient || !selectedFile) {
-            console.log("borg not connected or file not exist")
+        if (!fulaClient || !selectedFile) {
+            console.log("fula not connected or file not exist")
             return
         }
         const meta =  {name:selectedFile.name,type:selectedFile.type,lastModified:selectedFile.lastModified,size:selectedFile.size}
-        const id = await borgClient.sendStreamFile(fileReader2(selectedFile),meta);
+        const id = await fulaClient.sendStreamFile(fileReader2(selectedFile),meta);
         setFileId(id);
     }
 
     const receiveFile = async () => {
-        if (!borgClient) {
-            console.log("borg not connected")
+        if (!fulaClient) {
+            console.log("fula not connected")
             return
         }
         try {
             console.log("r u there")
-            const data = await borgClient.receiveFile(fileId);
+            const data = await fulaClient.receiveFile(fileId);
             console.log(data)
             let reader = new FileReader();
             reader.readAsDataURL(data);
@@ -84,13 +84,13 @@ export const FileTransfer = ({...props}: FileTransferProps) => {
     }
 
     const receiveMeta = async () => {
-        if (!borgClient) {
-            console.log("borg not connected")
+        if (!fulaClient) {
+            console.log("fula not connected")
             return
         }
         try{
             console.log("meta there")
-            const data = await borgClient.receiveMeta(fileId);
+            const data = await fulaClient.receiveMeta(fileId);
             console.log(data)
             setContent(JSON.stringify(data));
         }catch (e) {

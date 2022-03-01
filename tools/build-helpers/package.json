@@ -1,0 +1,20 @@
+{
+  "name": "build-helpers",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/functionland/tools/build-helpers"
+  },
+  "scripts": {
+    "build": ""
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/functionland/fula/issues"
+  },
+  "homepage": "https://github.com/functionland/fula#readme"
+}

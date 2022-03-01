@@ -7,8 +7,7 @@ import Protector from "libp2p/src/pnet"
 import * as fs from 'fs';
 
 new Noise();
-const swarmKey1 = fs.readFileSync('.ipfs/sw.key')
-console.log(swarmKey1)
+
 export const createClient = async () =>{
     const node = await Libp2p.create({
         addresses: {
@@ -21,7 +20,6 @@ export const createClient = async () =>{
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
-            connProtector:new Protector(swarmKey1)
         },
         config: {
             transport: {

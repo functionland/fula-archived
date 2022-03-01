@@ -1,0 +1,51 @@
+{
+  "name": "@functionland/borg-client-react",
+  "version": "0.1.0",
+  "description": "This package provide some utility to use borg client in react projects",
+	"type": "module",
+  "main": "dist/index.js",
+	"types": "src/index.ts",
+  "module": "dist/index.js",
+  "source": "src/index.tsx",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "test": "run-s test:unit test:lint test:build",
+    "test:build": "run-s build",
+    "test:lint": "eslint .",
+    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:watch": "react-scripts test --env=jsdom"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "17.0.2",
+    "graphql":"16.2.0",
+    "@functionland/borg": "^0.4.0"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.0",
+		"@esbuild-plugins/node-modules-polyfill": "^0.1.1",
+		"@esbuild-plugins/esm-externals": "^0.0.6",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^12.12.38",
+    "@types/react": "^16.9.27",
+    "@types/react-dom": "^16.9.7",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+		"build-helpers": "^0.0.1",
+		"esbuild": "^0.12.17",
+    "microbundle-crl": "^0.13.10",
+    "prettier": "^2.0.4",
+    "react-scripts": "^3.4.1",
+    "typescript": "^3.7.5"
+  },
+  "files": [
+    "src/*"
+  ]
+}

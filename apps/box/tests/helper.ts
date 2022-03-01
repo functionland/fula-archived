@@ -3,6 +3,8 @@ import WebRTCStar from 'libp2p-webrtc-star';
 import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 import wrtc from 'wrtc';
 import Mplex from 'libp2p-mplex';
+import Protector from "libp2p/src/pnet"
+import * as fs from 'fs';
 
 new Noise();
 
@@ -17,7 +19,7 @@ export const createClient = async () =>{
         modules: {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
-            connEncryption: [NOISE]
+            connEncryption: [NOISE],
         },
         config: {
             transport: {

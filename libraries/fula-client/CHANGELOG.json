@@ -1,9 +1,9 @@
 {
-  "name": "@functionland/borg",
+  "name": "@functionland/fula",
   "entries": [
     {
       "version": "0.4.0",
-      "tag": "@functionland/borg_v0.4.0",
+      "tag": "@functionland/fula_v0.4.0",
       "date": "Tue, 30 Nov 2021 16:00:51 GMT",
       "comments": {
         "minor": [

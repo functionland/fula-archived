@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Observable, Observer } from 'rxjs/dist/types';
+import { Observable, Observer } from 'rxjs';
 import { generateUUID } from "./utils";
 import {
     Chunk,
@@ -10,16 +10,17 @@ import {
     RPCRequest,
     RPCResponse,
     RPCStatusType
-} from "../../rn-borg-bridge/types";
-import {SchemaProtocol} from "../../../protocols/file";
+} from "../types";
+import {SchemaProtocol} from "../../../../protocols/file";
 
 const emitter = new EventEmitter()
 
 export const messageHandler = (event: { nativeEvent: { data: string; }; }) => {
     const data: Message | RPCResponse | Chunk = JSON.parse(event.nativeEvent.data);
+    console.log(data)
     switch (data.type) {
         case MessageType.Log: {
-            console.log("[bridge] " + (data as Log).message)
+            console.log("[bridge] " + (data as Log).payload)
             break
         }
         case MessageType.RPCResponse: {

@@ -8,7 +8,7 @@ import {testFile, testFileGenerator} from "./test-data";
 
 test('Test Server Functionality', async function (t) {
   t.plan(8);
-  // create borg server
+  // create fula server
   const p = await app()
   const node = await getLibp2p();
   const ipfs = await getIPFS();

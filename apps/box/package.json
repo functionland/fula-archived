@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/functionland/graph.git"
+    "url": "git+ssh://git@github.com/functionland/box.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/functionland/borg/issues"
+    "url": "https://github.com/functionland/fula/issues"
   },
-  "homepage": "https://github.com/functionland/borg#readme",
+  "homepage": "https://github.com/functionland/fula#readme",
   "dependencies": {
     "async-later": "^0.1.5",
     "@functionland/file-protocol": "^0.3.0",

@@ -31,5 +31,5 @@ jobs:
         file: ./apps/box/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/box:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/box:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/box:buildcache,mode=max 
+        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USER }}/box:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_TOKEN }}/box:buildcache,mode=max 

@@ -15,7 +15,7 @@ RUN mkdir -p /root/.ssh && \
 COPY ./ /opt/fula
 WORKDIR /opt/fula
 
-RUN ls && node common/scripts/install-run-rush.js install && node common/scripts/install-run-rush.js rebuild --verbose
+RUN ls && node common/scripts/install-run-rush.js update && node common/scripts/install-run-rush.js rebuild --verbose --to @functionland/box
 
 
 WORKDIR ./apps/box

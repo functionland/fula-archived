@@ -15,9 +15,10 @@ const external = Object.keys(packages.dependencies).filter(
 build({
   entryPoints: ['src/index.ts'],
   platform: 'node',
+  target: 'node16',
   format: 'cjs',
   bundle: true,
   sourcemap: true,
   outfile: 'dist/index.js',
-    external
+  external
 });

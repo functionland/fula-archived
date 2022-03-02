@@ -25,7 +25,7 @@
 
   "repository": {
 
-    "url": "https://github.com/functionland/fula",
+    "url": "https://github.com/functionland/fula.git",
 
     "defaultBranch": "main",
 
@@ -89,7 +89,8 @@
     {
       "packageName": "@functionland/box",
       "projectFolder": "apps/box",
-      "reviewCategory": "production"
+      "reviewCategory": "production",
+      "shouldPublish": true
     },
     {
       "packageName": "@functionland/signal",

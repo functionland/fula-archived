@@ -3,7 +3,7 @@ FROM node:16-alpine AS builder
 COPY ./ /opt/fula
 WORKDIR /opt/fula
 
-RUN ls && node common/scripts/install-run-rush.js install && rush update
+RUN ls && node common/scripts/install-run-rush.js update --full
 
 RUN rush build -t box
 

@@ -3,7 +3,7 @@
 FROM node:16.13.2
 ENV NODE_ENV=production
 
-WORKDIR /borg
+WORKDIR /fula
 
 RUN npm install -g @microsoft/rush
 

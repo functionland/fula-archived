@@ -24,8 +24,8 @@ export interface Borg {
 
 // end of types
 
-export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>): Promise<Borg> {
-    const conf = await configure(config);
+export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey=undefined): Promise<Borg> {
+    const conf = await configure(config, pKey);
     const node = await Libp2p.create(conf);
     let connection: Connection | undefined;
     let serverPeerId: PeerId

@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import { Borg, createClient } from '@functionland/borg'
+import { Borg, createClient } from '@functionland/fula'
 import TodoList from './components/TodoList';
-import { BorgProvider } from '@functionland/borg-client-react'
+import { BorgProvider } from '@functionland/fula-client-react'
 
 function App() {
   const inputRef = useRef<any>(null);
-  const [borgClient, setBorgClient] = useState<Borg>();
+  const [fulaClient, setBorgClient] = useState<Borg>();
   const [connecting, setConnecting] = useState(false);
   const [serverId, setServerId] = useState("")
   const [connectionStaus, setConnectionStaus] = useState(false)
 
   const startBorg = async () => {
-    const borgClient = await createClient();
-    const node = borgClient.getNode()
+    const fulaClient = await createClient();
+    const node = fulaClient.getNode()
 
     node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
       setServerId(srvId=>{
@@ -36,20 +36,20 @@ function App() {
       // console.log(`Found peer ${peerId.toB58String()}`);
       // setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
     });
-    setBorgClient(borgClient);
+    setBorgClient(fulaClient);
   }
   const connect = async () => {
-    console.log("connecting to borg...!")
+    console.log("connecting to fula...!")
     try {
       setConnecting(true);
-      if (!borgClient) {
-        console.log("borg is not mounted!")
+      if (!fulaClient) {
+        console.log("fula is not mounted!")
         return
       }
-      if (await borgClient.connect(serverId))
-        console.log("borg is connected!")
+      if (await fulaClient.connect(serverId))
+        console.log("fula is connected!")
       else
-        console.log(`borg unable to connect!`)
+        console.log(`fula unable to connect!`)
     } catch (e) {
       console.log(`connect error`, e)
     } finally {
@@ -65,7 +65,7 @@ function App() {
   useEffect(() => {
     if(serverId)
       connect()
-  }, [borgClient]);
+  }, [fulaClient]);
   const handleChange = (e: any) => {
     setServerId(e.target.value);
   };
@@ -82,7 +82,7 @@ function App() {
   };
   return (
     <div className='todo-app'>
-      <BorgProvider borg={borgClient}>
+      <BorgProvider fula={fulaClient}>
         {connectionStaus ? <TodoList /> : <div className='connect-container'>
           <div className='app-header'>
             {!connecting ? <h1>Connect to BOX!</h1> : null}
@@ -96,7 +96,7 @@ function App() {
             ref={inputRef}
             className='todo-input'
           />
-          <button disabled={!borgClient} onClick={handleConnect} className='todo-button'>
+          <button disabled={!fulaClient} onClick={handleConnect} className='todo-button'>
             Connect
           </button>
 

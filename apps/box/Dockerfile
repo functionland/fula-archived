@@ -22,9 +22,9 @@ WORKDIR ./apps/box
 RUN cp -rL ./node_modules ./temp && rm -rf ./node_modules && mv ./temp ./node_modules
 
 
-FROM node:16-alpine AS builder
+FROM node:16-alpine
 
 COPY --from=builder /opt/fula/apps/box /opt/box
 
-CMD ['rushx','start']
+CMD ['npm','start']
 

@@ -26,7 +26,7 @@ FROM node:16-alpine
 
 COPY --from=builder /opt/fula/apps/box /opt/box
 WORKDIR /opt/box
-RUN npm install && npm run build
+RUN npm install ms uint8arrays && npm run build
 
 CMD ['npm','start']
 

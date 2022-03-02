@@ -33,13 +33,13 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
     const [data,setData]=useState<TData>();
     const [error,setError]=useState<GraphError>();
     const [loading,setLoading]=useState<boolean>(false);
-    const borg = useContext(BorgContext);
+    const fula = useContext(BorgContext);
     const request =useCallback((options?: QueryLazyOptions<TVariables>): void => {
         try {
-            if(borg && query.loc?.source?.body){
+            if(fula && query.loc?.source?.body){
                 setLoading(true);
                 // @ts-ignore
-                borg.graphql(query.loc?.source?.body,options?.variables,query?.definitions?.[0]?.name?.value).then(query=>{
+                fula.graphql(query.loc?.source?.body,options?.variables,query?.definitions?.[0]?.name?.value).then(query=>{
                     console.log("request:",data);
                     setData({
                         ...((query as any)?.data||{})
@@ -56,6 +56,6 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
             console.log(error);
             setLoading(false);
         }
-    },[borg]);
+    },[fula]);
     return [request,{data,error,loading}]
 }

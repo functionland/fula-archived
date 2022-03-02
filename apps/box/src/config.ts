@@ -5,7 +5,8 @@ import Mplex from 'libp2p-mplex';
 import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import {Libp2pOptions} from "libp2p";
 import Protector from "libp2p/src/pnet"
-import * as fs from 'fs';
+
+const pKey = process.env.PKEY?process.env.PKEY:undefined
 
 new Noise();
 
@@ -22,7 +23,8 @@ export const defConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
-            pubsub: GossipSub
+            pubsub: GossipSub,
+            connProtector:pKey!==undefined?new Protector(pKey):undefined
         },
         config: {
             transport: {

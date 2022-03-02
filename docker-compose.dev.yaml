@@ -3,19 +3,19 @@ version: '3.8'
 services:
   box:
     build: .
-    working_dir: /borg/apps/box
+    working_dir: /fula/apps/box
     command: rushx start
 
   react-cra:
     build: .
-    working_dir: /borg/examples/react-cra
+    working_dir: /fula/examples/react-cra
     command: rushx start
     ports:
       - 3000:3000
 
   react-todo-app:
     build: .
-    working_dir: /borg/examples/react-todo-app
+    working_dir: /fula/examples/react-todo-app
     command: rushx start
     environment:
       PORT: 3001

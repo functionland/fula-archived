@@ -4,7 +4,7 @@ import test from 'tape';
 import WebRTCStar from 'libp2p-webrtc-star';
 import { createClient } from '../src';
 
-const serverId = '12D3KooWGwcKB18qSsq3AxPw9nUfpEMyePAiA1q8gqq92yuWEKKt';
+const serverId = '12D3KooWHiisRPkn3LqjEyYcEAktLawSeymY5QdyPYFeZNmJYj9s';
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,

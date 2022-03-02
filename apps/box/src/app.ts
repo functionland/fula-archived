@@ -6,6 +6,7 @@ import debug from 'debug';
 import {registerFile} from "./file";
 import {defConfig} from "./config";
 import {registerGraph} from "./graph";
+import {IPFS_PATH, ORBITDB_PATH} from "./const";
 
 debug.enabled('*')
 
@@ -41,13 +42,13 @@ export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       libp2p: createLibp2,
-      repo: './.ipfs',
+      repo: IPFS_PATH,
       peerId: config?.peerId
     })
   );
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
-  resolveOrbitDB(OrbitDB.createInstance(ipfsNode));
+  resolveOrbitDB(OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH}));
   const orbitDB= await getOrbitDb();
 
 

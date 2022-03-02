@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './TodoForm';
 import Todo, { TODO } from './Todo';
-import { useLazyQuery } from '@functionland/borg-client-react';
+import { useLazyQuery } from '@functionland/fula-client-react';
 import { readQuery, createMutation, updateMutation, deleteMutation } from '../queries/ToDo'
 
 function TodoList() {

@@ -2,9 +2,8 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import { build } from 'esbuild';
 import browserify from 'browserify';
-import {clean} from 'build-helpers'
+import * as fs from 'fs'
 
-clean()
 await build({
   entryPoints: ['tests/fula.test.ts'],
   platform: 'browser',

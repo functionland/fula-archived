@@ -110,12 +110,11 @@
     {
       "packageName": "build-helpers",
       "projectFolder": "tools/build-helpers",
-      "shouldPublish": true,
       "reviewCategory": "production"
     },
     {
-      "packageName": "@functionland/borg-client-react",
-      "projectFolder": "libraries/borg-client-react",
+      "packageName": "@functionland/fula-client-react",
+      "projectFolder": "libraries/fula-client-react",
       "reviewCategory": "production",
       "shouldPublish": true
     }

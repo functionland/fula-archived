@@ -17,10 +17,9 @@ WORKDIR /opt/fula
 
 RUN ls && node common/scripts/install-run-rush.js update && node common/scripts/install-run-rush.js rebuild --verbose --to @functionland/box || true
 
-
 WORKDIR ./apps/box
 
-RUN cp -rL ./node_modules ./temp && rm ./node_modules && mv ./temp ./node_modules
+RUN cp -rL ./node_modules ./temp && rm -rf ./node_modules && mv ./temp ./node_modules
 
 
 FROM node:16-alpine AS builder

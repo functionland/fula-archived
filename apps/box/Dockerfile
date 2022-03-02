@@ -25,6 +25,8 @@ RUN cp -rL ./node_modules ./temp && rm -rf ./node_modules && mv ./temp ./node_mo
 FROM node:16-alpine
 
 COPY --from=builder /opt/fula/apps/box /opt/box
+WORKDIR /opt/box
+RUN npm install && npm run build
 
 CMD ['npm','start']
 

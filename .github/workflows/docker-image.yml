@@ -15,4 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file apps/box/Dockerfile --tag box:$(date +%s)
+      run: docker build . --file apps/box/Dockerfile --tag farhoud/box:$(date +%s)
+    -
+      name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: actions/checkout@v2
+    - name: Publish Docker image
+      run: docker build . --file apps/box/Dockerfile --tag farhoud/box:$(date +%s)    

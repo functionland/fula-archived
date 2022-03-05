@@ -50,9 +50,16 @@ test('Graphgql on OrbitDB test', async function (t) {
       t.deepEqual(Result.toJson(<Result>expected), testData.expected, `should pass ${testData.name} query`)
     }
 
-  } catch (error) {
+  }
+  catch (error) {
     console.log('error', error);
     t.end(error);
   }
-  await p.stop()
+  t.teardown(async () => {
+    await p.stop()
+  })
+
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  t.end()
+
 });

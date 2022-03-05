@@ -1,4 +1,4 @@
-import pipe from 'it-pipe';
+import { pipe } from 'it-pipe';
 import { MuxedStream } from 'libp2p';
 import { toAsyncIterable } from 'async-later';
 import { Request, Meta } from '../schema';

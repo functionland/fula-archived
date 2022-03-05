@@ -2,6 +2,18 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.4.1",
+      "tag": "@functionland/fula_v0.4.1",
+      "date": "Wed, 02 Mar 2022 16:44:59 GMT",
+      "comments": {
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/box\" from `^0.1.0` to `^1.0.0`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.4.0",
       "tag": "@functionland/fula_v0.4.0",
       "date": "Tue, 30 Nov 2021 16:00:51 GMT",

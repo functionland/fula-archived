@@ -1,7 +1,5 @@
-// @ts-ignore
 import WebRTCStar from 'libp2p-webrtc-star';
 import { NOISE, Noise } from '@chainsafe/libp2p-noise';
-// @ts-ignore
 import Mplex from 'libp2p-mplex';
 import PeerId from 'peer-id';
 import { constructorOptions, Libp2pOptions } from 'libp2p';

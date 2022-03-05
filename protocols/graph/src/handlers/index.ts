@@ -1,4 +1,4 @@
-import pipe from 'it-pipe';
+import { pipe } from 'it-pipe';
 import { partition, firstValue } from 'async-later';
 import { map } from 'streaming-iterables';
 import { ProtocolHandler, Response } from '../';

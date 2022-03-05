@@ -1,4 +1,8 @@
-FROM node:16-alpine AS builder
+FROM node:16-alpine
+
+COPY --from=golang:1.11.1-alpine3.8 /usr/local/go/ /usr/local/go/
+
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN apk --no-cache --virtual build-dependencies add \
     python2 \

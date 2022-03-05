@@ -1,20 +1,23 @@
 # syntax=docker/dockerfile:1
 
-FROM node:16.13.2
+FROM node:16-alpine
 ENV NODE_ENV=production
 
-WORKDIR /fula
+RUN apk --no-cache --virtual build-dependencies add \
+    python2 \
+    make \
+    g++ \
+    git \
+    openssh
 
-RUN npm install -g @microsoft/rush
+# Download public key for github.com
+RUN mkdir -p /root/.ssh && \
+    chmod 0700 /root/.ssh && \
+    ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-COPY . .
+COPY ./ /opt/fula
+WORKDIR /opt/fula
 
-RUN rush update
+RUN ls && node common/scripts/install-run-rush.js update && node common/scripts/install-run-rush.js rebuild --verbose --to @functionland/box || true
 
-# by default rush build has non-zero exit code with warnings and this allows docker build to continue
-ENV RUSH_ALLOW_WARNINGS_IN_SUCCESSFUL_BUILD=1
 
-# fixing react-cra bypassing deps issue
-ENV SKIP_PREFLIGHT_CHECK=true
-
-RUN rush build

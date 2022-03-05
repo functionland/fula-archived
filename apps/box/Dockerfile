@@ -12,10 +12,7 @@ RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts
 
+RUN npm install -g @functionland/box
 
-COPY ./ /opt/box
-WORKDIR /opt/box
-RUN npm install
-
-CMD ['npm','start']
+CMD ['npx','@functionland/box']
 

@@ -18,6 +18,5 @@ RUN mkdir -p /root/.ssh && \
 COPY ./ /opt/fula
 WORKDIR /opt/fula
 
-RUN ls && node common/scripts/install-run-rush.js update && node common/scripts/install-run-rush.js rebuild --verbose --to @functionland/fula-client-react || true
-
+RUN npm install -g @microsoft/rush && node rush update && node rush rebuild --verbose --to @functionland/fula-client-react
 

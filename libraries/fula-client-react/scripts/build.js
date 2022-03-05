@@ -24,7 +24,7 @@ await build({
     })
   ],
   external: [
-    'react'
+    '@functionland/fula'
   ]
 });
 

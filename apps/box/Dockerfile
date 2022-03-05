@@ -1,6 +1,6 @@
-FROM node:16-alpine3.8
+FROM node:16-alpine3.14
 
-COPY --from=golang:1.16.4-alpine3.8 /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.16.15-alpine3.14 /usr/local/go/ /usr/local/go/
 
 ENV PATH="/usr/local/go/bin:${PATH}"
 

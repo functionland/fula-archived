@@ -1,6 +1,6 @@
 {
   "name": "async-later",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Functional directives for Promise and AsyncIterable",
   "types": "src/index.ts",
   "main": "./dist/node/cjs.js",

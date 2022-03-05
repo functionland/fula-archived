@@ -1,6 +1,6 @@
 {
   "name": "@functionland/graph-protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "types": "src/index.ts",
   "main": "./dist/node/cjs.cjs",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@protobuf-ts/runtime": "~2.2.2",
-    "async-later": "0.1.7",
+    "async-later": "0.1.8",
     "it-pipe": "~2.0.3",
     "multiformats": "~9.6.4",
     "rxjs": "~7.5.4",

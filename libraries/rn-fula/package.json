@@ -22,7 +22,7 @@
     "es-module-lexer": "~0.10.0",
     "esbuild": "~0.14.25",
     "vite": "~2.8.6",
-    "@functionland/fula": "~0.4.1",
+    "@functionland/fula": "~0.4.2",
     "esbuild-plugin-ignore": "~1.1.1"
   },
   "peerDependencies": {
@@ -32,7 +32,7 @@
     "expo-file-system": "~11.1.3"
   },
   "name": "@functionland/rn-fula",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "type": "module",
   "types": "types/index.ts",
   "scripts": {

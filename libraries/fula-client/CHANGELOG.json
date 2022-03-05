@@ -2,6 +2,29 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.4.2",
+      "tag": "@functionland/fula_v0.4.2",
+      "date": "Sat, 05 Mar 2022 13:27:45 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "update dependencies"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/file-protocol\" from `~0.3.2` to `~0.3.3`"
+          },
+          {
+            "comment": "Updating dependency \"@functionland/graph-protocol\" from `~0.1.0` to `~0.1.1`"
+          },
+          {
+            "comment": "Updating dependency \"@functionland/box\" from `~1.0.0` to `~1.0.1`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.4.1",
       "tag": "@functionland/fula_v0.4.1",
       "date": "Wed, 02 Mar 2022 16:44:59 GMT",

@@ -30,7 +30,7 @@ jobs:
         context: ./
         file: ./
         push: true
-        tags: ${{ secrets.DOCKERHUB_USER }}/fula-dev:latest    -
+        tags: ${{ secrets.DOCKERHUB_USER }}/fula_dev:latest    -
     -
       name: Build and push box
       uses: docker/build-push-action@v2

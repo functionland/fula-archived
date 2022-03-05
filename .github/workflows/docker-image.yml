@@ -28,7 +28,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./
-        file: ./
+        file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USER }}/fula-dev:latest
     -

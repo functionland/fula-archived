@@ -1,23 +1,101 @@
 // test did.ts
-import test from "tape";
+import { expect, should } from 'chai';
 import { FullaDID } from "../src/did";
 
-test('resolveLater', async (t) => {
-    // const [promise, resolve] = resolveLater();
-    // resolve(42);
-    // t.equal(await promise, 42, 'Promise resolves');
-});
+describe('DID', () => {
+    it('1- Create random DID', async () => {
+        const fullaDID = new FullaDID();
+        let result = await fullaDID.create();
+        should().not.Throw
+        should().exist(result)
+        result.should.be.an('object');
+    });
 
-(async()=>{
-    const fullaDID = new FullaDID();
-    let did = await fullaDID.create();
-    console.log('did: ', did);
-    console.log(fullaDID.backup);
+    it('2- Create random DID and Backup', async () => {
+        const fullaDID = new FullaDID();
+        let result = await fullaDID.create();
+        should().not.Throw
+        expect(JSON.stringify(result)).to.equal(JSON.stringify(fullaDID.backup));        
+    });
 
-    const fullaDID1 = new FullaDID();
-    let importedmem = await fullaDID1.importMnemonic(did.mnemonic);
-    console.log('importedmem did: ', importedmem);
-    let importedKey = await fullaDID1.imposrtPrivateKey(did.privateKey);
-    console.log('importedKey did: ', importedKey);
-    console.log(fullaDID1.backup);
-})();
+    it('3- Create random DID and Backup', async () => {
+        const fullaDID = new FullaDID();
+        let result = await fullaDID.create();
+        should().not.Throw
+        expect(JSON.stringify(result)).to.equal(JSON.stringify(fullaDID.backup));        
+    });
+
+    it('3- Create random DID and importMnemonic', async () => {
+        const fullaDID = new FullaDID();
+        let result = await fullaDID.create();
+        let importedmem = await fullaDID.importMnemonic(result.mnemonic);
+        let {privateKey, authDID} = result
+        should().not.Throw
+        expect(JSON.stringify({privateKey, authDID})).to.equal(JSON.stringify(importedmem));        
+    });
+
+    it('4- Create random DID and importMnemonic', async () => {
+        const fullaDID = new FullaDID();
+        let result = await fullaDID.create();
+        let importedpk = await fullaDID.imposrtPrivateKey(result.privateKey);
+        let {privateKey, authDID} = result
+        should().not.Throw
+        expect(JSON.stringify({privateKey, authDID})).to.equal(JSON.stringify(importedpk));        
+    });
+
+    it('5- importMnemonic correct mnemoic', async () => {
+        let meta = {
+            mnemonic: 'mercy drip similar hole oil lock blast absent medal slam world sweet',
+            privateKey: 'f0396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5',
+            authDID: 'did:key:z6MkeuGvVYEa5ooKyjYqYaLoWagyhFJetc7jmT3kRw9KCfAN'
+        }; 
+        const fullaDID = new FullaDID();
+        let importedpk = await fullaDID.importMnemonic(meta.mnemonic.toString());
+        let {privateKey, authDID} = meta
+        should().not.Throw
+        expect(JSON.stringify({privateKey, authDID})).to.equal(JSON.stringify(importedpk));        
+    });
+
+    it('5- import wrog Mnemonic 1', async () => {
+        let meta = {
+            mnemonic: 'mercy drip similar hole oil lock blast absent medal slam world sweet',
+            privateKey: 'ff396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5',
+            authDID: 'did:key:z6MkeuGvVYEa5ooKyjYqYaLoWagyhFJetc7jmT3kRw9KCfAN'
+        }; 
+        const fullaDID = new FullaDID();
+        let importedpk = await fullaDID.importMnemonic(meta.mnemonic.toString());
+        let {privateKey, authDID} = meta
+        expect(JSON.stringify({privateKey, authDID})).not.to.equal(JSON.stringify(importedpk));        
+    });
+
+    it('6- Import wrog privateKey 2', async () => {
+        let meta = {
+            privateKey: 'ff396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5',
+            authDID: 'did:key:z6MkeuGvVYEa5ooKyjYqYaLoWagyhFJetc7jmT3kRw9KCfAN'
+        }; 
+        const fullaDID = new FullaDID();
+        let importedpk = await fullaDID.importMnemonic(meta.privateKey.toString());
+        expect(JSON.stringify(meta)).not.to.equal(JSON.stringify(importedpk));        
+    });
+  });
+
+
+//   {
+//     mnemonic: 'mercy drip similar hole oil lock blast absent medal slam world sweet',
+//     privateKey: 'f0396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5',
+//     authDID: 'did:key:z6MkeuGvVYEa5ooKyjYqYaLoWagyhFJetc7jmT3kRw9KCfAN'
+//   }  
+
+// (async()=>{
+//     const fullaDID = new FullaDID();
+//     let did = await fullaDID.create();
+//     console.log('did: ', did);
+//     console.log(fullaDID.backup);
+
+//     const fullaDID1 = new FullaDID();
+//     let importedmem = await fullaDID1.importMnemonic(did.mnemonic);
+//     console.log('importedmem did: ', importedmem);
+//     let importedKey = await fullaDID1.imposrtPrivateKey(did.privateKey);
+//     console.log('importedKey did: ', importedKey);
+//     console.log(fullaDID1.backup);
+// })();

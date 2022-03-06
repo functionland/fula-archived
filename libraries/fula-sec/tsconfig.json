@@ -16,6 +16,10 @@
     "importHelpers": true,
     "skipLibCheck": true
   },
+  "typedocOptions": {
+    "entryPoints": ["src/did.ts"],
+    "out": "docs"
+  },
   "include": [
     "src/**/*",
     "tests/**/*"

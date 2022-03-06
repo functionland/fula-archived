@@ -2,6 +2,18 @@
   "name": "@functionland/fula-client-react",
   "entries": [
     {
+      "version": "0.1.2",
+      "tag": "@functionland/fula-client-react_v0.1.2",
+      "date": "Sun, 06 Mar 2022 15:39:02 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Fix react dependency that break todo-app"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.1.1",
       "tag": "@functionland/fula-client-react_v0.1.1",
       "date": "Sat, 05 Mar 2022 13:27:45 GMT",

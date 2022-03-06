@@ -66,5 +66,12 @@ test('Test Server Functionality', async function (t) {
   } catch (e) {
     t.error(e);
   }
-  await p.stop()
+
+  t.teardown(async () => {
+    await p.stop()
+  })
+
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  t.end()
+
 });

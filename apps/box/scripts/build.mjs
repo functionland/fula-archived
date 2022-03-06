@@ -21,4 +21,6 @@ build({
   sourcemap: true,
   outfile: 'dist/index.js',
   external
+}).then(()=>{
+  fs.chmodSync('dist/index.js', 0o700)
 });

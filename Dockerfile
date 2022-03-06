@@ -1,20 +1,11 @@
 # syntax=docker/dockerfile:1
 
-FROM node:16.13.2
+FROM node:16
 ENV NODE_ENV=production
 
-WORKDIR /fula
 
-RUN npm install -g @microsoft/rush
+COPY ./ /opt/fula
+WORKDIR /opt/fula
 
-COPY . .
+RUN npm install -g @microsoft/rush && rush update && rush rebuild --verbose --to @functionland/fula-client-react --to @functionland/box || true
 
-RUN rush update
-
-# by default rush build has non-zero exit code with warnings and this allows docker build to continue
-ENV RUSH_ALLOW_WARNINGS_IN_SUCCESSFUL_BUILD=1
-
-# fixing react-cra bypassing deps issue
-ENV SKIP_PREFLIGHT_CHECK=true
-
-RUN rush build

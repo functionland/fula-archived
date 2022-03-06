@@ -1,4 +1,4 @@
-import pipe from 'it-pipe';
+import { pipe } from 'it-pipe';
 import type { MuxedStream } from 'libp2p';
 import { Subject } from 'rxjs';
 import { consume, map, pipeline } from 'streaming-iterables';

@@ -8,6 +8,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "libp2p-webrtc-star": "^0.22.3"
+    "libp2p-webrtc-star": "~0.25.0"
   }
 }

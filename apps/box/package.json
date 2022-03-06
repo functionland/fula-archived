@@ -3,7 +3,9 @@
   "version": "1.0.1",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
-  "bin": "dist/index.js",
+  "bin": {
+    "box": "dist/index.js"
+  },
   "types": "src",
   "scripts": {
     "start": "nodemon --watch dist",

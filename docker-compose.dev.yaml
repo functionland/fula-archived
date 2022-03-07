@@ -16,6 +16,8 @@ services:
   react-todo-app:
     build: .
     working_dir: /opt/fula/examples/react-todo-app
+    volumes:
+      - ./examples/react-todo-app/src:/opt/fula/examples/react-todo-app/src
     command: rushx start
     environment:
       PORT: 3001
@@ -25,6 +27,8 @@ services:
   react-gallery:
     build: .
     working_dir: /opt/fula/examples/react-gallery
+    volumes:
+      - ./examples/react-gallery/src:/opt/fula/examples/react-gallery/src
     command: rushx start
     environment:
       PORT: 3002

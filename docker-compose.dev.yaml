@@ -2,19 +2,19 @@ version: '3.8'
 
 services:
   box:
-    image: functionland/fula-dev
+    build: .
     working_dir: /opt/fula/apps/box
     command: rushx start
 
   react-cra:
-    image: functionland/fula-dev
+    build: .
     working_dir: /opt/fula/examples/react-cra
     command: rushx start
     ports:
       - 3000:3000
 
   react-todo-app:
-    image: functionland/fula-dev
+    build: .
     working_dir: /opt/fula/examples/react-todo-app
     command: rushx start
     environment:

@@ -1,7 +1,7 @@
 
 import {useState,useContext, useCallback} from 'react'
 import { DocumentNode, GraphQLError } from 'graphql';
-import {BorgContext} from '../providers/BorgProvider'
+import {FulaContext} from '../providers/FulaProvider'
 export declare type OperationVariables = Record<string, any>;
 export interface TypedDocumentNode<Result = {
     [key: string]: any;
@@ -33,7 +33,7 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
     const [data,setData]=useState<TData>();
     const [error,setError]=useState<GraphError>();
     const [loading,setLoading]=useState<boolean>(false);
-    const fula = useContext(BorgContext);
+    const fula = useContext(FulaContext);
     const request =useCallback((options?: QueryLazyOptions<TVariables>): void => {
         try {
             if(fula && query.loc?.source?.body){

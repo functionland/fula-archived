@@ -22,10 +22,10 @@
 <div align="center">
 
 
-<h3 align="center">Borg Client</h3>
+<h3 align="center">Fula Client</h3>
 
   <p align="center">
-    The Borg library abstracts away the protocols and `libp2p` connection, and exposes APIs similar to MongoDB
+    The Fula library abstracts away the protocols and `libp2p` connection, and exposes APIs similar to MongoDB
     for data persistence and S3 for file storage
     <br />
   </p>
@@ -68,7 +68,7 @@ or using CDN
 ## Usage
  Start fula and use file storage of [fula-server](/apps/server)
    ```js
-    import {Borg, createClient} from '@functionland/fula'
+    import {Fula, createClient} from '@functionland/fula'
 
     // Create a fula client 
     const fulaClient = await createClient();

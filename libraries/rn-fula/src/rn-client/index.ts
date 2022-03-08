@@ -1,2 +1,2 @@
-export * from "./BorgClient";
+export * from "./FulaClient";
 

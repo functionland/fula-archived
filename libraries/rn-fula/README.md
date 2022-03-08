@@ -24,10 +24,10 @@
 <div align="center">
 
 
-<h3 align="center">Borg Client</h3>
+<h3 align="center">Fula Client</h3>
 
   <p align="center">
-    The Borg library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB
+    The Fula library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB
     for data persistence and S3 for file storage. this package bridge fula functionality to react native using webview.
 
   </p>
@@ -71,24 +71,24 @@ or using CDN
 
    ```js
     // import provider
-import Borg, {BorgContext} from '@functionland/rn-fula';
+import Fula, {FulaContext} from '@functionland/rn-fula';
 import React, {useContext} from 'react'
 import {View} from 'react-native'
 
-// add Borg Provider
+// add Fula Provider
 const TopLevelComponent = (props) => {
   return (
           <View>
-            <Borg>
+            <Fula>
               <App/>
-            </Borg>
+            </Fula>
           </View>
   )
 }
 
-// Use rn Borg
+// Use rn Fula
 const App = (props) => {
-  fula = useContext(BorgContext)
+  fula = useContext(FulaContext)
 
   async function connect() {
     await fula.start()

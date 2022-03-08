@@ -7,9 +7,9 @@ import { messageHandler, bridge } from './bridge';
 import { template } from './template';
 import {Message, RPCStatusType} from '../types';
 
-export const BorgContext = createContext({});
+export const FulaContext = createContext({});
 
-interface Borg {
+interface Fula {
   start: () => Promise<string>
   connect: (peerId:string) => Promise<string>
   sendFile: (uri:string) => Promise<string>
@@ -17,7 +17,7 @@ interface Borg {
   receiveMeta: (fileId: string) => Promise<string>
 }
 
-export function Borg(props: any) {
+export function Fula(props: any) {
   const webViewRef = useRef(null);
 
   const postMessage = (message: Message) => {
@@ -33,7 +33,7 @@ export function Borg(props: any) {
   const onMessage = (event: { nativeEvent: { data: string } }) =>
     messageHandler(event);
 
-  const fula: Borg = {
+  const fula: Fula = {
     async start() {
       const response = await rpc.RPC('start', []);
       return response.payload;
@@ -98,7 +98,7 @@ export function Borg(props: any) {
           javaScriptEnabled
         />
       </View>
-      <BorgContext.Provider value={fula}>{props.children}</BorgContext.Provider>
+      <FulaContext.Provider value={fula}>{props.children}</FulaContext.Provider>
     </>
   );
 }

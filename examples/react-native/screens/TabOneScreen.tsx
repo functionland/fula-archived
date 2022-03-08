@@ -3,7 +3,7 @@ import {Platform, StyleSheet, Image} from 'react-native';
 import {TextInput, Button} from 'react-native';
 import {View} from '../components/Themed';
 import {RootTabScreenProps} from '../types';
-import {BorgContext} from '@functionland/rn-fula';
+import {FulaContext} from '@functionland/rn-fula';
 import * as ImagePicker from 'expo-image-picker';
 
 interface Meta {
@@ -30,7 +30,7 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>)
     const [fileId, setFileId] = useState('QmYLgtbQ4je2PVzxFFg2zeEPjv5z1LxFXZ5g6D4X3j1erq')
     const [output, setOutput] = useState('')
     const [image, setImage] = useState(null);
-    const fula = useContext(BorgContext)
+    const fula = useContext(FulaContext)
     const onSubmit = async (e: any) => {
         try {
             // @ts-ignore

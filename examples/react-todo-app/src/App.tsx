@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import { Borg, createClient } from '@functionland/fula'
+import { Fula, createClient } from '@functionland/fula'
 import TodoList from './components/TodoList';
-import { BorgProvider } from '@functionland/fula-client-react'
+import { FulaProvider } from '@functionland/fula-client-react'
 
 function App() {
   const inputRef = useRef<any>(null);
-  const [fulaClient, setBorgClient] = useState<Borg>();
+  const [fulaClient, setFulaClient] = useState<Fula>();
   const [connecting, setConnecting] = useState(false);
   const [serverId, setServerId] = useState("")
   const [connectionStaus, setConnectionStaus] = useState(false)
 
-  const startBorg = async () => {
+  const startFula = async () => {
     const fulaClient = await createClient();
     const node = fulaClient.getNode()
 
@@ -36,7 +36,7 @@ function App() {
       // console.log(`Found peer ${peerId.toB58String()}`);
       // setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
     });
-    setBorgClient(fulaClient);
+    setFulaClient(fulaClient);
   }
   const connect = async () => {
     console.log("connecting to fula...!")
@@ -57,7 +57,7 @@ function App() {
     }
   }
   useEffect(() => {
-    startBorg();
+    startFula();
     setServerId(localStorage.getItem("serverId")||"");
     inputRef?.current?.focus();
   }, []);
@@ -82,7 +82,7 @@ function App() {
   };
   return (
     <div className='todo-app'>
-      <BorgProvider fula={fulaClient}>
+      <FulaProvider fula={fulaClient}>
         {connectionStaus ? <TodoList /> : <div className='connect-container'>
           <div className='app-header'>
             {!connecting ? <h1>Connect to BOX!</h1> : null}
@@ -101,7 +101,7 @@ function App() {
           </button>
 
         </div>}
-      </BorgProvider>
+      </FulaProvider>
     </div>
   );
 }

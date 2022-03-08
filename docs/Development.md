@@ -10,7 +10,7 @@ project structure:
 |docs      | Project Common Documentation |
 |example   | Example Of how to use libraries|
 |libraries | Developer's Libraries|
-|protocols | Borg protocols describe how libp2p node communicates with each other|
+|protocols | Fula protocols describe how libp2p node communicates with each other|
 |tools     | dope tools for handling fula|
 Note: project structure is flat maximum depth of packages set by 2. 
 

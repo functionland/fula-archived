@@ -44,11 +44,11 @@
 
 [comment]: <> (  </a>)
 
-<h3 align="center">Borg Server</h3>
+<h3 align="center">Fula Server</h3>
 
   <p align="center">
-    Borg server turn your device to W3 node with configured IPFS server Which 
-    <a href="https://github.com/functionland/fula/blob/main/libraries/fula">Borg client</a> 
+    Fula server turn your device to W3 node with configured IPFS server Which 
+    <a href="https://github.com/functionland/fula/blob/main/libraries/fula">Fula client</a> 
     knows how to connect to it by its PeerID from anywhere. 
     <br />
     <a href="https://github.com/functionland/fula"><strong>Explore the docs »</strong></a>

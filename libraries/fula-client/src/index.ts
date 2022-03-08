@@ -10,7 +10,7 @@ import {SIG_MULTIADDRS} from "./constant";
 // types
 declare type FileId = string
 
-export interface Borg {
+export interface Fula {
     connect: (peerId: string) => Promise<boolean>
     sendFile: (file: File) => Promise<FileId>
     sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
@@ -24,7 +24,7 @@ export interface Borg {
 
 // end of types
 
-export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey=undefined): Promise<Borg> {
+export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey=undefined): Promise<Fula> {
     const conf = await configure(config, pKey);
     const node = await Libp2p.create(conf);
     let connection: Connection | undefined;

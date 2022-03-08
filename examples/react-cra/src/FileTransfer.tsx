@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import './FileTransfer.css';
-import {Borg, createClient} from '@functionland/fula'
+import {Fula, createClient} from '@functionland/fula'
 import {SchemaProtocol} from "../../../protocols/file";
 import {rejects} from "assert";
 import {base64} from "rfc4648";
@@ -17,14 +17,14 @@ interface FileTransferProps {
  * Primary UI component for user interaction
  */
 export const FileTransfer = ({...props}: FileTransferProps) => {
-    const [fulaClient, setBorgClient] = useState<Borg>();
+    const [fulaClient, setFulaClient] = useState<Fula>();
     const [output, setOutput] = useState("");
     const [serverId, setServerId] = useState("QmNi7CkBYtzt8vaDhFFXZ29dzaK5FdMWdiG1cxnJYDQLKB")
     const [selectedFile, setSelectedFile] = useState<File|null>(null)
     const [fileId, setFileId] = useState("QmQdHtY586drMqfKCUEWZpufMLGuXc9bZ3fiGWde9pY31N")
     const [content, setContent] = useState("")
 
-    async function startBorg() {
+    async function startFula() {
         const fulaClient = await createClient();
         const node = fulaClient.getNode()
 
@@ -109,8 +109,8 @@ export const FileTransfer = ({...props}: FileTransferProps) => {
 
     useEffect(() => {
         (async () => {
-            const temp = await startBorg()
-            setBorgClient(temp)
+            const temp = await startFula()
+            setFulaClient(temp)
         })()
 
     }, []);

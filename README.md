@@ -33,7 +33,7 @@ To achieve this, we are developing protocols to accommodate client-server progra
 
 ![box architecture](https://user-images.githubusercontent.com/1758649/126281564-a3a5aea9-50a6-4ae9-ae2b-439977d57980.jpg)
 
-An app talks with the server(s) by invoking APIs from `@functionland/fula` library. The Borg library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB for data persistence and S3 for file storage.
+An app talks with the server(s) by invoking APIs from `@functionland/fula` library. The Fula library abstracts away the protocols and `libp2p` connection, instead exposes APIs similar to MongoDB for data persistence and S3 for file storage.
 
 On the server side, data or file will be saved on a private IPFS instance. There is also a public IPFS instance which comes to play in sharing: when the end user requests to share some data, an encrypted copy will be saved on the public IPFS network, anyone with whom the key has been shared can access the data.
 

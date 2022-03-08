@@ -1,4 +1,5 @@
 import { pipe } from 'it-pipe';
+import type * as it from 'it-stream-types';
 import { partition, firstValue } from 'async-later';
 import { map } from 'streaming-iterables';
 import { ProtocolHandler, Response } from '../';
@@ -28,8 +29,8 @@ export const handler: ProtocolHandler = async ({ stream }) => {
         break;
     }
   });
-  await pipe((await response) || Response.EMPTY, stream);
-  await pipe([], stream); // Close the stream
+  await pipe((await response) || Response.EMPTY, stream as it.Duplex<any>);
+  await pipe([], stream as it.Duplex<any>); // Close the stream
 };
 
 export { incomingFiles, sendFile, streamFile } from './save';

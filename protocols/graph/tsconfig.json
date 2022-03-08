@@ -1,25 +1,24 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
     "rootDir": "./",
     "baseUrl": "./",
     "moduleResolution": "node",
+    "target": "ES5",
     "lib": ["ES2019"],
     "allowJs": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": true,
     "skipLibCheck": true,
-    "paths": {
-      "tslib" : ["./node_modules/tslib/tslib.d.ts"]
-    }
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

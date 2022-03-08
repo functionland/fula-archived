@@ -4,6 +4,7 @@ import { toAsyncIterable } from 'async-later';
 import { Request, Meta } from '../schema';
 import { Response } from '../';
 import { PROTOCOL } from '../constants';
+import * as it from "it-stream-types";
 
 type GetMeta = ({id}: { id: string }) => Response;
 
@@ -37,10 +38,16 @@ export async function receiveMeta({connection, id,}: {
         });
     };
 
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    return pipe(streamReceiveFileMeta, connection.stream, async function (source: any) {
+    return pipe(streamReceiveFileMeta, connection.stream as it.Duplex<Uint8Array>, async function (source: it.Source<Uint8Array>) {
+        let meta: Meta|undefined = undefined
         for await (const message of source) {
-            return Meta.fromBinary(message.slice());
+            meta = Meta.fromBinary(message.slice());
+        }
+        if (meta===undefined){
+            throw Error()
+        }
+        else {
+            return meta
         }
     });
 

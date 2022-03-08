@@ -2,28 +2,29 @@
   "name": "@functionland/graph-protocol",
   "version": "0.1.1",
   "description": "",
-  "types": "src/index.ts",
+  "types": "dist/types/src/index.d.ts",
   "main": "./dist/node/cjs.cjs",
   "module": "./dist/node/esm.js",
   "browser": "./dist/browser/esm.js",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js && tsc",
     "build:proto": "protoc --ts_out src/schema --ts_opt generate_dependencies --proto_path src/schema/ src/schema/*.proto",
-    "lint": "eslint src --fix"
+    "lint": "eslint src --fix",
+    "type-check": "tsc"
   },
   "license": "MIT",
   "dependencies": {
     "@protobuf-ts/runtime": "~2.2.2",
+    "@babel/runtime": "~7.17.2"
+  },
+  "devDependencies": {
     "async-later": "0.1.8",
     "it-pipe": "~2.0.3",
     "multiformats": "~9.6.4",
     "rxjs": "~7.5.4",
     "streaming-iterables": "~6.2.0",
     "peer-id": "~0.16.0",
-    "@babel/runtime": "~7.17.2"
-  },
-  "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "~0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "~0.1.4",
     "build-helpers": "~0.0.1",
@@ -41,7 +42,8 @@
     "@babel/plugin-transform-runtime": "~7.17.0",
     "eslint": "~8.10.0",
     "@typescript-eslint/eslint-plugin": "~5.13.0",
-    "@typescript-eslint/parser": "~5.13.0"
+    "@typescript-eslint/parser": "~5.13.0",
+    "it-stream-types": "^1.0.4"
   },
   "exports":{
     ".":{

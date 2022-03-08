@@ -3,6 +3,7 @@ import { MuxedStream } from 'libp2p';
 import { Request, Chunk } from '../schema';
 import { Response } from '../';
 import { PROTOCOL } from '../constants';
+import * as it from "it-stream-types";
 
 type Retrieve = ({id, skip, limit}: Chunk) => Response;
 
@@ -35,7 +36,7 @@ export async function* receiveContent({connection, id, skip, limit}: {
     };
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const chunks = await pipe(streamReceiveFileContent, connection.stream, async function* (source: any) {
+    const chunks = await pipe(streamReceiveFileContent, connection.stream as it.Duplex<any>, async function* (source: any) {
         for await (const message of source) {
             yield message.slice();
         }

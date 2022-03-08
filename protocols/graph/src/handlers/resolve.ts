@@ -1,10 +1,11 @@
 import { pipe } from 'it-pipe';
+import type * as it from 'it-stream-types';
 import { MuxedStream } from 'libp2p';
 import {Response} from '../';
 import { PROTOCOL } from '../constants';
-import {Request, Result} from "../schema/graph";
+import {Request, Result} from "../schema";
 
-export type Resolve = (Request) => Response;
+export type Resolve = (rq:Request) => Response;
 
 const resolveNotSupported: Resolve = () => {
     throw new Error('This node does not support graphql');
@@ -28,7 +29,7 @@ export async function submitQuery({connection, req}: {
     };
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const queryResult = await pipe(streamQuerySubmission, connection.stream, async function* (source: any) {
+    const queryResult = await pipe(streamQuerySubmission, connection.stream as it.Duplex<any>, async function* (source: any) {
         for await (const message of source) {
             yield message.slice();
         }

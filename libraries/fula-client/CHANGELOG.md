@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Tue, 08 Mar 2022 08:50:12 GMT and should not be manually modified.
+This log was last generated on Tue, 08 Mar 2022 09:45:40 GMT and should not be manually modified.
+
+## 0.4.4
+Tue, 08 Mar 2022 09:45:40 GMT
+
+### Patches
+
+- reaname fula
 
 ## 0.4.3
 Tue, 08 Mar 2022 08:50:12 GMT

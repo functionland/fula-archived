@@ -13,13 +13,13 @@ export function curried<TLeadingParameters extends any[], TLastParameter, TRetur
 type Leading<T extends any[]> = T extends [...infer I, infer _] ? I : never;
 type Last<T extends any[]> = T extends [...infer _, infer I] ? I : never;
 
-export function overloadWithCurried<F extends (...args) => any>(
+export function overloadWithCurried<F extends (...args: any) => any>(
   fn: F
 ): {
   (...args: Parameters<F>): ReturnType<F>;
   (...args: Leading<Parameters<F>>): (curried: Last<Parameters<F>>) => ReturnType<F>;
 } {
   return (...args) =>
-    args.length == fn.length - 1 ? curried => fn(...[...args, curried]) : fn(...args);
+    args.length == fn.length - 1 ? (curried: any) => fn(...[...args, curried]) : fn(...args);
 }
 

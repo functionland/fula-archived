@@ -1,5 +1,5 @@
 
-import React, {useState,useContext, useCallback} from 'react'
+import {useState,useContext, useCallback} from 'react'
 import { DocumentNode, GraphQLError } from 'graphql';
 import {BorgContext} from '../providers/BorgProvider'
 export declare type OperationVariables = Record<string, any>;

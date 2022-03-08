@@ -3,9 +3,9 @@ import type { MuxedStream } from 'libp2p';
 import { Subject } from 'rxjs';
 import { consume, map, pipeline } from 'streaming-iterables';
 import { resolveLater, toAsyncIterable } from 'async-later';
-import { Response } from '../';
 import { Meta, Request } from '../schema';
 import { PROTOCOL } from '../constants';
+import * as it from "it-stream-types";
 
 export const incomingFiles = new Subject<{
     meta: Meta;
@@ -13,7 +13,7 @@ export const incomingFiles = new Subject<{
     declareId(id: string): void;
 }>();
 
-export async function save({meta, bytes}: { meta: Meta, bytes: AsyncIterable<Uint8Array> }): Response {
+export async function save({meta, bytes}: { meta: Meta, bytes: AsyncIterable<Uint8Array> }) {
     const [promiseId, declareId] = resolveLater<string>();
     const content = new Subject<Uint8Array>();
     incomingFiles.next({meta, getContent: () => toAsyncIterable(content), declareId});
@@ -31,11 +31,9 @@ export async function sendFile({connection, file}: {
     file: File;
 }): Promise<string> {
     if (connection.protocol !== PROTOCOL) {
-        console.log('Protocol mismatched')
         throw Error('Protocol mismatched')
     }
     const {name, type, size, lastModified} = file;
-    console
     const streamSendFile = async function* () {
         yield Request.toBinary({
             type: {
@@ -59,10 +57,15 @@ export async function sendFile({connection, file}: {
     };
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    return pipe(streamSendFile, connection.stream, async function (source: any) {
+    return pipe(streamSendFile, connection.stream as it.Duplex<any>, async function (source: it.Source<any>) {
+        let response: string|undefined = undefined;
         for await (const message of source) {
-            return String(message); // id
+            response = String(message); // id
         }
+        if(response===undefined){
+            throw Error()
+        }
+        return response
     });
 
 }
@@ -94,10 +97,15 @@ export async function streamFile({connection, source, meta}: {
         }
     };
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    return pipe(streamSendFile, connection.stream, async function (_source: any) {
+    return pipe(streamSendFile, connection.stream as it.Duplex<any>, async function (_source: any) {
+        let response: string|undefined = undefined;
         for await (const message of _source) {
-            return String(message); // id
+            response = String(message); // id
         }
+        if(response===undefined){
+            throw Error()
+        }
+        return response
     });
 
 }

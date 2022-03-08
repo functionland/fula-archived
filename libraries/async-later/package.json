@@ -1,16 +1,17 @@
 {
   "name": "async-later",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Functional directives for Promise and AsyncIterable",
-  "types": "src/index.ts",
+  "types": "dist/types/src/index.d.ts",
   "main": "./dist/node/cjs.js",
   "module": "./dist/node/esm.js",
   "browser": "./dist/browser/esm.js",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js && tsc",
     "test:node": "tape dist/node/test.cjs | tap-spec; nyc report ---reporter=text",
     "test:web": "rushx build && cat dist/browser/test.js | testling -u",
+    "type-check": "tsc",
     "lint": "eslint ./src --fix"
   },
   "repository": {
@@ -63,6 +64,7 @@
     }
   },
   "dependencies": {
-    "@babel/runtime": "~7.17.2"
+    "@babel/runtime": "~7.17.2",
+    "tslib": "~2.3.1"
   }
 }

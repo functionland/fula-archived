@@ -10,9 +10,9 @@ await build({
   format: 'esm',
   bundle: true,
   sourcemap: true,
-  outfile: 'dist/index.js',
+  outfile: 'dist/br/index.js',
   external: [
-    '@functionland/fula','react','react-dom'
+    'react','react-dom'
   ]
 });
 

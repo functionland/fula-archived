@@ -2,6 +2,23 @@
   "name": "@functionland/file-protocol",
   "entries": [
     {
+      "version": "0.3.4",
+      "tag": "@functionland/file-protocol_v0.3.4",
+      "date": "Tue, 08 Mar 2022 08:50:12 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix types and build"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"async-later\" from `0.1.8` to `0.1.9`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.3.3",
       "tag": "@functionland/file-protocol_v0.3.3",
       "date": "Sat, 05 Mar 2022 13:27:45 GMT",

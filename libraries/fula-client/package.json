@@ -1,6 +1,6 @@
 {
 	"name": "@functionland/fula",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"description": "Interface with a fula server from the browser!",
 	"type": "module",
 	"main": "dist/index.js",
@@ -30,8 +30,8 @@
 		"@chainsafe/libp2p-noise": "~5.0.2"
 	},
 	"devDependencies": {
-		"@functionland/file-protocol": "~0.3.3",
-		"@functionland/graph-protocol": "~0.1.1",
+		"@functionland/file-protocol": "~0.3.4",
+		"@functionland/graph-protocol": "~0.1.2",
 		"@ipld/schema-validation": "~1.1.0",
 		"multiaddr": "~10.0.1",
 		"peer-id": "~0.16.0",

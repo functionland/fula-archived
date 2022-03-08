@@ -1,6 +1,6 @@
 {
   "name": "@functionland/box",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
   "bin": {
@@ -28,10 +28,10 @@
   "homepage": "https://github.com/functionland/fula#readme",
   "dependencies": {
     "@chainsafe/libp2p-noise": "~5.0.2",
-    "@functionland/file-protocol": "~0.3.3",
-    "@functionland/graph-protocol": "~0.1.1",
+    "@functionland/file-protocol": "~0.3.4",
+    "@functionland/graph-protocol": "~0.1.2",
     "@ipld/dag-json": "~8.0.8",
-    "async-later": "0.1.8",
+    "async-later": "0.1.9",
     "graphql": "16.3.0",
     "graphql-tag": "2.12.6",
     "graphql-tools": "8.2.0",

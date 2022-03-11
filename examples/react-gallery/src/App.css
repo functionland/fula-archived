@@ -212,3 +212,8 @@ h1, h3,h4 {
     transform: translate(24px, 0);
   }
 }
+
+.photo {
+  width:100%;
+  padding: 10px;
+}

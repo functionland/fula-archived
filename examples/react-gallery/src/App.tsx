@@ -91,7 +91,7 @@ function App() {
   return (
     <div className='app'>
       <FulaProvider fula={fulaClient}>
-        {connectionStatus ? <Gallery /> : <div className='connect-container'>
+        {(connectionStatus===true && fulaClient!==undefined)? <Gallery fulaClient={fulaClient} /> : <div className='connect-container'>
           <div className='app-header'>
             {!connecting ? <h1>Connect to BOX!</h1> : null}
             {connecting ? <div className='lds-ellipsis'><div></div><div></div><div></div><div></div></div> : null}

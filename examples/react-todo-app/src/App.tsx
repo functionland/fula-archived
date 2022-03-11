@@ -9,7 +9,7 @@ function App() {
   const [fulaClient, setFulaClient] = useState<Fula>();
   const [connecting, setConnecting] = useState(false);
   const [serverId, setServerId] = useState("")
-  const [connectionStaus, setConnectionStaus] = useState(false)
+  const [connectionStatus, setConnectionStatus] = useState(false)
 
   const startFula = async () => {
     const fulaClient = await createClient();
@@ -19,17 +19,16 @@ function App() {
       setServerId(srvId=>{
         if (connection.remotePeer.toB58String() === srvId)
         setTimeout(() => {
-          setConnectionStaus(true)
+          setConnectionStatus(true)
         }, 100);
         localStorage.setItem("serverId",srvId||"")
         return srvId;
       })
-     
       console.log(`Connected to ${connection.remotePeer.toB58String()}`);
     });
     node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
       if (connection.remotePeer.toB58String() === serverId)
-        setConnectionStaus(false);
+        setConnectionStatus(false);
       console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
     });
     node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
@@ -83,7 +82,7 @@ function App() {
   return (
     <div className='todo-app'>
       <FulaProvider fula={fulaClient}>
-        {connectionStaus ? <TodoList /> : <div className='connect-container'>
+        {connectionStatus ? <TodoList /> : <div className='connect-container'>
           <div className='app-header'>
             {!connecting ? <h1>Connect to BOX!</h1> : null}
             {connecting ? <div className='lds-ellipsis'><div></div><div></div><div></div><div></div></div> : null}

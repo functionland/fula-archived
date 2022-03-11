@@ -10,7 +10,7 @@ interface Props {
 
 const Gallery = ({ fulaClient }: Props): JSX.Element => {
 
-  const [photos, setPhotos] = useState<PHOTO[]>([{cid:'a'}, {cid:'b'}, {cid:'c'}]);
+  const [photos, setPhotos] = useState<PHOTO[]>([{cid:'QmYUDht9y2KM9kRu9DbYNb5KyvnYhUQY5vmNo13Bb4wCsX'}, {cid:'QmSBSYwchpd8wFeMguGTC3RLPdwrx6ss4hSvCgCNRTiVWB'}, {cid:'QmRuqUyMxhKChudLF6XybEbmjaGzTCkAxzYsA6xKGJoL2X'}]);
 
   return (
     <>

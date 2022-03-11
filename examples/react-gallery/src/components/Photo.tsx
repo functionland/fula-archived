@@ -13,7 +13,6 @@ interface Props {
 
 const Photo = ({ photo, fulaClient }: Props): JSX.Element => {
 
-  const [fileId, setFileId] = useState("QmYJt7141ZG2Kut37W2ZHYcyjYTJ36aX22KYu7einNevPD")
   const [content, setContent] = useState("")
   const [output, setOutput] = useState("");
 
@@ -31,8 +30,8 @@ const Photo = ({ photo, fulaClient }: Props): JSX.Element => {
           return
       }
       try {
-          const data = await fulaClient.receiveFile(fileId);
-          console.log(data)
+
+          const data = await fulaClient.receiveFile(photo.cid);
           let reader = new FileReader();
           reader.readAsDataURL(data);
           // @ts-ignore

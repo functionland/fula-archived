@@ -1,7 +1,7 @@
 interface ITagEncryption {
     didAudience: string;
     CID: string;
-    symetricKey: string
+    symetricKey: string;
     encrypt(symetricKey: string, CID: string, didAudience: string): Promise<void>;
     decrypt(jwe: any): Promise<void>;
 }
@@ -14,7 +14,6 @@ export class TaggedEncryption implements ITagEncryption {
 
     constructor (DID: any) {
       this._did = DID;
-      this.symetricKey = ''
     }
 
     async encrypt(symetricKey: string, CID: string, didAudience: string): Promise<void> {

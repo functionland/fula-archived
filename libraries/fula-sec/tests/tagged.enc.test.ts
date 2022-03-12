@@ -22,4 +22,5 @@ describe('DID', () => {
         // should().exist(result)
         // result.should.be.an('object');
     });
+
   });

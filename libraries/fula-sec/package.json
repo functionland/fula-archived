@@ -28,6 +28,7 @@
   "dependencies": {
     "@stablelib/x25519": "^1.0.2",
     "bip39": "^3.0.4",
+    "did-jwt": "^5.12.4",
     "dids": "^2.4.3",
     "ethereum-hdwallet": "0.0.27",
     "key-did-provider-ed25519": "^1.1.0",

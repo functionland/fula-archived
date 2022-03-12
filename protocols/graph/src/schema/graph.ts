@@ -27,6 +27,10 @@ export interface Request {
      * @generated from protobuf field: string operation_name = 3;
      */
     operationName: string;
+    /**
+     * @generated from protobuf field: bool subscribe = 4;
+     */
+    subscribe: boolean;
 }
 /**
  * @generated from protobuf message graph.Result
@@ -45,11 +49,12 @@ class Request$Type extends MessageType<Request> {
         super("graph.Request", [
             { no: 1, name: "query", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "variable_values", kind: "message", T: () => Value },
-            { no: 3, name: "operation_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "operation_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "subscribe", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<Request>): Request {
-        const message = { query: "", operationName: "" };
+        const message = { query: "", operationName: "", subscribe: false };
         if (value !== undefined)
             reflectionMergePartial<Request>(this, message, value);
         return message;
@@ -67,6 +72,9 @@ class Request$Type extends MessageType<Request> {
                     break;
                 case /* string operation_name */ 3:
                     message.operationName = reader.string();
+                    break;
+                case /* bool subscribe */ 4:
+                    message.subscribe = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -89,6 +97,9 @@ class Request$Type extends MessageType<Request> {
         /* string operation_name = 3; */
         if (message.operationName !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.operationName);
+        /* bool subscribe = 4; */
+        if (message.subscribe !== false)
+            writer.tag(4, WireType.Varint).bool(message.subscribe);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

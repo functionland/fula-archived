@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js && tsc",
+    "build:watch": "node scripts/build.js",
     "build:proto": "protoc --ts_out file/schema --proto_path file/schema/ file/schema/index.proto",
     "lint": "eslint src --fix",
     "type-check": "tsc"

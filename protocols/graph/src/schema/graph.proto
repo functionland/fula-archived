@@ -6,6 +6,7 @@ message Request {
   string query = 1;
   google.protobuf.Value variable_values = 2;
   string operation_name = 3;
+  bool subscribe = 4;
 }
 
 message Result {

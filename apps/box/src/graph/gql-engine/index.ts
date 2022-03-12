@@ -30,14 +30,24 @@ export const executeAndSelect = async (
     query: DocumentNode,
     resolvers: IResolvers,
     variableValues: Maybe<{ [p: string]: unknown }>,
-    operationName: Maybe<string>
+    operationName: Maybe<string>,
+    loadDB?: (string) => any,
+    next?: (Result) => void,
+    isSubscription?: boolean
 ) => {
+    const _next = (res) => {
+        if(!next)
+            return null
+        const def = query.definitions[0]
+        next(selector({data: res}, def))
+    }
     const res = await execute({
         operationName,
         variableValues,
         schema,
         document: query,
-        rootValue: resolvers
+        rootValue: resolvers,
+        contextValue: {next: _next, isSubscription, loadDB}
     });
     const def = query.definitions[0]
     return selector(res, def)

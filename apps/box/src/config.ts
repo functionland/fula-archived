@@ -6,7 +6,8 @@ import {NOISE, Noise} from "@chainsafe/libp2p-noise"
 import {Libp2pOptions} from "libp2p";
 import Protector from "libp2p/src/pnet"
 
-const pKey = process.env.PKEY?process.env.PKEY:undefined
+const pKey = process.env.PKEY? new TextEncoder().encode(process.env.PKEY):undefined
+
 
 new Noise();
 

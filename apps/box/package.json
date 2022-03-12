@@ -1,11 +1,9 @@
 {
   "name": "@functionland/box",
-  "version": "1.0.4",
+  "version": "1.0.9",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
-  "bin": {
-    "box": "dist/index.js"
-  },
+  "bin": "./cli.js",
   "types": "src",
   "scripts": {
     "start": "nodemon --watch dist",
@@ -72,5 +70,8 @@
     "tape": "~5.5.2",
     "ts-node": "~10.6.0",
     "typescript": "~4.6.2"
+  },
+  "engines": {
+    "node": ">=16.13.2"
   }
 }

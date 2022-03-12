@@ -1,6 +1,4 @@
 import {app} from "./app";
-import debug from "debug";
-debug.enabled('*')
 
 const main = async () => {
     const p = await app()

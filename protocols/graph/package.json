@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
+    "build:watch": "node scripts/build.js",
     "build:proto": "protoc --ts_out src/schema --ts_opt generate_dependencies --proto_path src/schema/ src/schema/*.proto",
     "lint": "eslint src --fix"
   },

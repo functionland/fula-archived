@@ -7,6 +7,7 @@
 	"types": "src/index.ts",
 	"scripts": {
 		"build": "node scripts/build.js",
+		"build:watch": "node scripts/build.js",
 		"build:test": "node scripts/build-test.js",
 		"test": "rushx build:test && cat dist/test.js | testling -u",
 		"lint": "eslint src --fix"
@@ -22,6 +23,7 @@
 	},
 	"homepage": "https://github.com/functionland/borg#readme",
 	"dependencies": {
+		"async-later": "^0.1.5",
 		"@functionland/file-protocol": "^0.3.2",
 		"@functionland/graph-protocol": "^0.1.0",
 		"@ipld/schema-validation": "^1.1.0",

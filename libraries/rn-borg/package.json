@@ -33,6 +33,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo \"no build\"",
+    "build:watch": "echo \"no build\"",
     "lint": "eslint src --fix"
   }
 }

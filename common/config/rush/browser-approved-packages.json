@@ -120,7 +120,7 @@
     },
     {
       "name": "async-later",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "base-64",
@@ -132,6 +132,10 @@
     },
     {
       "name": "buffer",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "build-helpers",
       "allowedCategories": [ "production" ]
     },
     {
@@ -216,7 +220,7 @@
     },
     {
       "name": "graphql",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "prototypes" ]
     },
     {
       "name": "graphql-tag",
@@ -352,6 +356,10 @@
     },
     {
       "name": "react-dom",
+      "allowedCategories": [ "prototypes" ]
+    },
+    {
+      "name": "react-icons",
       "allowedCategories": [ "prototypes" ]
     },
     {

@@ -9,7 +9,8 @@
     "url": "git+ssh://git@github.com/functionland/tools/build-helpers"
   },
   "scripts": {
-    "build": ""
+    "build": "",
+    "build:watch": ""
   },
   "author": "",
   "license": "MIT",

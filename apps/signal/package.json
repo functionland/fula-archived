@@ -4,6 +4,7 @@
   "scripts": {
     "start": "star-signal",
     "build":"",
+    "build:watch":"",
     "lint": ""
   },
   "license": "MIT",

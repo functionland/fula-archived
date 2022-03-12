@@ -96,6 +96,68 @@ export const queryResultMap = [
         }
     },
     {
+        name: 'create',
+        query: `
+          mutation {
+            create(
+              input: {
+                collection: "profile"
+                values: [{ _id: "7", age: 35, name: "someone", key: "7" }]
+              }
+            ) {
+              _id
+              name
+              age
+              key
+            }
+          }`,
+        expected: {
+            data: {create: [{_id: '7', name: 'someone', age: 35, key: '7'}]}
+        }
+    },
+    {
+        name: 'create',
+        query: `
+          mutation {
+            create(
+              input: {
+                collection: "profile"
+                values: [{ _id: "8", age: 20, name: "ali", key: "8" }]
+              }
+            ) {
+              _id
+              name
+              age
+              key
+            }
+          }`,
+        expected: {
+            data: {create: [{_id: '8', name: 'ali', age: 20, key: '8'}]}
+        },
+        subscription: true
+    },
+    {
+        name: 'create',
+        query: `
+          mutation {
+            create(
+              input: {
+                collection: "profile"
+                values: [{ _id: "9", age: 22, name: "taghi", key: "9" }]
+              }
+            ) {
+              _id
+              name
+              age
+              key
+            }
+          }`,
+        expected: {
+            data: {create: [{ _id: "9", age: 22, name: "taghi", key: "9" }]}
+        },
+        subscription: true
+    },
+    {
         name: 'update',
         query: `
               mutation {
@@ -139,7 +201,8 @@ export const queryResultMap = [
                 updateQuery: [
                     {_id: '0', name: 'mahdi', age: 70, key: '0'},
                     {_id: '3', name: 'ehsan', age: 70, key: '3'},
-                    {_id: '6', name: 'jamshid', age: 70, key: '6'}
+                    {_id: '6', name: 'jamshid', age: 70, key: '6'},
+                    {_id: '7', name: 'someone', age: 70, key: '7'}
                 ]
             }
         }
@@ -182,7 +245,8 @@ export const queryResultMap = [
                     {_id: '2', name: 'emad', age: 18, key: '2'},
                     {_id: '3', name: 'ehsan', age: 70, key: '3'},
                     {_id: '4', name: 'farhoud', age: 25, key: '4'},
-                    {_id: '5', name: 'mehdi', age: 30, key: '5'}
+                    {_id: '5', name: 'mehdi', age: 30, key: '5'},
+                    {_id: '7', name: 'someone', age: 70, key: '7'}
                 ]
             }
         }
@@ -204,4 +268,10 @@ export async function* testFileGenerator() {
         }
         yield value;
     }
+}
+
+export function* testEventGenerator() {
+    const queries = queryResultMap.filter((qr) => qr.name === 'create' && qr.subscription === true)
+    for (const _qr of queries)
+        yield _qr
 }

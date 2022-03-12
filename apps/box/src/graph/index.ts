@@ -8,6 +8,8 @@ export const registerGraph = (libp2pNode, orbitDBNode) => {
     libp2pNode.handle(PROTOCOL, handler);
     const resolvers = createResolver(orbitDBNode)
     setQueryResolutionMethod(async (req: Request) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         const {query, variableValues, operationName} = Request.toJson(req)
         const gqlQuery = parse(query)
         const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName)

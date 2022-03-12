@@ -1,6 +1,6 @@
 {
   "name": "@functionland/box",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
   "bin": "./cli.js",
@@ -8,7 +8,7 @@
   "scripts": {
     "start": "nodemon --watch dist",
     "build": "node scripts/build.mjs",
-    "build:prod": "tsc",
+    "build:prod": "tsc && webpack --mode production",
     "lint": "eslint src --fix",
     "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
     "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",
@@ -69,7 +69,10 @@
     "tap-spec": "~5.0.0",
     "tape": "~5.5.2",
     "ts-node": "~10.6.0",
-    "typescript": "~4.6.2"
+    "typescript": "~4.6.2",
+    "webpack-node-externals": "~3.0.0",
+    "webpack": "~5.69.1",
+    "webpack-cli": "~4.9.2"
   },
   "engines": {
     "node": ">=16.13.2"

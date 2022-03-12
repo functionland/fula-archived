@@ -5,7 +5,7 @@
     "moduleResolution": "Node",
     "lib": ["es2019", "dom"],
     "allowJs": true,
-    "outDir": "dist/",
+    "outDir": "build/",
     "sourceMap": false,
     "strict": true,
     "noImplicitAny": false,

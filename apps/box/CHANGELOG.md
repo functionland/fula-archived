@@ -1,6 +1,13 @@
 # Change Log - @functionland/box
 
-This log was last generated on Sat, 12 Mar 2022 14:34:03 GMT and should not be manually modified.
+This log was last generated on Sat, 12 Mar 2022 15:38:48 GMT and should not be manually modified.
+
+## 1.0.7
+Sat, 12 Mar 2022 15:38:48 GMT
+
+### Patches
+
+- fix missing libp2 on npx
 
 ## 1.0.6
 Sat, 12 Mar 2022 14:34:03 GMT

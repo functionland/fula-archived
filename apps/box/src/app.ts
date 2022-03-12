@@ -9,10 +9,13 @@ import {registerGraph} from "./graph";
 
 debug.enabled('*')
 
+type DBCollections = {[dbName: string]: any}
+
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
 const [ipfsPromise, resolveIpfs] = resolveLater<IPFS.IPFS>();
 const [orbitDBPromise, resolveOrbitDB] = resolveLater<OrbitDB>();
+const [dbCollectionsPromise, resolveDBCollections] = resolveLater<DBCollections>();
 
 export async function getLibp2p() {
   return libp2pPromise;
@@ -24,6 +27,10 @@ export async function getIPFS() {
 
 export async function getOrbitDb(){
   return orbitDBPromise;
+}
+
+export async function getDBCollections(): Promise<DBCollections>{
+  return dbCollectionsPromise;
 }
 
 
@@ -45,6 +52,12 @@ export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
       peerId: config?.peerId
     })
   );
+
+  resolveDBCollections(new Promise(resolve => {
+    const dbCollections = {}
+    resolve(dbCollections)
+  }))
+
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
   resolveOrbitDB(OrbitDB.createInstance(ipfsNode));

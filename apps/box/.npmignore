@@ -1,1 +1,3 @@
-change node version and add npm-ignore and add add changelogs
+*
+!dist/**/*
+!cli.js

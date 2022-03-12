@@ -10,6 +10,7 @@
   "scripts": {
     "start": "nodemon --watch dist",
     "build": "node scripts/build.mjs",
+    "build:watch": "node scripts/build.mjs",
     "lint": "eslint src --fix",
     "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
     "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",

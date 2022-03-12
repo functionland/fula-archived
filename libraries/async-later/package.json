@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js && tsc",
+    "build:watch": "node scripts/build.js",
     "test:node": "tape dist/node/test.cjs | tap-spec; nyc report ---reporter=text",
     "test:web": "rushx build && cat dist/browser/test.js | testling -u",
     "type-check": "tsc",

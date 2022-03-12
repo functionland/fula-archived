@@ -2,6 +2,30 @@
   "name": "@functionland/box",
   "entries": [
     {
+      "version": "1.0.6",
+      "tag": "@functionland/box_v1.0.6",
+      "date": "Sat, 12 Mar 2022 14:34:03 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix npmignore"
+          }
+        ]
+      }
+    },
+    {
+      "version": "1.0.5",
+      "tag": "@functionland/box_v1.0.5",
+      "date": "Sat, 12 Mar 2022 14:31:50 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "add npx simple cli script"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.4",
       "tag": "@functionland/box_v1.0.4",
       "date": "Tue, 08 Mar 2022 09:45:40 GMT",

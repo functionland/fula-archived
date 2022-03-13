@@ -1,8 +1,12 @@
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import { decryptJWE, createJWE, x25519Decrypter, x25519Encrypter } from 'did-jwt'
 import * as u8a from 'uint8arrays'
-import { TextDecoder } from 'util';
-
+/**
+ * @class AsymEncryption
+ * @description Asymetric Encription
+ * Requires public and private key. The user must import the DID`s private key and 
+ * share the public key among network participants. 
+ */
 interface IAsymEncryption {
     encrypt(symetricKey: string, CID: string, publicKey: any): Promise <any>;
     decrypt(jwe: any): Promise <any>;
@@ -16,14 +20,33 @@ export class AsymEncryption implements IAsymEncryption {
         this._privateKey = privateKey;
     }
 
+    /**
+     * This private function for encryption
+     * @function asymEncrypter() {x25519Encrypter}
+     * @property publicKey
+     * @returns  asymEncrypter = publicKey
+     */
+
     private asymEncrypter(publicKey: any) {
        return x25519Encrypter(new Uint8Array(publicKey));
     }
 
+     /**
+     * This private function for decryption
+     * @function asymDecrypter() {x25519Decrypter}
+     * @property _privateKey
+     * @returns  asymDecrypter = privateKey
+     */
     private asymDecrypter() {
         return x25519Decrypter(Buffer.from(this._privateKey, 'hex'));
     }
 
+    /**
+     * Encrypt with Audience`s Public Key
+     * @function encrypt()
+     * @property symetricKey: string, CID: string, publicKey: any
+     * @returns  jwe {} || error
+     */
     encrypt(symetricKey: string, CID: string, publicKey: any) {
         return new Promise((resolve, reject) => {
             let cleartext = u8a.fromString(JSON.stringify({ symetricKey: symetricKey,  CID: CID}));
@@ -37,6 +60,13 @@ export class AsymEncryption implements IAsymEncryption {
                 })
         })
     }
+
+    /**
+     * Decrypt with own Private Key
+     * @function decrypt()
+     * @property jwe {}
+     * @returns  decrypted message {symetricKey: string, CID: string}
+     */
 
     decrypt(jwe: any) {
         return new Promise((resolve, reject) => {

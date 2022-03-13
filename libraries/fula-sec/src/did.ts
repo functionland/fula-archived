@@ -10,29 +10,29 @@ import KeyResolver from 'key-did-resolver'
  * @description Creates Decentrilized Identity for Clinet side application 
  * based on Ed25519 Private Key - Edwards-curve Digital Signature Algorithm(EdDSA)
  */
-export class FullaDID {
+
+interface IFullaDID {
     privateKey: string;
     mnemonic: string;
     authDID: string;
+    did: any;
+}
 
-
-    constructor() {
-        this.privateKey = '';
-        this.mnemonic = '';
-        this.authDID = '';
-    }
+export class FullaDID implements IFullaDID {
+    privateKey!: string
+    mnemonic!: string;
+    authDID!: string;
+    did: any;
     /**
      * This private function only class functions can use it
      * @function didProvider()
      * @property privateKey
      * @returns  authDID
-     * @memberof FullaDID private member
      */
     private async didProvider () {
         let provider = new Ed25519Provider(Buffer.from(this.privateKey, 'hex'))
-        let did = new DID({ provider, resolver: KeyResolver.getResolver()})
-        return await did.authenticate();
-         
+        this.did = new DID({ provider, resolver: KeyResolver.getResolver()})
+        return await this.did.authenticate();
     }
     /**
      * Creates mnemocic phrase and private key

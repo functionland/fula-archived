@@ -78,24 +78,3 @@ describe('DID', () => {
         expect(JSON.stringify(meta)).not.to.equal(JSON.stringify(importedpk));        
     });
   });
-
-
-//   {
-//     mnemonic: 'mercy drip similar hole oil lock blast absent medal slam world sweet',
-//     privateKey: 'f0396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5',
-//     authDID: 'did:key:z6MkeuGvVYEa5ooKyjYqYaLoWagyhFJetc7jmT3kRw9KCfAN'
-//   }  
-
-// (async()=>{
-//     const fullaDID = new FullaDID();
-//     let did = await fullaDID.create();
-//     console.log('did: ', did);
-//     console.log(fullaDID.backup);
-
-//     const fullaDID1 = new FullaDID();
-//     let importedmem = await fullaDID1.importMnemonic(did.mnemonic);
-//     console.log('importedmem did: ', importedmem);
-//     let importedKey = await fullaDID1.imposrtPrivateKey(did.privateKey);
-//     console.log('importedKey did: ', importedKey);
-//     console.log(fullaDID1.backup);
-// })();

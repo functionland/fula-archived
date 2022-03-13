@@ -27,7 +27,8 @@
 		"libp2p": "~0.36.2",
 		"libp2p-mplex": "~0.10.7",
 		"libp2p-webrtc-star": "~0.25.0",
-		"@chainsafe/libp2p-noise": "~5.0.2"
+		"@chainsafe/libp2p-noise": "~5.0.2",
+		"events": "~3.3.0"
 	},
 	"devDependencies": {
 		"@functionland/file-protocol": "~0.3.4",
@@ -65,6 +66,7 @@
 		"@babel/core": "~7.17.5",
 		"@babel/preset-typescript": "~7.16.7",
 		"@babel/preset-env": "~7.16.11",
-		"@babel/plugin-transform-runtime": "~7.17.0"
+		"@babel/plugin-transform-runtime": "~7.17.0",
+		"events": "~3.3.0"
 	}
 }

@@ -9,7 +9,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@functionland/fula": "^0.4.4"
   },
   "scripts": {
     "start": "react-scripts start",

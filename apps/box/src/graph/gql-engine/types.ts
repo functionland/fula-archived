@@ -77,10 +77,12 @@ export type DeleteArgs = {
 
 
 export interface IResolvers {
-    read: (ReadArgs) => Promise<unknown>
-    create: (CreateArgs) => Promise<unknown>
-    update: (UpdateArgs) => Promise<unknown>
-    updateQuery: (UpdateQueryArgs) => Promise<unknown>
-    delete: (DeleteArgs) => Promise<unknown>
+    read: (ReadArgs, context?: any) => Promise<unknown>
+    readSubscribe: (ReadArgs) => Promise<unknown>
+    create: (CreateArgs, context?: any) => Promise<unknown>
+    update: (UpdateArgs, context?: any) => Promise<unknown>
+    updateQuery: (UpdateQueryArgs, context?: any) => Promise<unknown>
+    delete: (DeleteArgs, context?: any) => Promise<unknown>
 }
+
 

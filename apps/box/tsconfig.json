@@ -5,19 +5,18 @@
     "moduleResolution": "Node",
     "lib": ["es2019", "dom"],
     "allowJs": true,
-    "outDir": "dist",
-    "sourceMap": true,
+    "outDir": "build/",
+    "sourceMap": false,
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "rootDir": "./",
-    "baseUrl": "./"
+    "rootDir": "./src",
+    "baseUrl": "./src"
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/",
   ],
   "exclude": [
     "node_modules"

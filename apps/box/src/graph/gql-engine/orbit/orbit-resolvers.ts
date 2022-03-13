@@ -10,13 +10,23 @@ export const createResolver = (orbitDB): IResolvers => {
         await db.load();
         return db
     }
+
     return {
-        read: async (args: ReadArgs) => {
-            const db = await load(args.input.collection)
+        read: async (args: ReadArgs, {isSubscription, next, loadDB}) => {
+            const db = await loadDB(args.input.collection)
+            if(isSubscription)
+                db.events.on('write', async () => {
+                    const res = db.query(_reGetFilter(args.input.filter))
+                    next({read: res})
+                })
             return db.query(_reGetFilter(args.input.filter));
         },
-        create: async (args: CreateArgs) => {
+        readSubscribe: async (args: ReadArgs) => {
             const db = await load(args.input.collection)
+            return db.query(_reGetFilter(args.input.filter))
+        },
+        create: async (args: CreateArgs, {loadDB}) => {
+            const db = await loadDB(args.input.collection)
             // TODO: generate uuid and asign to _id, if value.id is not presented
             const _values = args.input.values.map(value => ({
                 _id: value.id,
@@ -28,8 +38,8 @@ export const createResolver = (orbitDB): IResolvers => {
             await Promise.all(promises);
             return _values;
         },
-        update: async (args: UpdateArgs) => {
-            const db = await load(args.input.collection)
+        update: async (args: UpdateArgs, {loadDB}) => {
+            const db = await loadDB(args.input.collection)
             // TODO: generate uuid and asign to _id, if value.id is not presented
             const _values = args.input.values.map(value => ({
                 _id: value.id,
@@ -42,8 +52,8 @@ export const createResolver = (orbitDB): IResolvers => {
             return _values;
 
         },
-        updateQuery: async (args: UpdateQueryArgs) => {
-            const db = await load(args.input.collection)
+        updateQuery: async (args: UpdateQueryArgs, {loadDB}) => {
+            const db = await loadDB(args.input.collection)
             const result = db.query(_reGetFilter(args.input.filter))
             // TODO: generate uuid and asign to _id, if value.id is not presented
             const _values = result.map(currentValue => ({
@@ -57,8 +67,8 @@ export const createResolver = (orbitDB): IResolvers => {
             return _values;
 
         },
-        delete: async (args: DeleteArgs) => {
-            const db = await load(args.input.collection)
+        delete: async (args: DeleteArgs, {loadDB}) => {
+            const db = await loadDB(args.input.collection)
             const promises = args.input.ids.map(id => db.del(id));
             await Promise.all(promises);
             return args.input.ids

@@ -109,6 +109,11 @@
 
     },
     {
+      "packageName": "react-gallery",
+      "projectFolder": "examples/react-gallery",
+      "reviewCategory": "prototypes"
+    },
+    {
       "packageName": "build-helpers",
       "projectFolder": "tools/build-helpers",
       "reviewCategory": "production"

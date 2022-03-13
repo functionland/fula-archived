@@ -26,53 +26,44 @@ export class Connection extends events.EventEmitter {
     status: Status
     libp2p:Libp2p;
     serverPeerId:PeerId|null=null;
-    store: Store
+    serverId:string
     lpConnection:LpConnection|null=null;
     ready = false
-    hasServer = false;
+    wait = null;
+    ee;
 
-    constructor(libp2p: Libp2p) {
+    constructor(libp2p: Libp2p, peerId: string) {
         super();
         this.status = Status.Offline
         this.libp2p = libp2p
-        this.store = new Store()
-        const result = this.store.getServerId()
-        if (result){
-            this.hasServer = true;
-            this.start()
-        }
-        this.libp2p.connectionManager.on('peer:disconnect', async (connection: LpConnection) => {
-            if(this.hasServer && this.ready && this.status !== Status.Connecting && this.lpConnection && this.lpConnection.remotePeer === connection.remotePeer){
-                this._connect()
-            }
-        })
+        this.serverId = peerId
+        this.ee = this.libp2p.connectionManager.on('peer:disconnect', this._reconnect)
     }
 
-    setServer = async (serverId: string) => {
-        this.store.setServerId(serverId)
-        this.hasServer = true;
-        this.start()
+    _reconnect = async (connection: LpConnection) => {
+        if(this.ready && this.status !== Status.Connecting && this.lpConnection && this.lpConnection.remotePeer === connection.remotePeer){
+            this.emit('disconnected')
+            await this._connect()
+        }
     }
 
     start = async () => {
-        if(this.hasServer){
-            await this.loadServer()
-            this.ready = true
-            this._connect()
-        }
-        else
-            throw Error("Server not Set")
+        this.serverPeerId = await this._serverIdToPeerID(this.serverId)
+        this.ready = true;
+        await this._connect()
+
     }
 
-    _connect = async (option:{num_try:number, sleep:number}={num_try:5, sleep:500})=>{
+    _connect = async (option:{num_try:number, sleep:number}={num_try:5, sleep:5000})=>{
         this.status = Status.Connecting
         try{
             this.lpConnection = await this.libp2p.dial(this.serverPeerId as PeerId)
             this.status = Status.Online
             this.emit('connected',this.lpConnection)
-        } catch (e) {
+        }
+        catch (e) {
             this.status = Status.Offline
-            setTimeout(()=>{
+            this.wait = this.wait && setTimeout(()=>{
                 if(option.num_try>0){
                     this._connect({
                         num_try:option.num_try-1,
@@ -80,47 +71,27 @@ export class Connection extends events.EventEmitter {
                     })
                 }else {
                     this._connect()
+                    this.wait = null;
                 }
             },option.num_try===0?60000:option.sleep)
         }
     }
 
-    loadServer = async () => {
-        const serverId = this.store.getServerId()
-        if(serverId){
-            this.serverPeerId = await this.serverIdToPeerID(serverId);
-        }
-    }
-
-    serverIdToPeerID = async (serverId:string) => {
+    _serverIdToPeerID = async (serverId:string) => {
         const _serverPeerId = PeerId.createFromB58String(serverId)
         await this.libp2p.peerStore.addressBook.set(_serverPeerId, SIG_MULTIADDRS)
         return _serverPeerId
     }
 
+    close = () => {
+        if(this.ee)
+            this.ee.removeAllListeners()
+        if(this.wait)
+            clearTimeout(this.wait)
+        if(this.lpConnection)
+            this.lpConnection.close()
+    }
+
 }
 
 
-
-export class Store {
-
-    serverId: null|string = null;
-
-    constructor(id?:string) {
-        if(id){
-            this.setServerId(id)
-        }else{
-            this.serverId = localStorage.getItem("serverId")
-        }
-    }
-
-
-    setServerId = (id:string)=>{
-        localStorage.setItem("serverId",id)
-        this.serverId = id
-    }
-
-    getServerId = ()=>{
-        return this.serverId
-    }
-}

@@ -1,7 +1,4 @@
 import test from 'tape';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import WebRTCStar from 'libp2p-webrtc-star';
 import {createClient} from '../src';
 import {Status} from "../src/connection";
 
@@ -26,7 +23,7 @@ async function* testFileGenerator() {
 }
 
 test('Setup', async function (t) {
-  t.plan(7);
+  t.plan(13);
   try {
     const client = await createClient();
     t.pass('Client ready');

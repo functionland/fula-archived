@@ -4,13 +4,17 @@ import {PROTOCOL as GRAPH_PROTOCOL, Request, Result, submitQuery} from '@functio
 import {configure} from './config';
 import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
 import {Connection, Status} from "./connection"
+import debug from "debug";
+debug.disable()
 
 
 // types
 declare type FileId = string
 
+export {Connection, Status}
+
 export interface Fula {
-    connect: (peerId: string) => Promise<Connection>
+    connect: (peerId: string) => Connection
     sendFile: (file: File) => Promise<FileId>
     sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
     receiveFile: (fileId: FileId) => Promise<File>
@@ -47,9 +51,9 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
     }
 
     return {
-        async connect(peer: string) {
+        connect(peer: string) {
             connection = new Connection(node, peer)
-            await connection.start()
+            connection.start()
             return connection
         },
         async sendFile(file) {

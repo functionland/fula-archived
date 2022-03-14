@@ -1,11 +1,12 @@
 import Libp2p, { Connection as LpConnection } from "libp2p"
-import events from "events"
+import {EventEmitter} from "events"
 import PeerId from "peer-id";
 import {SIG_MULTIADDRS} from "./constant";
 
 export interface ConnectionEvents {
     'connected':(lpConnection:LpConnection)=> void,
-    'disconnected':()=> void
+    'disconnected':()=> void,
+    'status':(status:Status)=>void
 }
 
 export enum Status{Online,Offline,Connecting}
@@ -22,14 +23,14 @@ export declare interface Connection {
 }
 
 
-export class Connection extends events.EventEmitter {
+export class Connection extends EventEmitter {
     status: Status
     libp2p:Libp2p;
     serverPeerId:PeerId|null=null;
     serverId:string
     lpConnection:LpConnection|null=null;
     ready = false
-    wait = null;
+    wait:any = null;
     ee;
 
     constructor(libp2p: Libp2p, peerId: string) {
@@ -41,29 +42,35 @@ export class Connection extends events.EventEmitter {
     }
 
     _reconnect = async (connection: LpConnection) => {
-        if(this.ready && this.status !== Status.Connecting && this.lpConnection && this.lpConnection.remotePeer === connection.remotePeer){
+        console.log('call reconnect')
+        if(!this.wait && this.status !== Status.Connecting && this.lpConnection && this.lpConnection.remotePeer === connection.remotePeer){
+            this.status = Status.Offline
             this.emit('disconnected')
+            this.emit('status',(Status.Offline))
             await this._connect()
         }
     }
 
     start = async () => {
         this.serverPeerId = await this._serverIdToPeerID(this.serverId)
-        this.ready = true;
         await this._connect()
-
+        this.ready = true;
     }
 
     _connect = async (option:{num_try:number, sleep:number}={num_try:5, sleep:5000})=>{
         this.status = Status.Connecting
+        this.emit('status',(Status.Connecting))
         try{
             this.lpConnection = await this.libp2p.dial(this.serverPeerId as PeerId)
             this.status = Status.Online
+            this.emit('status',(Status.Online))
             this.emit('connected',this.lpConnection)
         }
         catch (e) {
-            this.status = Status.Offline
-            this.wait = this.wait && setTimeout(()=>{
+            this.emit('disconnected')
+            this.emit('status',(Status.Offline))
+            this.wait = !this.wait && setTimeout(()=>{
+                this.wait = null;
                 if(option.num_try>0){
                     this._connect({
                         num_try:option.num_try-1,
@@ -71,7 +78,6 @@ export class Connection extends events.EventEmitter {
                     })
                 }else {
                     this._connect()
-                    this.wait = null;
                 }
             },option.num_try===0?60000:option.sleep)
         }

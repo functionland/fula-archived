@@ -3,6 +3,7 @@ import test from 'tape';
 // @ts-ignore
 import WebRTCStar from 'libp2p-webrtc-star';
 import {createClient} from '../src';
+import {Status} from "../src/connection";
 
 const serverId = '12D3KooWBFCDpMyEmyfnjhY6PiQw2vaM35ChTZ8ZmVUe8GFRMUrt';
 
@@ -25,60 +26,56 @@ async function* testFileGenerator() {
 }
 
 test('Setup', async function (t) {
-    t.plan(12);
-    try {
-        const client = await createClient();
-        t.pass('Client ready');
-        const node = client.getNode();
-        try {
+  t.plan(7);
+  try {
+    const client = await createClient();
+    t.pass('Client ready');
+    const connection = await client.connect(serverId);
 
-            const isConnected = await client.connect(serverId);
-        } catch (e) {
-            console.log(e)
-        }
-        // t.ok(isConnected, 'Client Connected');
-        const fileId = await client.sendFile(testFile);
-        t.equal(typeof fileId, 'string');
-        const fileId2 = await client.sendStreamFile(testFileGenerator(), {
-            name: testFile.name,
-            type: testFile.type,
-            size: testFile.size,
-            lastModified: testFile.lastModified
-        });
-        t.equal(fileId, fileId2);
-        const meta = await client.receiveMeta(fileId);
-        t.deepEqual(
-            meta,
-            {
-                name: testFile.name,
-                type: testFile.type,
-                size: testFile.size,
-                lastModified: testFile.lastModified
-            },
-            'Meta Most be Same'
-        );
-        const file = await client.receiveFile(fileId);
-        t.deepEqual(
-            {
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                lastModified: file.lastModified
-            },
-            {
-                name: testFile.name,
-                type: testFile.type,
-                size: testFile.size,
-                lastModified: testFile.lastModified
-            },
-            'Meta Most be Same'
-        );
-        t.equal(
-            await file.text(),
-            await testFile.text(),
-            'Content Most be the same'
-        );
-        const query = `mutation {
+    t.ok(connection.status === Status.Connecting || connection.status === Status.Online, 'node should start connecting')
+    // t.ok(isConnected, 'Client Connected');
+    const fileId = await client.sendFile(testFile);
+    t.equal(typeof fileId, 'string');
+    const fileId2 = await client.sendStreamFile(testFileGenerator(), {
+      name: testFile.name,
+      type: testFile.type,
+      size: testFile.size,
+      lastModified: testFile.lastModified
+    });
+    t.equal(fileId, fileId2);
+    const meta = await client.receiveMeta(fileId);
+    t.deepEqual(
+      meta,
+      {
+        name: testFile.name,
+        type: testFile.type,
+        size: testFile.size,
+        lastModified: testFile.lastModified
+      },
+      'Meta Most be Same'
+    );
+    const file = await client.receiveFile(fileId);
+    t.deepEqual(
+      {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified
+      },
+      {
+        name: testFile.name,
+        type: testFile.type,
+        size: testFile.size,
+        lastModified: testFile.lastModified
+      },
+      'Meta Most be Same'
+    );
+    t.equal(
+      await file.text(),
+      await testFile.text(),
+      'Content Most be the same'
+    );
+    const query = `mutation {
                     create(
                       input: {
                         collection: "profile"

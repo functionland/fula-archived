@@ -2,16 +2,15 @@ import type {SchemaProtocol} from "@functionland/file-protocol";
 import {FileProtocol} from '@functionland/file-protocol';
 import {PROTOCOL as GRAPH_PROTOCOL, Request, Result, submitQuery, submitSubscriptionQuery} from '@functionland/graph-protocol'
 import {configure} from './config';
-import Libp2p, {Connection, constructorOptions, Libp2pOptions} from 'libp2p';
-import PeerId from 'peer-id';
-import {SIG_MULTIADDRS} from "./constant";
+import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
+import {Connection, Status} from "./connection"
 
 
 // types
 declare type FileId = string
 
 export interface Fula {
-    connect: (peerId: string) => Promise<boolean>
+    connect: (peerId: string) => Promise<Connection>
     sendFile: (file: File) => Promise<FileId>
     sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
     receiveFile: (fileId: FileId) => Promise<File>
@@ -20,7 +19,7 @@ export interface Fula {
     graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
     graphqlSubscribe: (query: string, variableValues?: never, operationName?: string) => AsyncIterable<unknown>
     getNode: () => Libp2p
-    close: () => void
+    close: () => Promise<void>
 }
 
 // end of types
@@ -28,41 +27,31 @@ export interface Fula {
 export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey=undefined): Promise<Fula> {
     const conf = await configure(config, pKey);
     const node = await Libp2p.create(conf);
-    let connection: Connection | undefined;
-    let serverPeerId: PeerId
-
+    let connection : undefined|Connection = undefined;
     node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
     await node.start();
 
     const _getStreamConnection = async (protocol?:string) => {
-        if (!serverPeerId) {
-            throw Error('no server peer found')
-        }
         if (!node) {
             throw Error('node not ready')
-        }
-        if (!connection || connection.stat.status !== 'open') {
+        } else
+        if (!connection || !connection.serverPeerId) {
+            throw Error('peer id of th Box not set')
+        } else
+        if (!connection || connection.status === Status.Offline || !connection.lpConnection) {
             throw Error('Server Unreachable')
-        }
+        } else
         if (protocol) {
-            return await connection.newStream(protocol)
-        }
-        return await connection.newStream(FileProtocol.PROTOCOL)
+            return await connection.lpConnection.newStream(protocol)
+        }else
+            return await connection.lpConnection.newStream(FileProtocol.PROTOCOL)
     }
 
     return {
         async connect(peer: string) {
-            serverPeerId = PeerId.createFromB58String(peer)
-            node.peerStore.addressBook.set(serverPeerId, SIG_MULTIADDRS)
-            try {
-                await node.ping(serverPeerId)
-                // TODO make sure connection stay open by listening to node connection events
-                connection = await node.dial(serverPeerId)
-                return true;
-            } catch (e) {
-                console.log(e)
-                return false
-            }
+            connection = new Connection(node, peer)
+            await connection.start()
+            return connection
         },
         async sendFile(file) {
             try {
@@ -167,8 +156,10 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         getNode() {
             return node;
         },
-        close() {
-            node.stop()
+        async close() {
+            if (connection)
+                await connection.close()
+            await node.stop()
         }
     };
 }

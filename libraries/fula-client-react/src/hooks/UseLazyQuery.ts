@@ -29,6 +29,8 @@ export declare type QueryTuple<TData, TVariables> = [
     (options?: QueryLazyOptions<TVariables>) => void,
     LazyQueryResult<TData>
 ];
+export declare type QuerySubscriptionTuple<TData> = [data: TData|undefined, loading: boolean, error?: GraphError]
+
 export function useLazyQuery<TData = any, TVariables = OperationVariables>(query: DocumentNode | TypedDocumentNode<TData, TVariables>): QueryTuple<TData, TVariables> {
     const [data,setData]=useState<TData>();
     const [error,setError]=useState<GraphError>();
@@ -44,7 +46,7 @@ export function useLazyQuery<TData = any, TVariables = OperationVariables>(query
                     setData({
                         ...((query as any)?.data||{})
                     });
-                }).catch(error=>{
+                }).catch((error: GraphError)=>{
                     console.log("request error:",error);
                     setError(error);
                 }).finally(()=>{

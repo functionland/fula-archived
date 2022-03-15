@@ -1,6 +1,6 @@
 import type {SchemaProtocol} from "@functionland/file-protocol";
 import {FileProtocol} from '@functionland/file-protocol';
-import {PROTOCOL as GRAPH_PROTOCOL, Request, Result, submitQuery} from '@functionland/graph-protocol'
+import {PROTOCOL as GRAPH_PROTOCOL, Request, Result, submitQuery, submitSubscriptionQuery} from '@functionland/graph-protocol'
 import {configure} from './config';
 import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
 import {Connection, Status} from "./connection"
@@ -16,16 +16,17 @@ declare type FileId = string
 export {Connection, Status}
 
 export interface Fula {
-  connect: (peerId: string) => Connection
-  disconnect: () => Promise<void>
-  sendFile: (file: File) => Promise<FileId>
-  sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
-  receiveFile: (fileId: FileId) => Promise<File>
-  receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
-  receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
-  graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
-  getNode: () => Libp2p
-  close: () => Promise<void>
+    connect: (peerId: string) => Connection
+    disconnect: () => Promise<void>
+    sendFile: (file: File) => Promise<FileId>
+    sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
+    receiveFile: (fileId: FileId) => Promise<File>
+    receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
+    receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
+    graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
+    graphqlSubscribe: (query: string, variableValues?: never, operationName?: string) => AsyncIterable<unknown>
+    getNode: () => Libp2p
+    close: () => Promise<void>
 }
 
 // end of types
@@ -143,6 +144,26 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         throw new Error((e as Error).message)
       }
     },
+      graphqlSubscribe: async function*(query: string, _variableValues?: never, _operationName?: string){
+          try {
+              const variableValues = _variableValues ? _variableValues : null
+              const operationName = _operationName ? _operationName : null
+              const connectionObj = await _getStreamConnection(GRAPH_PROTOCOL)
+              const req = Request.fromJson({
+                  query,
+                  variableValues,
+                  operationName,
+                  subscribe: true
+              })
+              const res = await submitSubscriptionQuery({connection: connectionObj, req})
+
+              for await(const newRes of res)
+                  yield Result.toJson(<Result>newRes)
+          }
+          catch (e) {
+              throw new Error((e as Error).message)
+          }
+      },
     getNode() {
       return node;
     },

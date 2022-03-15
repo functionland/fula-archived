@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './TodoForm';
 import Todo, { TODO } from './Todo';
-import { useLazyQuery } from '@functionland/fula-client-react';
+import {useLazyQuery, useSubscription} from '@functionland/fula-client-react';
 import { readQuery, createMutation, updateMutation, deleteMutation } from '../queries/ToDo'
 
 function TodoList() {
   const [todos, setTodos] = useState<TODO[]>([]);
-  const [readTodos, { data: readData }] = useLazyQuery(readQuery);
   const [createTodo, { data: createData }] = useLazyQuery(createMutation);
   const [updateTodoMutation, { data: updateData }] = useLazyQuery(updateMutation);
   const [deleteTodoMutation, { data: deleteData }] = useLazyQuery(deleteMutation);
 
-  useEffect(() => {
-    readTodos();
-  }, []);
+  const [readData, loading, error] = useSubscription(readQuery)
 
   useEffect(() => {
     console.log("readTodoStatus", readData);

@@ -2,24 +2,24 @@ import test from 'tape';
 import {createClient} from '../src';
 import {Status} from "../src/connection";
 
-const serverId = '12D3KooWBFCDpMyEmyfnjhY6PiQw2vaM35ChTZ8ZmVUe8GFRMUrt';
+const serverId = '12D3KooWPGsiSzfA8tx5oreRzJhNUKkDz7friokUmbTzSw7Btzaa';
 
 const testFile = new File(['test'], 'test', {
-    lastModified: 1639579330347,
-    type: 'text/plain'
+  lastModified: 1639579330347,
+  type: 'text/plain'
 });
 
 async function* testFileGenerator() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const reader = testFile.stream().getReader();
-    while (true) {
-        const {value, done} = await reader.read();
-        if (done) {
-            break;
-        }
-        yield value;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const reader = testFile.stream().getReader();
+  while (true) {
+    const {value, done} = await reader.read();
+    if (done) {
+      break;
     }
+    yield value;
+  }
 }
 
 test('Setup', async function (t) {
@@ -27,9 +27,18 @@ test('Setup', async function (t) {
   try {
     const client = await createClient();
     t.pass('Client ready');
-    const connection = await client.connect(serverId);
+    const connection = client.connect(serverId);
 
-    t.ok(connection.status === Status.Connecting || connection.status === Status.Online, 'node should start connecting')
+    t.ok(connection.status === Status.Connecting, 'node should start connecting')
+
+    const whenConnected = new Promise((resolve, reject) => {
+      connection.once('connected', (connection) => {
+        resolve(connection)
+      })
+    })
+    await whenConnected
+
+
     // t.ok(isConnected, 'Client Connected');
     const fileId = await client.sendFile(testFile);
     t.equal(typeof fileId, 'string');
@@ -86,18 +95,18 @@ test('Setup', async function (t) {
                     }
                   }`
 
-        const result = await client.graphql(query)
-        const expected = {
-            data: {create: [{_id: '6', name: 'jamshid', age: 33, key: '6'}]}
-        }
-        t.deepEqual(result, expected, 'Graphql using query')
+    const result = await client.graphql(query)
+    const expected = {
+      data: {create: [{_id: '6', name: 'jamshid', age: 33, key: '6'}]}
+    }
+    t.deepEqual(result, expected, 'Graphql using query')
 
-        /*
-        test graphqlSubscribe()
-         */
-        const cName = (Math.random() + 1).toString(36).substring(7)
-        // const cName = 'testC'
-        const createSampleQuery = `
+    /*
+    test graphqlSubscribe()
+     */
+    const cName = (Math.random() + 1).toString(36).substring(7)
+    // const cName = 'testC'
+    const createSampleQuery = `
       mutation addPerson($values:JSON){
         create(
           input: {
@@ -112,12 +121,12 @@ test('Setup', async function (t) {
         }
       }
     `
-        const createSampleData = [
-            {_id: "6", age: 33, name: "joe", key: "6"},
-            {_id: "8", age: 40, name: "eddy", key: "8"}
-        ]
+    const createSampleData = [
+      {_id: "6", age: 33, name: "joe", key: "6"},
+      {_id: "8", age: 40, name: "eddy", key: "8"}
+    ]
 
-        const readQuery = `
+    const readQuery = `
             query {
               read(
                 input: {
@@ -132,23 +141,23 @@ test('Setup', async function (t) {
               }
             }
         `
-        const readResult = client.graphqlSubscribe(readQuery)
+    const readResult = client.graphqlSubscribe(readQuery)
 
-        let cnt = 0
-        for await (const partialRes of readResult) {
-            const sorted = partialRes.data.read.sort((a, b) => parseInt(a._id)-parseInt(b._id))
-            t.deepEqual(sorted, createSampleData.slice(0, cnt),`response #${cnt+1} must be correct`)
-            if(cnt<createSampleData.length) {
-                const toCreate = createSampleData.slice(cnt, cnt + 1)
-                const createRes = await client.graphql(createSampleQuery, {values: toCreate})
-                t.deepEqual(createRes, {data: {create: toCreate}}, `should create item #${cnt + 1}`)
-            }
-            cnt += 1
-        }
-
-        client.close();
-    } catch (e) {
-        t.error(e);
+    let cnt = 0
+    for await (const partialRes of readResult) {
+      const sorted = partialRes.data.read.sort((a, b) => parseInt(a._id) - parseInt(b._id))
+      t.deepEqual(sorted, createSampleData.slice(0, cnt), `response #${cnt + 1} must be correct`)
+      if (cnt < createSampleData.length) {
+        const toCreate = createSampleData.slice(cnt, cnt + 1)
+        const createRes = await client.graphql(createSampleQuery, {values: toCreate})
+        t.deepEqual(createRes, {data: {create: toCreate}}, `should create item #${cnt + 1}`)
+      }
+      cnt += 1
     }
+
+    client.close();
+  } catch (e) {
+    t.error(e);
+  }
 
 });

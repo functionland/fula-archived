@@ -1,72 +1,147 @@
 import './App.css';
-import {useEffect, useState} from "react";
-import {Header} from "./components/Header";
-import {BoxConfig} from "./components/BoxConfig";
-import {Uploader} from "./components/Uploader";
-import {createClient, Status} from "@functionland/fula";
+
+import React, { useEffect, useState } from "react";
+import { createClient, Status } from "@functionland/fula";
+
+import { ConnInfo } from "./components/ConnInfo";
+import { BoxConfig } from "./components/BoxConfig";
+import { Uploader } from "./components/Uploader";
+import { Gallery } from "./components/Gallery";
 
 
 const pages = {
-  HOME: 'home',
+  GALLERY: 'home',
   CONFIG: 'config',
 }
 
 function App() {
+  // simple routing mechanism page will keep our route state
   const [page, setPage] = useState(pages.CONFIG)
-  const [status, setStatus] = useState('Need to Set BoxID')
+  // status of connection
+  const [status, setStatus] = useState(null)
+  // connection logs
+  const [connInfo, setConnInfo] = useState("")
+  // Fula client
   const [fula, setFula] = useState(undefined)
+  // Id of the box
   const [boxId, setBoxId] = useState("")
+  // List of photos to show
+  const [photos, setPhotos] = useState([])
 
+
+  // create client on component creation
   useEffect(() => {
     (async () => {
       setFula(await createClient())
     })()
 
-  },[])
+  }, [])
 
   useEffect(() => {
-    (async () => {
-      if (boxId && boxId.length > 0) {
-        try {
-          let con = await fula.connect(boxId)
-          con.on('status', (_status) => {
-            setStatus(_status)
-          })
-        } catch (e) {
-          setStatus(e.message)
+    if (page === pages.GALLERY && status === Status.Online) {
+      (async () => {
+        const allData = await fula.graphql(readQuery)
+        if (allData && allData.data && allData.data.read) {
+          setPhotos([])
+          for (const { cid } of allData.data.read) {
+            const file = await fula.receiveFile(cid)
+            setPhotos((prev) => [...prev, file])
+          }
         }
-      }
-    })()
-  }, [boxId,fula])
-
-  useEffect(() => {
-    if (status === Status.Online) {
-      setPage(pages.HOME)
+      })()
     }
-  }, [status])
+  }, [page, status])
 
-  const save = (peer) => {
-    if (peer)
-      setBoxId(peer)
+  const onSet = (peer) => {
+    if (peer) {
+      setBoxId(peer);
+      (async () => {
+        if (peer && peer.length > 0) {
+          try {
+            setConnInfo("")
+            await fula.disconnect()
+            let con = fula.connect(peer)
+            setStatus(Status.Connecting)
+            con.on('status', (_status) => {
+              setStatus(_status)
+              _status===Status.Online && setConnInfo("")
+            })
+            con.on('error', (msg)=>{
+              setConnInfo("Server not available")
+            })
+            setPage(pages.GALLERY)
+          } catch (e) {
+            setConnInfo(e.message)
+          }
+        }
+      })();
+    }
+
   }
 
-  return (<>
-      <Header status={status}/>
-      <div className="app-container">
-        {(() => {
-          switch (page) {
-            case pages.CONFIG:
-              return <BoxConfig save={save} serverId={boxId}/>
-            case pages.HOME:
-              return <Uploader fula={fula} />
-            default:
-              return <h1>Route not found</h1>
-          }
-        })()}
-      </div>
-    </>
+  // call back function for uploading a photo
+  // it will upload the file using fula file api
+  // and then store its cid in fula data
+  const onUpload = async (selectedFile) => {
+    try {
+      const cid = await fula.sendFile(selectedFile)
+      await fula.graphql(createMutation, {values: [{cid, _id: cid}]})
+      setPhotos((prev) => [selectedFile, ...prev])
+    } catch (e) {
+      console.log(e.message)
+    }
+  }
 
-  );
+  // call back for routing to setting
+  const onSetting = () =>{
+    setPage(pages.CONFIG)
+  }
+
+  return <>
+    <div className="app">
+      {(() => {
+        switch (page) {
+          case pages.CONFIG:
+            return <BoxConfig onSet={onSet} serverId={boxId}/>
+          case pages.GALLERY:
+            return <>
+              <h1>Functionland Sample Gallery</h1>
+              <Uploader onUpload={onUpload}/>
+              <Gallery photos={photos}/>
+            </>
+
+          default:
+            return <h1>Route not found</h1>
+        }
+      })()}
+    </div>
+    <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
+  </>
+
 }
 
 export default App;
+
+
+export const readQuery = `
+  query {
+    read(input:{
+      collection:"gallery",
+      filter:{}
+    }){
+      cid
+    }
+  } 
+`
+
+
+export const createMutation = `
+  mutation addImage($values:JSON){
+    create(input:{
+      collection:"gallery",
+      values: $values
+    }){
+      cid
+    }
+  }
+`;

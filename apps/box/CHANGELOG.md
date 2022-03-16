@@ -1,6 +1,13 @@
 # Change Log - @functionland/box
 
-This log was last generated on Sat, 12 Mar 2022 15:38:48 GMT and should not be manually modified.
+This log was last generated on Wed, 16 Mar 2022 13:51:21 GMT and should not be manually modified.
+
+## 1.0.10
+Wed, 16 Mar 2022 13:51:21 GMT
+
+### Patches
+
+- remove webpack
 
 ## 1.0.7
 Sat, 12 Mar 2022 15:38:48 GMT

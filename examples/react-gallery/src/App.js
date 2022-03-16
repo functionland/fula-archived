@@ -106,8 +106,8 @@ function App() {
           case pages.GALLERY:
             return <>
               <h1>Functionland Sample Gallery</h1>
-              <Uploader onUpload={onUpload}/>
-              <Gallery photos={photos}/>
+              {status===Status.Online && <Uploader onUpload={onUpload}/>}
+              {status!==Status.Connecting && <Gallery photos={photos}/> }
             </>
 
           default:

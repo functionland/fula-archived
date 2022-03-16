@@ -6,11 +6,16 @@ export const Gallery = ({ photos }) => {
   return (
     <>
       {
-        photos.map((photo, index) => (
+        photos.length > 0 && photos.map((photo, index) => (
           <div key={index} >
             <Photo photo={photo} />
           </div>
         ))
+      }
+      {
+        photos.length === 0 && <div className="container">
+            <h1>no photo</h1>
+          </div>
       }
     </>
   );

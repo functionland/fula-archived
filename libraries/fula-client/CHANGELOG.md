@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Tue, 08 Mar 2022 09:45:40 GMT and should not be manually modified.
+This log was last generated on Wed, 16 Mar 2022 13:51:21 GMT and should not be manually modified.
+
+## 1.0.0
+Wed, 16 Mar 2022 13:51:21 GMT
+
+### Breaking changes
+
+- add auto connection and connect interface
 
 ## 0.4.4
 Tue, 08 Mar 2022 09:45:40 GMT

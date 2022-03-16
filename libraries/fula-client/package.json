@@ -68,5 +68,15 @@
 		"@babel/preset-env": "~7.16.11",
 		"@babel/plugin-transform-runtime": "~7.17.0",
 		"events": "~3.3.0"
+	},
+	"exports":{
+		".":{
+			"browser": {
+				"default":"./dist/web/index.js"
+			},
+			"node": {
+				"require":"./dist/node/index.cjs"
+			}
+		}
 	}
 }

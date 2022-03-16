@@ -32,9 +32,9 @@ export async function configure(
         }
       }
     },
-    // connectionGater: {
-    //   denyInboundConnection: async ()=> true
-    // },
+    connectionGater: {
+      denyInboundConnection: async ()=> true
+    },
     ...config
   };
 }

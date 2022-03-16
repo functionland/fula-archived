@@ -11,7 +11,7 @@
     "react-scripts": "5.0.0",
     "react-icons": "^4.3.1",
     "web-vitals": "^2.1.4",
-    "@functionland/fula": "^0.4.4"
+    "@functionland/fula": "^1.0.0"
   },
   "devDependencies": {
     "libp2p-webrtc-star": "~0.25.0",

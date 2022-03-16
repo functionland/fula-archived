@@ -1,6 +1,11 @@
 # Change Log - @functionland/fula-client-react
 
-This log was last generated on Tue, 08 Mar 2022 09:45:40 GMT and should not be manually modified.
+This log was last generated on Wed, 16 Mar 2022 13:51:21 GMT and should not be manually modified.
+
+## 0.1.6
+Wed, 16 Mar 2022 13:51:21 GMT
+
+_Version update only_
 
 ## 0.1.5
 Tue, 08 Mar 2022 09:45:40 GMT

@@ -2,6 +2,18 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "1.0.0",
+      "tag": "@functionland/fula_v1.0.0",
+      "date": "Wed, 16 Mar 2022 13:51:21 GMT",
+      "comments": {
+        "major": [
+          {
+            "comment": "add auto connection and connect interface"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.4.4",
       "tag": "@functionland/fula_v0.4.4",
       "date": "Tue, 08 Mar 2022 09:45:40 GMT",

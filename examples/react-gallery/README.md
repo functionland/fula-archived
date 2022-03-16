@@ -6,6 +6,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `BOX_ID="YOUR_BOX_ID" npm run init`
+Run's the script for populating BOX with FXland NFTs that local under ./scripts/photos
+note:you most pass boxId as environment variable `BOX_ID="YOUR_BOX_ID"`
+
 ### `npm start`
 
 Runs the app in the development mode.\

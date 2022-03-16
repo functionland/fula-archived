@@ -49,6 +49,13 @@ export const executeAndSelect = async (
         rootValue: resolvers,
         contextValue: {next: _next, isSubscription, loadDB}
     });
+
+    if(res.errors){
+        // @TODO handle error instantiation
+        return {
+            error: res.errors[0]
+        }
+    }
     const def = query.definitions[0]
     return selector(res, def)
 }

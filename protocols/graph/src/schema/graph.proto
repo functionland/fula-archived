@@ -10,5 +10,8 @@ message Request {
 }
 
 message Result {
-  google.protobuf.Value data = 1;
+    oneof data_or_error{
+        google.protobuf.Value data = 1;
+        google.protobuf.Value error = 2;
+    }
 }

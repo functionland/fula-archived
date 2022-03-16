@@ -50,7 +50,7 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
     } else if (!connection || !connection.serverPeerId) {
       throw Error('peer id of th Box not set')
     } else if (!connection || connection.status === Status.Offline || !connection.lpConnection) {
-      throw Error('Server Unreachable')
+      throw Error('Server no Availibale')
     } else if (protocol) {
       return await connection.lpConnection.newStream(protocol)
     } else
@@ -76,7 +76,6 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         connectionObj.stream.close()
         return fileId
       } catch (e) {
-        console.log(e)
         throw new Error((e as Error).message)
       }
     },
@@ -87,7 +86,6 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         connectionObj.stream.close()
         return fileId
       } catch (e) {
-        console.log(e)
         throw new Error((e as Error).message)
       }
     },
@@ -176,5 +174,5 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         await connection.close()
       await node.stop()
     }
-  };
+  }
 }

@@ -6,7 +6,8 @@
       "name": "start",
       "ignoreMissingScript": true,
       "summary": "run start",
-      "enableParallelism": true
+      "enableParallelism": true,
+      "allowWarningsInSuccessfulBuild": true
     },
     {
       "name": "prettier",

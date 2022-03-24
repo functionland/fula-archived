@@ -7,10 +7,10 @@ import { readQuery, createMutation, updateMutation, deleteMutation } from '../qu
 function TodoList() {
   const [todos, setTodos] = useState<TODO[]>([]);
   const [createTodo, { data: createData }] = useLazyQuery(createMutation);
-  const [updateTodoMutation, { data: updateData }] = useLazyQuery(updateMutation);
-  const [deleteTodoMutation, { data: deleteData }] = useLazyQuery(deleteMutation);
+  const [updateTodoMutation] = useLazyQuery(updateMutation);
+  const [deleteTodoMutation] = useLazyQuery(deleteMutation);
 
-  const [readData, loading, error] = useSubscription(readQuery)
+  const [readData] = useSubscription(readQuery)
 
   useEffect(() => {
     console.log("readTodoStatus", readData);

@@ -98,11 +98,6 @@
       "reviewCategory": "production"
     },
     {
-      "packageName": "react-cra",
-      "projectFolder": "examples/react-cra",
-      "reviewCategory": "prototypes"
-    },
-    {
       "packageName": "react-todo-app",
       "projectFolder": "examples/react-todo-app",
       "reviewCategory": "prototypes"

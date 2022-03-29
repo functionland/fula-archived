@@ -4,7 +4,7 @@ import { resolveLater } from 'async-later';
 import OrbitDB from 'orbit-db';
 import debug from 'debug';
 import {registerFile} from "./file";
-import {defConfig} from "./config";
+import {libConfig, ipfsConfig} from "./config";
 import {registerGraph} from "./graph";
 import {IPFS_PATH, ORBITDB_PATH} from "./const";
 
@@ -39,18 +39,18 @@ export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   const createLibp2 = ( config: Libp2pOptions ) => {
     resolveLibp2p(
-      Libp2p.create(defConfig(config))
+      Libp2p.create(libConfig(config))
     );
     return libp2pPromise;
   };
-
   resolveIpfs(
     IPFS.create({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       libp2p: createLibp2,
       repo: IPFS_PATH,
-      peerId: config?.peerId
+      peerId: config?.peerId,
+      config: ipfsConfig()
     })
   );
 
@@ -61,6 +61,7 @@ export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
+
   resolveOrbitDB(OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH}));
   const orbitDB= await getOrbitDb();
 

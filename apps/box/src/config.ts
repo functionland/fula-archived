@@ -3,29 +3,41 @@ import wrtc from 'wrtc';
 import WebRTCStar from 'libp2p-webrtc-star';
 import Mplex from 'libp2p-mplex';
 import {NOISE, Noise} from "@chainsafe/libp2p-noise"
+import Bootstrap  from "libp2p-bootstrap"
 import {Libp2pOptions} from "libp2p";
 import Protector from "libp2p/src/pnet"
+import config from "config"
+import {createHash} from 'crypto';
 
-const pKey = process.env.PKEY? new TextEncoder().encode(process.env.PKEY):undefined
-
+const hash = createHash('sha256')
+const nodes = config.get("nodes")
+const getNetSecret = ()=> {
+    if(!config.get("network.private")){
+        return undefined
+    }
+    hash.update(config.get("network.secret"))
+    const psk = hash.digest('hex')
+    const key = '/key/swarm/psk/1.0.0/\n/base16/\n' + psk
+    return new Protector(new TextEncoder().encode(key))
+}
+export const netSecret = getNetSecret()
+export const listen = config.get("network.listen")
 
 new Noise();
 
-export const defConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
+export const libConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
     return {
         ...config,
         addresses: {
-            listen: [
-                '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-                '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-            ],
+            listen
         },
         modules: {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
+            peerDiscovery: [Bootstrap],
             pubsub: GossipSub,
-            connProtector:pKey!==undefined?new Protector(pKey):undefined
+            connProtector:netSecret
         },
         config: {
             transport: {
@@ -35,10 +47,54 @@ export const defConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
             },
             peerDiscovery: {
                 autoDial: false,
-                [WebRTCStar.prototype[Symbol.toStringTag]]: {
+                [WebRTCStar.tag]: {
                     enabled: false,
                 },
+                [Bootstrap.tag]: {
+                      list: nodes,
+                      interval: 5000,
+                      enabled: nodes.length > 0
+                }
             },
         },
     }
 }
+
+export const ipfsConfig = () => ({
+    Addresses: {
+        Swarm: [
+            '/ip4/0.0.0.0/tcp/4002',
+            '/ip4/127.0.0.1/tcp/4003/ws'
+        ],
+        Announce: [],
+        NoAnnounce: [],
+        API: '/ip4/127.0.0.1/tcp/5002',
+        Gateway: '/ip4/127.0.0.1/tcp/9090',
+        RPC: '/ip4/127.0.0.1/tcp/5003',
+    },
+    Discovery: {
+        MDNS: {
+            Enabled: true,
+            Interval: 10
+        },
+        webRTCStar: {
+            Enabled: false
+        }
+    },
+    Bootstrap: nodes,
+    Pubsub: {
+        /** @type {'gossipsub'} */
+        Router: ('gossipsub'),
+        Enabled: true
+    },
+    Swarm: {
+        ConnMgr: {
+            LowWater: 1,
+            HighWater: 10
+        },
+        DisableNatPortMap: false
+    },
+    Routing: {
+        Type: 'dhtclient'
+    }
+})

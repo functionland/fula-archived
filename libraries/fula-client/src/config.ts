@@ -12,7 +12,7 @@ import Protector from "libp2p/src/pnet/index.js"
 const noise = new Noise();
 
 export async function configure(
-  config = {}, pKey=undefined
+  config = {}, netSecret=undefined
 ): Promise<Libp2pOptions & Partial<constructorOptions>> {
   return {
     addresses: {
@@ -22,7 +22,7 @@ export async function configure(
       transport: [WebRTCStar],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
-      connProtector: pKey?new Protector(pKey):undefined
+      connProtector: netSecret?new Protector(netSecret):undefined
     },
     config: {
       peerDiscovery: {

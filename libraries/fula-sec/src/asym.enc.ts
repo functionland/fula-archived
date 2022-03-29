@@ -23,12 +23,14 @@ export class AsymEncryption implements IAsymEncryption {
     /**
      * This private function for encryption
      * @function asymEncrypter() {x25519Encrypter}
-     * @property publicKey
+     * @property publicKey array
      * @returns  asymEncrypter = publicKey
      */
 
-    private asymEncrypter(publicKey: any) {
-       return x25519Encrypter(new Uint8Array(publicKey));
+    private asymEncrypter(publicKey: Array<string>): Array<any> {
+        let asymEncrypter: Array<any> = [];
+        publicKey.forEach((_publicKey:any)=> asymEncrypter.push(x25519Encrypter(new Uint8Array(_publicKey))))
+        return asymEncrypter
     }
 
      /**
@@ -44,14 +46,14 @@ export class AsymEncryption implements IAsymEncryption {
     /**
      * Encrypt with Audience`s Public Key
      * @function encrypt()
-     * @property symetricKey: string, CID: string, publicKey: any
+     * @property symetricKey: string, CID: string, publicKey: array
      * @returns  jwe {} || error
      */
-    encrypt(symetricKey: string, CID: string, publicKey: any) {
+    encrypt(symetricKey: string, CID: string, publicKey: Array<string>) {
         return new Promise((resolve, reject) => {
             let cleartext = u8a.fromString(JSON.stringify({ symetricKey: symetricKey,  CID: CID}));
             let asymEncrypter = this.asymEncrypter(publicKey);
-            createJWE(cleartext, [asymEncrypter])
+            createJWE(cleartext, asymEncrypter)
                 .then((jwe) => {
                     resolve(jwe)
                 })
@@ -68,7 +70,7 @@ export class AsymEncryption implements IAsymEncryption {
      * @returns  decrypted message {symetricKey: string, CID: string}
      */
 
-    decrypt(jwe: any) {
+    decrypt(jwe: any): Promise <any> {
         return new Promise((resolve, reject) => {
             let asymDecrypter = this.asymDecrypter();
             decryptJWE(jwe, asymDecrypter)

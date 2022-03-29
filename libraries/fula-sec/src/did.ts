@@ -1,4 +1,3 @@
-import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import { Ed25519Provider } from 'key-did-provider-ed25519'
 import {generateMnemonic} from 'bip39'
 import HDWallet from 'ethereum-hdwallet'
@@ -79,11 +78,11 @@ export class FullaDID implements IFullaDID {
     }
     /**
      * Improt existing privateKey
-     * @function imposrtPrivateKey()
+     * @function importPrivateKey()
      * @param privateKey: string
 	 * @returns Object - {authDID, privateKey}
 	 */
-    async imposrtPrivateKey (privateKey: string) {
+    async importPrivateKey (privateKey: string) {
         this.privateKey = privateKey;
         this.authDID = await this.didProvider();
         return {

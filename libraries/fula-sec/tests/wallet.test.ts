@@ -1,6 +1,6 @@
 // test did.ts
 import { expect, should } from 'chai';
-import { FullaDID } from "../src/did";
+import {FullaDID} from "../src/index"
 
 describe('DID', () => {
     it('1- Create random DID', async () => {
@@ -37,7 +37,7 @@ describe('DID', () => {
     it('4- Create random DID and importMnemonic', async () => {
         const fullaDID = new FullaDID();
         let result = await fullaDID.create();
-        let importedpk = await fullaDID.imposrtPrivateKey(result.privateKey);
+        let importedpk = await fullaDID.importPrivateKey(result.privateKey);
         let {privateKey, authDID} = result
         should().not.Throw
         expect(JSON.stringify({privateKey, authDID})).to.equal(JSON.stringify(importedpk));        

@@ -19,5 +19,5 @@ jobs:
       - run: rush update
       - run: rush build
       - name: Run Tests
-        working-directory: ./app/box
+        working-directory: ./apps/box
         run: rushx test

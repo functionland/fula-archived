@@ -1,6 +1,7 @@
 {
+
 	"name": "@functionland/fula",
-	"version": "1.0.0",
+	"version": "0.6.0",
 	"description": "Interface with a fula server from the browser!",
 	"type": "module",
 	"main": "dist/index.js",
@@ -32,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@functionland/file-protocol": "~0.3.4",
-		"@functionland/graph-protocol": "~0.1.2",
+		"@functionland/graph-protocol": "~0.2.0",
 		"@ipld/schema-validation": "~1.1.0",
 		"multiaddr": "~10.0.1",
 		"peer-id": "~0.16.0",

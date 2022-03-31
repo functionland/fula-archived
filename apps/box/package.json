@@ -1,6 +1,6 @@
 {
   "name": "@functionland/box",
-  "version": "1.0.10",
+  "version": "0.6.0",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
   "bin": "./cli.js",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@chainsafe/libp2p-noise": "~5.0.2",
     "@functionland/file-protocol": "~0.3.4",
-    "@functionland/graph-protocol": "~0.1.2",
+    "@functionland/graph-protocol": "~0.2.0",
     "@ipld/dag-json": "~8.0.8",
     "async-later": "0.1.9",
     "graphql": "16.3.0",

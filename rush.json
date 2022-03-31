@@ -67,7 +67,7 @@
       "packageName": "@functionland/rn-fula",
       "projectFolder": "libraries/rn-fula",
       "reviewCategory": "production",
-      "shouldPublish": true
+      "shouldPublish": false
     },
     {
       "packageName": "@functionland/file-protocol",

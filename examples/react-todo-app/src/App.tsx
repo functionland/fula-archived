@@ -1,96 +1,76 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
-import { Fula, createClient } from '@functionland/fula'
+import {createClient, Fula, Status} from '@functionland/fula'
 import TodoList from './components/TodoList';
-import { FulaProvider } from '@functionland/fula-client-react'
+import {FulaProvider} from '@functionland/fula-client-react'
 
 function App() {
   const inputRef = useRef<any>(null);
   const [fulaClient, setFulaClient] = useState<Fula>();
   const [connecting, setConnecting] = useState(false);
-  const [serverId, setServerId] = useState("")
-  const [connectionStaus, setConnectionStaus] = useState(false)
+  const [serverIdInput, setServerIdInput] = useState("")
+  const [serverId, setServerId] = useState<string>()
+  const [connected, setConnected] = useState(false)
 
-  const startFula = async () => {
-    const fulaClient = await createClient();
-    const node = fulaClient.getNode()
 
-    node.connectionManager.on('peer:connect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-      setServerId(srvId=>{
-        if (connection.remotePeer.toB58String() === srvId)
-        setTimeout(() => {
-          setConnectionStaus(true)
-        }, 100);
-        localStorage.setItem("serverId",srvId||"")
-        return srvId;
-      })
-     
-      console.log(`Connected to ${connection.remotePeer.toB58String()}`);
-    });
-    node.connectionManager.on('peer:disconnect', async (connection: { remotePeer: { toB58String: () => any; }; }) => {
-      if (connection.remotePeer.toB58String() === serverId)
-        setConnectionStaus(false);
-      console.log(`Disconnected from ${connection.remotePeer.toB58String()}`);
-    });
-    node.on('peer:discovery', async (peerId: { toB58String: () => any; }) => {
-      // console.log(`Found peer ${peerId.toB58String()}`);
-      // setOutput(output + `${`Found peer ${peerId.toB58String()}`.trim()}\n`)
-    });
-    setFulaClient(fulaClient);
-  }
-  const connect = async () => {
-    console.log("connecting to fula...!")
-    try {
-      setConnecting(true);
-      if (!fulaClient) {
-        console.log("fula is not mounted!")
-        return
-      }
-      if (await fulaClient.connect(serverId))
-        console.log("fula is connected!")
-      else
-        console.log(`fula unable to connect!`)
-    } catch (e) {
-      console.log(`connect error`, e)
-    } finally {
-      setConnecting(false);
-    }
-  }
   useEffect(() => {
+    const startFula = async () => {
+      const fulaClient = await createClient();
+      setFulaClient(fulaClient);
+    }
     startFula();
     setServerId(localStorage.getItem("serverId")||"");
     inputRef?.current?.focus();
   }, []);
 
   useEffect(() => {
-    if(serverId)
-      connect()
-  }, [fulaClient]);
+    if(serverId && fulaClient){
+      (async ()=>{
+        setConnecting(true)
+        const conn = fulaClient.connect(serverId)
+        conn.on('status',(status)=>{
+          switch (status){
+            case Status.Connecting:
+              setConnecting(true)
+              setConnected(false)
+              break
+            case Status.Online:
+              setConnected(true)
+              setConnecting(false)
+              break
+            case Status.Offline:
+              setConnected(false)
+              setConnecting(false)
+          }
+        })
+      })()
+    }
+
+  }, [fulaClient, serverId]);
+
   const handleChange = (e: any) => {
-    setServerId(e.target.value);
+    setServerIdInput(e.target.value);
   };
+
   const handleConnect = (e: any) => {
     e.preventDefault();
-    setConnecting(prev => {
-      if (!prev) {
-        connect();
-        return !prev
-      }
-      return prev;
-    })
-
+    if(serverIdInput && serverIdInput.length>5){
+      setServerId(serverIdInput)
+      localStorage.setItem("serverId",serverIdInput)
+    }
   };
+
   return (
     <div className='todo-app'>
       <FulaProvider fula={fulaClient}>
-        {connectionStaus ? <TodoList /> : <div className='connect-container'>
+        {connected ? <TodoList /> : <div className='connect-container'>
           <div className='app-header'>
             {!connecting ? <h1>Connect to BOX!</h1> : null}
-            {connecting ? <div className='lds-ellipsis'><div></div><div></div><div></div><div></div></div> : null}
+            {connecting ? <div className='lds-ellipsis'><div/><div/><div/><div/></div> : null}
           </div>
           <input
             placeholder='Enter your server Id'
-            value={serverId}
+            value={serverIdInput}
             onChange={handleChange}
             name='text'
             ref={inputRef}

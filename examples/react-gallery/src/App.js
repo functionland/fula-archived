@@ -50,7 +50,7 @@ function App() {
         }
       })()
     }
-  }, [page, status])
+  }, [page, status, fula])
 
   const onSet = (peer) => {
     if (peer) {
@@ -66,7 +66,7 @@ function App() {
               setStatus(_status)
               _status===Status.Online && setConnInfo("")
             })
-            con.on('error', (msg)=>{
+            con.on('error', ()=>{
               setConnInfo("Server not available")
             })
             setPage(pages.GALLERY)

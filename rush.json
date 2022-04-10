@@ -67,7 +67,7 @@
       "packageName": "@functionland/rn-fula",
       "projectFolder": "libraries/rn-fula",
       "reviewCategory": "production",
-      "shouldPublish": true
+      "shouldPublish": false
     },
     {
       "packageName": "@functionland/file-protocol",
@@ -96,11 +96,6 @@
       "packageName": "@functionland/signal",
       "projectFolder": "apps/signal",
       "reviewCategory": "production"
-    },
-    {
-      "packageName": "react-cra",
-      "projectFolder": "examples/react-cra",
-      "reviewCategory": "prototypes"
     },
     {
       "packageName": "react-todo-app",

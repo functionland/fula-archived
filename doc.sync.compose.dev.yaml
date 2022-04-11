@@ -1,0 +1,18 @@
+version: '2.4'
+
+services:
+  box:
+    build: .
+    working_dir: /opt/fula/apps/box
+    command: rushx start
+
+  fsync:
+    build: .
+    working_dir: /opt/fula/examples/doc-sync/fsync
+    volumes:
+      - ./examples/doc-sync/fsync:/opt/fula/examples/doc-sync/fsync
+    command: sleep infinity
+    environment:
+      PORT: 3002
+    ports:
+      - 3002:3002

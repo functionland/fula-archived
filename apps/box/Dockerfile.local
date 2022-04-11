@@ -1,0 +1,14 @@
+FROM node:16
+COPY ./common/deploy /opt/
+
+WORKDIR /opt/apps/box
+
+VOLUME /opt/apps/box/data
+VOLUME /opt/apps/box/config
+
+EXPOSE 4002
+EXPOSE 4003
+EXPOSE 5002
+EXPOSE 9090
+
+CMD ["node", "./dist/index.js"]

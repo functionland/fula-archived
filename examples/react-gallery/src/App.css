@@ -47,7 +47,6 @@ h1, h3,h4 {
   margin: 10px;
 }
 
-
 .complete {
   text-decoration: line-through;
   opacity: 0.4;
@@ -71,6 +70,10 @@ input::placeholder {
   color: #e2e2e2;
 }
 
+input.edit {
+  border: 2px solid #149fff;
+}
+
 button {
   padding: 16px;
   border: none;
@@ -86,9 +89,7 @@ button {
   text-transform: capitalize;
 }
 
-input.edit {
-  border: 2px solid #149fff;
-}
+
 
 button.edit {
   background: linear-gradient(

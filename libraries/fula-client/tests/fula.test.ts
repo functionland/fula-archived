@@ -2,7 +2,13 @@ import test from 'tape';
 import {createClient} from '../src';
 import {Status} from "../src/connection";
 
-const serverId = '12D3KooWPGsiSzfA8tx5oreRzJhNUKkDz7friokUmbTzSw7Btzaa';
+const serverIds = ['12D3KooWPRpVw8od6xtsGTjzoKkQMN2xdEnAssQi8mQeK1VTizKa'];
+
+const key = `/key/swarm/psk/1.0.0/
+/base16/
+a1e0683ab23f269409a862c1180350d7fb6dad957ef6a08726ca61982f643543
+`
+const buffer = new TextEncoder().encode(key)
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,
@@ -23,11 +29,11 @@ async function* testFileGenerator() {
 }
 
 test('Setup', async function (t) {
-  t.plan(13);
+  t.plan(14);
   try {
-    const client = await createClient();
+    const client = await createClient({},buffer);
     t.pass('Client ready');
-    const connection = client.connect(serverId);
+    const connection = client.connect(serverIds);
 
     t.ok(connection.status === Status.Connecting, 'node should start connecting')
 
@@ -39,16 +45,16 @@ test('Setup', async function (t) {
     await whenConnected
 
 
-    // t.ok(isConnected, 'Client Connected');
+    t.pass('Client Connected');
     const fileId = await client.sendFile(testFile);
-    t.equal(typeof fileId, 'string');
+    t.equal(typeof fileId, 'string', `file uploaded with ${fileId}`);
     const fileId2 = await client.sendStreamFile(testFileGenerator(), {
       name: testFile.name,
       type: testFile.type,
       size: testFile.size,
       lastModified: testFile.lastModified
     });
-    t.equal(fileId, fileId2);
+    t.equal(fileId, fileId2, `file ids most be the same ${fileId}`);
     const meta = await client.receiveMeta(fileId);
     t.deepEqual(
       meta,

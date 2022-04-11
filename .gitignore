@@ -125,3 +125,4 @@ pnpm-lock.yaml
 #vim
 *.swp
 *.swo
+/apps/cluster/compose/

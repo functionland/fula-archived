@@ -6,9 +6,9 @@ import debug from 'debug';
 import {registerFile} from "./file";
 import {libConfig, ipfsConfig} from "./config";
 import {registerGraph} from "./graph";
-import {IPFS_PATH, ORBITDB_PATH} from "./const";
-
-debug.enabled('*')
+import {IPFS_PATH, ORBITDB_PATH, IPFS_HTTP} from "./const";
+import config from "config";
+import {create} from "ipfs-http-client";
 
 type DBCollections = {[dbName: string]: any}
 
@@ -34,25 +34,43 @@ export async function getDBCollections(): Promise<DBCollections>{
   return dbCollectionsPromise;
 }
 
-
-export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
-
-  const createLibp2 = ( config: Libp2pOptions ) => {
-    resolveLibp2p(
-      Libp2p.create(libConfig(config))
-    );
-    return libp2pPromise;
-  };
-  resolveIpfs(
-    IPFS.create({
+async function createIPFS(createLibp2p){
+  if(IPFS_HTTP){
+    createLibp2p()
+    const libp2pNode = await getLibp2p();
+    await libp2pNode.start()
+    return  new Promise<IPFS.IPFS>(((resolve, reject) => {
+      try{
+        resolve(create({url:new URL(IPFS_HTTP)}))
+      }catch (e){
+        console.log(e)
+        reject()
+      }
+    }))
+  }else {
+    return IPFS.create({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      libp2p: createLibp2,
+      libp2p: createLibp2p,
       repo: IPFS_PATH,
       peerId: config?.peerId,
       config: ipfsConfig()
     })
-  );
+  }
+}
+
+
+export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
+
+  const createLibp2p = async (config: Libp2pOptions) => {
+    resolveLibp2p(
+      Libp2p.create(await libConfig(config))
+    );
+    return libp2pPromise;
+  };
+  resolveIpfs(
+    createIPFS(createLibp2p)
+  )
 
   resolveDBCollections(new Promise(resolve => {
     const dbCollections = {}
@@ -61,12 +79,12 @@ export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
 
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
-
+  console.log('Box peerID: ' + libp2pNode.peerId.toB58String())
   resolveOrbitDB(OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH}));
   const orbitDB= await getOrbitDb();
 
 
-  registerFile(libp2pNode,ipfsNode)
+  registerFile(libp2pNode, ipfsNode)
   registerGraph(libp2pNode, orbitDB)
   return {
     stop: async () => await graceful()
@@ -79,7 +97,8 @@ export async function graceful() {
   const orbitDB= await getOrbitDb();
   const libp2p = await getLibp2p();
   await orbitDB.stop();
-  await ipfs.stop();
+  if(!IPFS_HTTP)
+    await ipfs.stop();
   await libp2p.stop()
   return
   // process.exit(0);

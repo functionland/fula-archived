@@ -7,26 +7,36 @@ import Bootstrap  from "libp2p-bootstrap"
 import {Libp2pOptions} from "libp2p";
 import Protector from "libp2p/src/pnet"
 import config from "config"
-import {createHash} from 'crypto';
+import * as fs from "fs"
+import peerId from "peer-id"
+import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP} from "./const";
 
-const hash = createHash('sha256')
-const nodes = config.get("nodes")
+
+const getPeerId = async () => {
+    if (fs.existsSync(LIBP2P_PATH + '/identity.json')) {
+        let identity = JSON.parse(fs.readFileSync(LIBP2P_PATH + '/identity.json'));
+        return await peerId.createFromJSON(identity)
+    } else {
+        let identity = await peerId.create()
+        fs.writeFileSync(LIBP2P_PATH + '/identity.json', JSON.stringify(identity.toJSON()))
+        return identity
+    }
+
+}
 const getNetSecret = ()=> {
-    if(!config.get("network.private")){
+    if(config.get("network.key_path")===""){
         return undefined
     }
-    hash.update(config.get("network.secret"))
-    const psk = hash.digest('hex')
-    const key = '/key/swarm/psk/1.0.0/\n/base16/\n' + psk
-    return new Protector(new TextEncoder().encode(key))
+    const key = fs.readFileSync(config.get("network.key_path"))
+    return new Protector(key)
 }
 export const netSecret = getNetSecret()
 export const listen = config.get("network.listen")
 
 new Noise();
 
-export const libConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
-    return {
+export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pOptions> => {
+    const conf = {
         ...config,
         addresses: {
             listen
@@ -37,7 +47,7 @@ export const libConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
             connEncryption: [NOISE],
             peerDiscovery: [Bootstrap],
             pubsub: GossipSub,
-            connProtector:netSecret
+            connProtector: netSecret
         },
         config: {
             transport: {
@@ -46,18 +56,25 @@ export const libConfig = (config: Partial<Libp2pOptions>): Libp2pOptions => {
                 },
             },
             peerDiscovery: {
-                autoDial: false,
+                autoDial: true,
                 [WebRTCStar.tag]: {
                     enabled: false,
                 },
                 [Bootstrap.tag]: {
-                      list: nodes,
-                      interval: 5000,
-                      enabled: nodes.length > 0
+                    list: FULA_NODES,
+                    interval: 5000,
+                    enabled: FULA_NODES.length > 0
                 }
             },
         },
     }
+    if(IPFS_HTTP){
+        return {
+            ...conf,
+          peerId:await getPeerId()
+        }
+    }
+    else return conf
 }
 
 export const ipfsConfig = () => ({
@@ -81,7 +98,7 @@ export const ipfsConfig = () => ({
             Enabled: false
         }
     },
-    Bootstrap: nodes,
+    Bootstrap: FULA_NODES,
     Pubsub: {
         /** @type {'gossipsub'} */
         Router: ('gossipsub'),

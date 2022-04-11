@@ -7,6 +7,7 @@ const { File } =  require("@web-std/file")
 const PHOTOS_PATH= './scripts/photos/'
 const BOX_ID = process.env.BOX_ID
 
+const pkey = fs.readFileSync(__dirname + '/swarm.key')
 async function main() {
   const fula = await createClient({
     config: {
@@ -22,7 +23,7 @@ async function main() {
         }
       }
     }
-  })
+  }, pkey)
 
   const conn = fula.connect(BOX_ID)
   conn.on('connected',async ()=>{

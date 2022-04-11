@@ -1,2 +1,13 @@
-node_modules
-common/temp
+**/node_modules
+**/common/temp
+**/common/deploy
+**/compose
+.git
+.idea
+.github
+.vscode
+Dockerfile
+.dockerignore
+docker-compose*
+
+!./common/deploy

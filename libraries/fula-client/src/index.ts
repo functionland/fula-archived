@@ -9,20 +9,20 @@ import {
 } from '@functionland/graph-protocol'
 import {configure} from './config';
 import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
-import {Connection, Status} from "./connection"
+import {FulaConnection, Status} from "./connection"
 import debug from "debug";
 import PeerId from "peer-id";
 
-debug.disable()
+// debug.disable()
 
 
 // types
 declare type FileId = string
 
-export {Connection, Status}
+export {FulaConnection, Status}
 
 export interface Fula {
-  connect: (peerId: string) => Connection
+  connect: (peerIds: string[]) => FulaConnection
   disconnect: () => Promise<void>
   sendFile: (file: File) => Promise<FileId>
   sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
@@ -40,34 +40,40 @@ export interface Fula {
 export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey = undefined): Promise<Fula> {
   const conf = await configure(config, pKey);
   const node = await Libp2p.create(conf);
-  let connection: undefined | Connection = undefined;
+  let connection: undefined | FulaConnection = undefined;
   node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
+
   await node.start();
 
   const _getStreamConnection = async (protocol?: string) => {
     if (!node) {
       throw Error('node not ready')
-    } else if (!connection || !connection.serverPeerId) {
-      throw Error('peer id of th Box not set')
-    } else if (!connection || connection.status === Status.Offline || !connection.lpConnection) {
-      throw Error('Server no Availibale')
-    } else if (protocol) {
-      return await connection.lpConnection.newStream(protocol)
+    } else if (!connection || connection.boxPeerIds.length===0) {
+      throw Error('Peer id of th Box not set')
+    } else if (!connection || connection.status === Status.Offline) {
+      throw Error(`Server not Available, connection status: ${connection.status}`)
+    }
+    const conn = connection.getConnection()
+    if(!conn){
+      throw Error(`No Available Connection`)
+    }
+    if (protocol) {
+      return await conn.newStream(protocol)
     } else
-      return await connection.lpConnection.newStream(FileProtocol.PROTOCOL)
+      return await conn.newStream(FileProtocol.PROTOCOL)
   }
 
   return {
-    connect(peer: string) {
-      const serverPeer = PeerId.createFromB58String(peer)
-      if (serverPeer) {
-        connection = new Connection(node, serverPeer)
+    connect(peers: string[]) {
+      const peerIds: PeerId[] = peers.map((peer)=> PeerId.createFromB58String(peer))
+      if (peerIds) {
+        connection = new FulaConnection(node, peerIds)
         connection.start()
         return connection
-      } else throw Error('Id it not in right format')
+      } else throw Error('Please insert a valid a Box address')
     },
     async disconnect() {
-      await connection?.close()
+      await connection?.stop()
     },
     async sendFile(file) {
       try {
@@ -171,7 +177,7 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
     },
     async close() {
       if (connection)
-        await connection.close()
+        await connection.stop()
       await node.stop()
     }
   }

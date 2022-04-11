@@ -24,21 +24,21 @@ function App() {
   // Fula client
   const [fula, setFula] = useState(undefined)
   // Id of the box
-  const [boxId, setBoxId] = useState("")
+  const [boxIds, setBoxIds] = useState([])
   // List of photos to show
   const [photos, setPhotos] = useState([])
 
 
   // create client on component creation
-  useEffect(() => {
-    (async () => {
-      setFula(await createClient())
-    })()
+  // useEffect(() => {
+  //   (async () => {
+  //     setFula(await createClient())
+  //   })()
+  //
+  // }, [])
 
-  }, [])
-
   useEffect(() => {
-    if (page === pages.GALLERY && status === Status.Online) {
+    if (page === pages.GALLERY && status === Status.Online && fula) {
       (async () => {
         const allData = await fula.graphql(readQuery)
         if (allData && allData.data && allData.data.read) {
@@ -47,23 +47,35 @@ function App() {
             const file = await fula.receiveFile(cid)
             setPhotos((prev) => [...prev, file])
           }
+        }else {
+          setPhotos([])
         }
       })()
     }
   }, [page, status, fula])
 
-  const onSet = (peer) => {
-    if (peer) {
-      setBoxId(peer);
+  const onSet = (peers,key_file) => {
+    if (peers.length>0) {
+      setBoxIds(peers);
       (async () => {
-        if (peer && peer.length > 0) {
+        if (peers && peers.length > 0) {
           try {
             setConnInfo("")
-            await fula.disconnect()
-            let con = fula.connect(peer)
+            let _fula
+            if(key_file){
+              const key = await key_file.arrayBuffer()
+              _fula = await createClient({},key)
+              setFula(_fula)
+            }else{
+              _fula = await createClient()
+              setFula(_fula)
+            }
+            await _fula.disconnect()
+            let con = _fula.connect(peers)
             setStatus(Status.Connecting)
             con.on('status', (_status) => {
               setStatus(_status)
+              console.log(_status)
               _status===Status.Online && setConnInfo("")
             })
             con.on('error', ()=>{
@@ -102,7 +114,7 @@ function App() {
       {(() => {
         switch (page) {
           case pages.CONFIG:
-            return <BoxConfig onSet={onSet} serverId={boxId}/>
+            return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
           case pages.GALLERY:
             return <>
               <h1>Functionland Sample Gallery</h1>
@@ -131,7 +143,7 @@ export const readQuery = `
     }){
       cid
     }
-  } 
+  }
 `
 
 

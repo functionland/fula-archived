@@ -61,6 +61,8 @@ function App() {
         if (peers && peers.length > 0) {
           try {
             setConnInfo("")
+            if(fula)
+              fula.close()
             let _fula
             if(key_file){
               const key = await key_file.arrayBuffer()
@@ -70,12 +72,10 @@ function App() {
               _fula = await createClient()
               setFula(_fula)
             }
-            await _fula.disconnect()
             let con = _fula.connect(peers)
             setStatus(Status.Connecting)
             con.on('status', (_status) => {
               setStatus(_status)
-              console.log(_status)
               _status===Status.Online && setConnInfo("")
             })
             con.on('error', ()=>{

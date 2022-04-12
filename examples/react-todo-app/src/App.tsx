@@ -8,8 +8,8 @@ function App() {
   const inputRef = useRef<any>(null);
   const [fulaClient, setFulaClient] = useState<Fula>();
   const [connecting, setConnecting] = useState(false);
-  const [serverIdInput, setServerIdInput] = useState("")
-  const [serverId, setServerId] = useState<string>()
+  const [serverIdsInput, setServerIdsInput] = useState("")
+  const [serverIds, setServerIds] = useState<string[]>()
   const [connected, setConnected] = useState(false)
 
 
@@ -19,15 +19,18 @@ function App() {
       setFulaClient(fulaClient);
     }
     startFula();
-    setServerId(localStorage.getItem("serverId")||"");
+    let temp = localStorage.getItem("serverId")
+    if(temp && temp.length > 5){
+      setServerIds(temp.split(','))
+    }
     inputRef?.current?.focus();
   }, []);
 
   useEffect(() => {
-    if(serverId && fulaClient){
+    if(serverIds && fulaClient){
       (async ()=>{
         setConnecting(true)
-        const conn = fulaClient.connect(serverId)
+        const conn = fulaClient.connect(serverIds)
         conn.on('status',(status)=>{
           switch (status){
             case Status.Connecting:
@@ -46,17 +49,17 @@ function App() {
       })()
     }
 
-  }, [fulaClient, serverId]);
+  }, [fulaClient, serverIds]);
 
   const handleChange = (e: any) => {
-    setServerIdInput(e.target.value);
+    setServerIdsInput(e.target.value);
   };
 
   const handleConnect = (e: any) => {
     e.preventDefault();
-    if(serverIdInput && serverIdInput.length>5){
-      setServerId(serverIdInput)
-      localStorage.setItem("serverId",serverIdInput)
+    if(serverIdsInput && serverIdsInput.length>5){
+      setServerIds(serverIdsInput.split(','))
+      localStorage.setItem("serverId",serverIdsInput)
     }
   };
 
@@ -70,7 +73,7 @@ function App() {
           </div>
           <input
             placeholder='Enter your server Id'
-            value={serverIdInput}
+            value={serverIdsInput}
             onChange={handleChange}
             name='text'
             ref={inputRef}

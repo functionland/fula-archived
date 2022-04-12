@@ -7,7 +7,7 @@ services:
       context: ../../
       dockerfile: ./apps/box/Dockerfile.local
     volumes:
-      - ./compose/box0/data:/opt/apps/box/data
+      - ./data/box0/data:/opt/apps/box/data
       - ./config/production0.json:/opt/apps/box/config/production.json
       - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
@@ -27,7 +27,7 @@ services:
       - "5002:5001" # ipfs api - expose if needed/wanted
       - "8082:8080" # ipfs gateway - expose if needed/wanted
     volumes:
-      - ./compose/ipfs0:/data/ipfs
+      - ./data/ipfs0:/data/ipfs
       - ./config/swarm.key:/data/ipfs/swarm.key
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
@@ -54,7 +54,7 @@ services:
       # But this is just a testing cluster.
       # - "9096:9096" # Cluster IPFS Proxy endpoint
     volumes:
-      - ./compose/cluster0:/data/ipfs-cluster
+      - ./data/cluster0:/data/ipfs-cluster
 
   box1:
     container_name: box1
@@ -62,7 +62,7 @@ services:
       context: ../../
       dockerfile: ./apps/box/Dockerfile.local
     volumes:
-      - ./compose/box1/data:/opt/apps/box/data
+      - ./data/box1/data:/opt/apps/box/data
       - ./config/production1.json:/opt/apps/box/config/production.json
       - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
@@ -78,7 +78,7 @@ services:
     environment:
       LIBP2P_FORCE_PNET: 1
     volumes:
-      - ./compose/ipfs1:/data/ipfs
+      - ./data/ipfs1:/data/ipfs
       - ./config/swarm.key:/data/ipfs/swarm.key
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
@@ -96,6 +96,6 @@ services:
       CLUSTER_IPFSPROXY_LISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9095
       CLUSTER_IPFSPROXY_NODEMULTIADDRESS: /dns4/ipfs1/tcp/5001
     volumes:
-      - ./compose/cluster1:/data/ipfs-cluster
+      - ./data/cluster1:/data/ipfs-cluster
 
 

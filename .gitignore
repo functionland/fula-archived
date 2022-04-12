@@ -126,3 +126,5 @@ pnpm-lock.yaml
 *.swp
 *.swo
 /apps/cluster/compose/
+/apps/cluster/data/
+/apps/cluster/config/swarm.key

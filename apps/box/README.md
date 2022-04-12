@@ -200,9 +200,7 @@ npx @functionland/box
       "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star"
     ] # List of multiaddresses libp2p and ipfs listen on
   },
-  "ipfs": {
-    "http": "" # external ipfs or ipfs-cluster proxy to use instead of js-ipfs 
-  }
+
 }
 ```
 ### Private Fula network
@@ -231,9 +229,7 @@ After adding this you have to add other network node multiaddresses manually for
 ```json
 {
   ...
-  "ipfs": {
-    "http": "" # external ipfs or ipfs-cluster proxy to use instead of js-ipfs
-  }
+  "nodes": [] # List of multiaddresses of other box and ipfs node in your network.
   ...
 }
 ```
@@ -242,8 +238,10 @@ After adding this you have to add other network node multiaddresses manually for
 If you want to use an external ipfs like go-ipfs or ipfs-cluster proxy api set Http RPC api of your external node:
 ```json
 {
-  ...
-  "nodes": [] # List of multiaddresses of other box and ipfs node in your network.
+  ...,
+  "ipfs": {
+    "http": "" # external ipfs or ipfs-cluster proxy to use instead of js-ipfs
+  }
   ...
 }
 ```

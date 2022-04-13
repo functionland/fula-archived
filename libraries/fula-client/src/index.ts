@@ -22,7 +22,7 @@ declare type FileId = string
 export {FulaConnection, Status}
 
 export interface Fula {
-  connect: (peerIds: string[]) => FulaConnection
+  connect: (peerIds: string[]|string) => FulaConnection
   disconnect: () => Promise<void>
   sendFile: (file: File) => Promise<FileId>
   sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
@@ -64,8 +64,14 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
   }
 
   return {
-    connect(peers: string[]) {
-      const peerIds: PeerId[] = peers.map((peer)=> PeerId.createFromB58String(peer))
+    connect(peers: string[]|string) {
+      let peerIds: PeerId[] = []
+      if(Array.isArray(peers)){
+        peerIds = peers.map((peer)=> PeerId.createFromB58String(peer))
+      }
+      if (typeof peers === 'string'){
+        peerIds = peers.trim().split(',').map((peer)=> PeerId.createFromB58String(peer))
+      }
       if (peerIds) {
         connection = new FulaConnection(node, peerIds)
         connection.start()

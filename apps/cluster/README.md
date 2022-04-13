@@ -53,11 +53,6 @@ there should be something like this:
   },
 ```
 in this example PeerID would be `12D3KooWPoCoCXKz8TMUVQhq52MqSFBAoHb9Vp9vzRQySNb4KoXw`.
-and for the box you should look under `data/box0/data/identity.json` and `data/box1/data/identity.json` there should be somthing like this
-```json
-{"id":"QmNtZJ4bW3Kq7rQDzGMTeLW2bt9kgFwuNuKRDNynj8fxY1","privKey":"CAASpgkwggSiAgEAAoIBAQDYijKbTWFdtBn8VEAmTS9fVIRFQjk0T21xqcB2JPxnWuzKe2LcJXL/VOS9Q+QTuKf9UwibC7QmkK3/kXtqDtTPeDuFSKKVJXD9/8jvhCRde6DzFg1LVfJ+klA7hUpSd3onCeq9p26ffexCwzIuA8xOaPbqEWYhl9M71Q25MzQUHWrFir8aD8iVPR0a5nfv8AyhY3RZEAI2YFs7nw0jL9Ln/g2GxoH4RjrWTzZAm2TrkuN+014ZpPwfQR8OWumgWtkNdND4tPtW0QiveuW7R2Cj4JG0Hgpapxu22Nlll2lTRlDbyQwOQEmzXXfPTUaYbt8CVmL1Ma4m/WbSTCibnDbXAgMBAAECggEAMOWsHdOwa+dygr9HqR5+1wkPwU/9+OkCrssFUehyMqiele6c2Vd/i1bRPEfrZeSp0pOAevp+mMLM98wTUVS+C4d78VIAnKtSw5iR+DwfthhntNzC7cMfuiMyCO7FZK/kHpKntmHrogpeYokPeMKUzRP4xcxeArH1Giq3KZ39YZkEXxp9z08GJLlOSEH0dMT+PM6wK623wv4lD3S74NQLKTj0+AoBT+u2/4PUaVmYLOQDjJehgp7u+MZQWRy7MI820frKYOIYNs50JtSna8xXtVLXDYJkalPo3QieDbB3fuo+FLAR2i9QFjBTX2jkZfwOIumHn6K+qbisWxToQpGiaQKBgQD8YxRMmz4qBn/+jgVjfTmebB7NrNE9VUlQomr6SE7tmw2nVyst350eIDtZRK70tfA02O+cglF28mqXTU48lvB8xDAKbZxUZUsSTcWaSSWDxZ1TUmCCnTii5DxETF1ZWiRlIGoIdXvJpqATf14bAVhmYLGQaACPm3F33LmI40inkwKBgQDbo7/dCkO/L9TjJ6lrGdNIwqZaajOam1geCBKlsSN+t04nTl0m2EZ13RJBd77zmatS51x6/eGVD2iLZY56d+TPTOQJTcPadcIt2lneMrzL3p3P2xlD6uLjKEhazCLGhGydnP4QaRcUEGZjXYsnY4fPBUER+226XJNRjCa+qKN2LQKBgCtkzaSuPG31WCRoPrzwVuvKIzGxuPgWpdhbVJFbxVZNBnfzINVuURFQ8WNTz9D7RyWO9wOt1FvjKjiBbiY0vXx2LtxcJDjOga3P+V2hnfWeEIK28ykB5y76lvIXPyWRvhg1DoYNzQ7Ku1Me3ws9m/lePqlZeF84lrXJGY1TprZJAoGAMAFWSgWYUQ0vRobArLv0Rg7lNRXJOZ2CYO36xWQ2EdgWqNij232hyNkMyGpXvf50R6ZxvCAJUf8QJoeH4JSb2gNARBhPGkxqqIL06W/Fe/moHGoS15lbBbMkPVQotaLz6m8JyKRvet8qwcUMSQuj/0dytW9yyCy7tjMftMQ/FfECgYAvpBjLrh3MdnJpSiNDEjgLcgo/ImBE1s5qCZZqEqt3402zaGi5FsPdLnFRL/PtcEGxBTX78MGRZhLLtyG1Hi+ihT21wJ39/LzrLWvIQi0Pd0gayT2GlDBJLDA4ktWsG8JCmJ/9/NtgmrU9d7ae8+ztVre4+/hYmnFbFFvYc51DPw==","pubKey":"CAASpgIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYijKbTWFdtBn8VEAmTS9fVIRFQjk0T21xqcB2JPxnWuzKe2LcJXL/VOS9Q+QTuKf9UwibC7QmkK3/kXtqDtTPeDuFSKKVJXD9/8jvhCRde6DzFg1LVfJ+klA7hUpSd3onCeq9p26ffexCwzIuA8xOaPbqEWYhl9M71Q25MzQUHWrFir8aD8iVPR0a5nfv8AyhY3RZEAI2YFs7nw0jL9Ln/g2GxoH4RjrWTzZAm2TrkuN+014ZpPwfQR8OWumgWtkNdND4tPtW0QiveuW7R2Cj4JG0Hgpapxu22Nlll2lTRlDbyQwOQEmzXXfPTUaYbt8CVmL1Ma4m/WbSTCibnDbXAgMBAAE="}
-```
-box PeerId is `QmNtZJ4bW3Kq7rQDzGMTeLW2bt9kgFwuNuKRDNynj8fxY1` in this example.
 now that we have all node peerid we can start by editing `./data/ipfs0/config`
 you have to set bootstrap node for ipfs0:
 ```
@@ -92,19 +87,6 @@ To
   "Bootstrap": [
     "/dns4/ipfs0/tcp/4001/p2p/[PeerID of ipfs0]"
   ],
-```
-Now we have config our IPFS nodes time to config boxes. config for box1 and box2 located at
-`./config/production0.json` and `./config/production1.json` open them and edit:
-```json
-{
-  ...
-  "nodes": [
-    "/dns4/ipfs0/tcp/4001/ipfs/[PeerID of ipfs0]",
-    "/dns4/ipfs1/tcp/4001/ipfs/[PeerID of ipfs1]",
-    "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/p2p/[PeerID of box0/box1]"
-  ],
-  ...
-}
 ```
 Our configuration is done get the cluster back online and enjoy it!
 ```

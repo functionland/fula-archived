@@ -8,11 +8,11 @@ services:
       dockerfile: ./apps/box/Dockerfile.local
     volumes:
       - ./data/box0/data:/opt/apps/box/data
-      - ./config/production0.json:/opt/apps/box/config/production.json
       - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
       NODE_ENV: "production"
-      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      FULA_NET_SECRET_FILE: "./config/swarm.key"
+      FULA_IPFS_HTTP: "http://cluster0:9095"
     ports:
       - "4001:4001" # ipfs swarm - expose if needed/wanted
       - "5001:5001"
@@ -63,11 +63,11 @@ services:
       dockerfile: ./apps/box/Dockerfile.local
     volumes:
       - ./data/box1/data:/opt/apps/box/data
-      - ./config/production1.json:/opt/apps/box/config/production.json
       - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
       NODE_ENV: "production"
-      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      FULA_NET_SECRET_FILE: "./config/swarm.key"
+      FULA_IPFS_HTTP: "http://cluster1:9095"
     ports:
       - "4004:4001" # ipfs swarm - expose if needed/wanted
       - "5004:5001"

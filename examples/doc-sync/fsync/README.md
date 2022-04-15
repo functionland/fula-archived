@@ -21,7 +21,10 @@ Your meeting code is : wfaw-f8qc-fqw1-i2or
 
 ```
 
+
 ### Fetch a shared doc and get realtime updates
+
+**@TODO** fetch is not currently implemented
 
 ```
   > BOX_ID=${YOUR_BOX_ID} fsync -o /path/to/output

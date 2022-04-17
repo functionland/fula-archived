@@ -1,10 +1,14 @@
 {
-  "name": "fula-sec",
+  "name": "@functionland/fula-sec",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "dist/index.js",
+	"types": "dist/types/src/index.d.ts",
+	"browser": "dist/br/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
+    "build": "node scripts/build.js && tsc",
+    "start": "tsc && node dist/br/index.js",
     "lint": "eslint . --ext .ts",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "doc": "npx typedoc src/*.ts"
@@ -19,12 +23,21 @@
     "@types/tape": "^4.13.2",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
+    "@esbuild-plugins/node-globals-polyfill": "~0.1.1",
+		"@esbuild-plugins/node-modules-polyfill": "~0.1.4",
+    "build-helpers": "~0.0.1",
+    "dids": "3.0.0-alpha.12",
     "chai": "^4.3.6",
     "eslint": "^8.10.0",
+    "esbuild": "~0.14.25",
+    "ethers": "^5.6.4",
     "mocha": "^9.2.1",
     "ts-node": "^10.6.0",
     "typedoc": "^0.22.12",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.2",
+    "key-did-resolver": "^1.4.4",
+    "key-did-provider-ed25519": "^1.1.0",
+    "uint8arrays":"^3.0.0"
   },
   "dependencies": {
     "@stablelib/x25519": "^1.0.2",
@@ -34,5 +47,12 @@
     "ethereum-hdwallet": "0.0.27",
     "key-did-provider-ed25519": "^1.1.0",
     "key-did-resolver": "^1.4.4"
+  },
+  "exports": {
+    ".": {
+      "browser": {
+        "default": "./dist/br/index.js"
+      }
+    }
   }
 }

@@ -2,7 +2,7 @@ import './App.css';
 
 import React, { useEffect, useState } from "react";
 import { createClient, Status } from "@functionland/fula";
-
+import {FullaDID} from "@functionland/fula-sec"
 import { ConnInfo } from "./components/ConnInfo";
 import { BoxConfig } from "./components/BoxConfig";
 import { Uploader } from "./components/Uploader";

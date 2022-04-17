@@ -98,6 +98,12 @@
       "reviewCategory": "production"
     },
     {
+      "packageName": "@functionland/fula-sec",
+      "projectFolder": "libraries/fula-sec",
+      "reviewCategory": "production",
+      "shouldPublish": true
+    },
+    {
       "packageName": "react-todo-app",
       "projectFolder": "examples/react-todo-app",
       "reviewCategory": "prototypes"

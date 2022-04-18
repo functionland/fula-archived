@@ -3,9 +3,10 @@ version: '3.8'
 services:
   box0:
     container_name: box0
+    restart: always
     depends_on:
-      - ipfs1
-      - cluster1
+      - ipfs0
+      - cluster0
     build:
       context: ../../
       dockerfile: ./apps/box/Dockerfile
@@ -63,6 +64,7 @@ services:
 
   box1:
     container_name: box1
+    restart: always
     depends_on:
       - ipfs1
       - cluster1

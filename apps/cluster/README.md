@@ -66,7 +66,7 @@ there should be something like this:
 in this example PeerID would be `12D3KooWPoCoCXKz8TMUVQhq52MqSFBAoHb9Vp9vzRQySNb4KoXw`.
 now add the ipfs1 as bootstrap node to ipfs0:
 ```shell
-docker-compose exec ipfs0 ipfs boostrap add /dns4/ipfs1/tcp/4001/p2p/[PeerID of ipfs1]
+docker-compose exec ipfs0 ipfs bootstrap add /dns4/ipfs1/tcp/4001/p2p/[PeerID of ipfs1]
 ```
 Our configuration is done !
 

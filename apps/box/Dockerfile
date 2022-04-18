@@ -6,7 +6,7 @@ ENV NODE_ENV=production
 COPY ./ /opt/fula
 WORKDIR /opt/fula
 
-RUN npm install -g @microsoft/rush && rush update && rush rebuild --verbose --to @functionland/box
+RUN npm install -g @microsoft/rush && rush update && rush build --verbose --to @functionland/box
 
 RUN rush deploy
 

@@ -12,6 +12,7 @@ body {
           rgb(71, 5, 109) 0%,
           rgba(100, 115, 255, 1) 100%
   );
+  color: white;
 }
 .app-header{
   height: 100px;
@@ -42,7 +43,7 @@ body {
 h1 {
   font-size: 24px;
 }
-h1, h3,h4 {
+h1, h3,h4,h5 {
   color: #fff;
   margin: 10px;
 }
@@ -57,7 +58,7 @@ h1, h3,h4 {
   margin-bottom: 32px;
 }
 
-input {
+input[type="text"], textarea {
   padding: 14px 32px 14px 16px;
   border-radius: 4px 0 0 4px;
   border: 2px solid #5d0cff;
@@ -98,7 +99,10 @@ button.edit {
   );
   padding: 16px 22px;
 }
-
+button.single{
+  border-radius: 0;
+  margin: 5px;
+}
 .container {
   margin: auto;
   display: flex;
@@ -106,7 +110,12 @@ button.edit {
   justify-content: center;
   align-items: center;
 }
-
+.flex-column {
+  flex-direction: column;
+}
+.justify-around{
+  justify-content: space-around;
+}
 .row {
   display: flex;
   justify-content: space-between;
@@ -233,5 +242,11 @@ button.edit {
 .identityContainer{
   display:flex;
   padding: 10px;
+  justify-content:space-around;
+}
+.importMnemonicContainer{
+  display:flex;
+  padding: 10px;
+  flex-direction: column;
   justify-content:space-around;
 }

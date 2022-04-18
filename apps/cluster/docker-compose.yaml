@@ -3,6 +3,9 @@ version: '3.8'
 services:
   box0:
     container_name: box0
+    depends_on:
+      - ipfs1
+      - cluster1
     build:
       context: ../../
       dockerfile: ./apps/box/Dockerfile.local
@@ -22,7 +25,6 @@ services:
     build:
       dockerfile: ./ipfs/Dockerfile
     environment:
-      IPFS_PATH: /data/ipfs
       LIBP2P_FORCE_PNET: 1
     ports:
       - "4002:4001" # ipfs swarm - expose if needed/wanted
@@ -31,6 +33,7 @@ services:
     volumes:
       - ./data/ipfs0:/data/ipfs
       - ./config/swarm.key:/data/ipfs/swarm.key
+    command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
 
   cluster0:
@@ -60,6 +63,9 @@ services:
 
   box1:
     container_name: box1
+    depends_on:
+      - ipfs1
+      - cluster1
     build:
       context: ../../
       dockerfile: ./apps/box/Dockerfile.local
@@ -76,7 +82,8 @@ services:
 
   ipfs1:
     container_name: ipfs1
-    image: ipfs/go-ipfs:latest
+    build:
+      dockerfile: ./ipfs/Dockerfile
     environment:
       LIBP2P_FORCE_PNET: 1
     volumes:

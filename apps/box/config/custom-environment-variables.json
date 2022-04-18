@@ -1,0 +1,8 @@
+{
+  "network":{
+    "key_path": "FULA_NET_SECRET_FILE"
+  },
+  "ipfs": {
+    "http": "FULA_IPFS_HTTP"
+  }
+}

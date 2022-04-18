@@ -71,7 +71,7 @@ test('Test Server Functionality', async function (t) {
     await p.stop()
   })
 
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise(resolve => setTimeout(resolve, 10000));
   t.end()
 
 });

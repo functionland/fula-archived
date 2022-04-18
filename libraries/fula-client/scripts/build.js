@@ -10,7 +10,7 @@ await build({
     target: 'es2018',
     format: 'esm',
     bundle: true,
-    sourcemap: true,
+    sourcemap: false,
     outfile: 'dist/web/index.js',
     define: {
         global: 'globalThis'

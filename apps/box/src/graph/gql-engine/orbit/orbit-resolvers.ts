@@ -33,8 +33,8 @@ export const createResolver = (orbitDB): IResolvers => {
                 ...value
             }))
             const promises = _values.map(value => db.put({
-                ...value
-            }));
+                ...value,
+            },{ pin: true }));
             await Promise.all(promises);
             return _values;
         },
@@ -47,7 +47,7 @@ export const createResolver = (orbitDB): IResolvers => {
             }))
             const promises = _values.map(value => db.put({
                 ...value
-            }));
+            }, { pin: true }));
             await Promise.all(promises);
             return _values;
 
@@ -62,7 +62,7 @@ export const createResolver = (orbitDB): IResolvers => {
             }))
             const promises = _values.map(value => db.put({
                 ...value
-            }));
+            }, { pin: true }));
             const addedList = await Promise.all(promises);
             return _values;
 

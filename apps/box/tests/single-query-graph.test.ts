@@ -32,6 +32,7 @@ const TEST = {
 test('Test single graphql operation', async function (t) {
     t.plan(3)
     const p = await app();
+    const clientNode = await createClient();
     try {
         const node = await getLibp2p();
         const ipfs = await getIPFS();
@@ -44,7 +45,7 @@ test('Test single graphql operation', async function (t) {
         t.pass(`loaded orbit-db docs with name ${CNAME}`)
 
         //Connect Client node to Box
-        const clientNode = await createClient();
+
         const conn = await connect(clientNode, node);
         t.pass('connected')
 
@@ -67,6 +68,14 @@ test('Test single graphql operation', async function (t) {
         console.log('error', error);
         t.end(error);
     }
-    await p.stop()
-})
-;
+
+    t.teardown(async () => {
+        await p.stop()
+        await clientNode.stop()
+    })
+
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    t.end()
+});
+
+test.onFinish (() => {process.exit (0)})

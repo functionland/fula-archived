@@ -19,9 +19,11 @@ services:
 
   ipfs0:
     container_name: ipfs0
+    build:
+      dockerfile: ./ipfs/Dockerfile
     environment:
+      IPFS_PATH: /data/ipfs
       LIBP2P_FORCE_PNET: 1
-    image: ipfs/go-ipfs:latest
     ports:
       - "4002:4001" # ipfs swarm - expose if needed/wanted
       - "5002:5001" # ipfs api - expose if needed/wanted
@@ -29,7 +31,7 @@ services:
     volumes:
       - ./data/ipfs0:/data/ipfs
       - ./config/swarm.key:/data/ipfs/swarm.key
-    command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
+
 
   cluster0:
     container_name: cluster0

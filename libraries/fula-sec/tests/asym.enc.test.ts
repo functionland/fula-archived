@@ -1,14 +1,15 @@
 // test tagged.enc.ts
 import { expect, should } from 'chai';
-import {FullaDID, AsymEncryption} from "../src/index"
+import { AsymEncryption} from "../src/asym.enc"
+import {FulaDID} from "../src/did"
 
 describe('Asymetric Encription', () => {
 
     it('1- Issuer encryptes string with pubKey and decrypts with priKey', async () => {
-        const fullaDID = new FullaDID();
-        await fullaDID.create();
-        
-        const asymEnc = new AsymEncryption(fullaDID.privateKey);
+        const fulaDID = new FulaDID();
+        await fulaDID.create();
+
+        const asymEnc = new AsymEncryption(fulaDID.privateKey);
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'
@@ -22,20 +23,20 @@ describe('Asymetric Encription', () => {
 
     it('2- Issuer encryptes string with pubKey and Audience decrypts with priKey', async () => {
         // Issuer
-        const I_fullaDID = new FullaDID();
-        await I_fullaDID.create();
-        const I_asymEnc = new AsymEncryption(I_fullaDID.privateKey);
-        
+        const I_fulaDID = new FulaDID();
+        await I_fulaDID.create();
+        const I_asymEnc = new AsymEncryption(I_fulaDID.privateKey);
+
         // Audience
-        const A_fullaDID = new FullaDID();
-        await A_fullaDID.create();
-        const A_asymEnc = new AsymEncryption(A_fullaDID.privateKey);
-        
+        const A_fulaDID = new FulaDID();
+        await A_fulaDID.create();
+        const A_asymEnc = new AsymEncryption(A_fulaDID.privateKey);
+
         let plaintext = {
             symetricKey: 'content-privateKey',
             CID: 'Content ID'
         }
-        
+
         // Issuer encrypts plaintext with Audience PublicKey
         let jweCipher = await I_asymEnc.encrypt(plaintext.symetricKey, plaintext.CID, [A_asymEnc.publicKey]);
 
@@ -48,27 +49,27 @@ describe('Asymetric Encription', () => {
 
     it('3- Issuer encryptes string with [A, B] pubKey and Audience decrypts with priKey', async () => {
         // Issuer
-        const I_fullaDID = new FullaDID();
-        await I_fullaDID.create();
-        const I_asymEnc = new AsymEncryption(I_fullaDID.privateKey);
-        
+        const I_fulaDID = new FulaDID();
+        await I_fulaDID.create();
+        const I_asymEnc = new AsymEncryption(I_fulaDID.privateKey);
+
         // A - Audience
-        const A_fullaDID = new FullaDID();
-        await A_fullaDID.create();
-        const A_asymEnc = new AsymEncryption(A_fullaDID.privateKey);
+        const A_fulaDID = new FulaDID();
+        await A_fulaDID.create();
+        const A_asymEnc = new AsymEncryption(A_fulaDID.privateKey);
 
 
         // B - Audience
-        const B_fullaDID = new FullaDID();
-        await B_fullaDID.create();
-        const B_asymEnc = new AsymEncryption(B_fullaDID.privateKey);
-          
-        
+        const B_fulaDID = new FulaDID();
+        await B_fulaDID.create();
+        const B_asymEnc = new AsymEncryption(B_fulaDID.privateKey);
+
+
         let plaintext = {
             symetricKey: 'content-privateKey',
             CID: 'Content ID'
         }
-        
+
         // Issuer encrypts plaintext with Audience PublicKey
         let jweCipher = await I_asymEnc.encrypt(plaintext.symetricKey, plaintext.CID, [A_asymEnc.publicKey, B_asymEnc.publicKey]);
 
@@ -86,25 +87,25 @@ describe('Asymetric Encription', () => {
 
     it('4- Unknown audience attempting to decrypt with own priKey', async () => {
         // Issuer
-        const I_fullaDID = new FullaDID();
-        await I_fullaDID.create();
-        const I_asymEnc = new AsymEncryption(I_fullaDID.privateKey);
-        
+        const I_fulaDID = new FulaDID();
+        await I_fulaDID.create();
+        const I_asymEnc = new AsymEncryption(I_fulaDID.privateKey);
+
         // Known Audience
-        const A_fullaDID = new FullaDID();
-        await A_fullaDID.create();
-        const A_asymEnc = new AsymEncryption(A_fullaDID.privateKey);
+        const A_fulaDID = new FulaDID();
+        await A_fulaDID.create();
+        const A_asymEnc = new AsymEncryption(A_fulaDID.privateKey);
 
         // Unkown Audience
-        const UN_fullaDID = new FullaDID();
-        await UN_fullaDID.create();
-        const UN_asymEnc = new AsymEncryption(UN_fullaDID.privateKey);
-        
+        const UN_fulaDID = new FulaDID();
+        await UN_fulaDID.create();
+        const UN_asymEnc = new AsymEncryption(UN_fulaDID.privateKey);
+
         let plaintext = {
             symetricKey: 'content-privateKey',
             CID: 'Content ID'
         }
-        
+
         // Issuer encrypts plaintext with Known Audience PublicKey
         let jweCipher = await I_asymEnc.encrypt(plaintext.symetricKey, plaintext.CID, [A_asymEnc.publicKey]);
 

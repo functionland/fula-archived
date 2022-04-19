@@ -5,18 +5,18 @@ import { Ed25519Provider } from 'key-did-provider-ed25519'
 import {Buffer} from 'buffer';
 /**
  * @class FullaDID
- * @description Creates Decentrilized Identity for Clinet side application 
+ * @description Creates Decentrilized Identity for Clinet side application
  * based on Ed25519 Private Key - Edwards-curve Digital Signature Algorithm(EdDSA)
  */
 
-interface IFullaDID {
+interface IFulaDID {
     privateKey: string;
     mnemonic: string;
     authDID: string;
     did: any;
 }
 
-export class FullaDID implements IFullaDID {
+export class FulaDID implements IFulaDID {
     privateKey!: string
     mnemonic!: string;
     authDID!: string;

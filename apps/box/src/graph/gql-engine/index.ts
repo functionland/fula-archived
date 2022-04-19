@@ -4,6 +4,8 @@ import {schema} from "./schema";
 import {Maybe} from "graphql/jsutils/Maybe";
 
 export const getFields = (def: OperationDefinitionNode): Fields => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return def.selectionSet.selections[0].selectionSet.selections.map(node => node.name.value)
 }
 

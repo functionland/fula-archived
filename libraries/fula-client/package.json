@@ -1,12 +1,12 @@
 {
 
 	"name": "@functionland/fula",
-	"version": "0.6.0",
-	"description": "Interface with a fula server from the browser!",
+	"version": "0.6.1",
+	"description": "Fula client for building Box Dapp",
 	"type": "module",
-	"main": "dist/index.js",
+	"main": "dist/node/index.js",
 	"types": "dist/types/src/index.d.ts",
-	"browser": "dist/index.js",
+	"browser": "dist/web/index.js",
 	"scripts": {
 		"build": "node scripts/build.js && tsc",
 		"build:test": "node scripts/build-test.js",

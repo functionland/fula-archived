@@ -33,7 +33,7 @@ jobs:
       name: Build and push box
       uses: docker/build-push-action@v2
       with:
-        context: ./apps/box/
+        context: ./
         file: ./apps/box/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USER }}/box:latest

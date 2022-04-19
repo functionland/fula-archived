@@ -24,7 +24,7 @@ function App() {
   // Fula client
   const [fula, setFula] = useState(undefined);
   // Id of the box
-  const [boxId, setBoxId] = useState('');
+  const [boxIds, setBoxIds] = useState([])
   // List of photos to show
   const [photos, setPhotos] = useState([]);
 
@@ -35,15 +35,16 @@ function App() {
   };
 
   // create client on component creation
-  useEffect(() => {
-    (async () => {
-      setFula(await createClient());
-    })();
-    createDID();
-  }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     setFula(await createClient())
+  //   })()
+  //
+  // }, [])
 
   useEffect(() => {
-    if (page === pages.GALLERY && status === Status.Online) {
+    if (page === pages.GALLERY && status === Status.Online && fula) {
       (async () => {
         const allData = await fula.graphql(readQuery);
         if (allData && allData.data && allData.data.read) {
@@ -52,21 +53,35 @@ function App() {
             const file = await fula.receiveFile(cid);
             setPhotos((prev) => [...prev, file]);
           }
+        }else {
+          setPhotos([])
         }
       })();
     }
   }, [page, status, fula]);
 
-  const onSet = (peer) => {
-    if (peer) {
-      setBoxId(peer);
+  const onSet = (peers,key_file) => {
+    if (peers.length>0) {
+      setBoxIds(peers);
       (async () => {
-        if (peer && peer.length > 0) {
+        if (peers && peers.length > 0) {
           try {
-            setConnInfo('');
-            await fula.disconnect();
-            let con = fula.connect(peer);
-            setStatus(Status.Connecting);
+
+            setConnInfo("")
+            if(fula)
+              fula.close()
+            let _fula
+            if(key_file){
+              const key = await key_file.arrayBuffer()
+              _fula = await createClient({},key)
+              setFula(_fula)
+            }else{
+              _fula = await createClient()
+              setFula(_fula)
+            }
+            let con = _fula.connect(peers)
+            setStatus(Status.Connecting)
+
             con.on('status', (_status) => {
               setStatus(_status);
               _status === Status.Online && setConnInfo('');
@@ -97,35 +112,32 @@ function App() {
   };
 
   // call back for routing to setting
-  const onSetting = () => {
-    setPage(pages.CONFIG);
-  };
 
-  return (
-    <>
-      <div className="app">
-        <Identity/>
-        {(() => {
-          switch (page) {
-            case pages.CONFIG:
-              return <BoxConfig onSet={onSet} serverId={boxId} />;
-            case pages.GALLERY:
-              return (
-                <>
-                  <h1>Functionland Sample Gallery</h1>
-                  {status === Status.Online && <Uploader onUpload={onUpload} />}
-                  {status !== Status.Connecting && <Gallery photos={photos} />}
-                </>
-              );
+  const onSetting = () =>{
+    setPage(pages.CONFIG)
+  }
 
-            default:
-              return <h1>Route not found</h1>;
-          }
-        })()}
-      </div>
-      <ConnInfo onSetting={onSetting} status={status} info={connInfo} />
-    </>
-  );
+  return <>
+    <div className="app">
+      <Identity/>
+      {(() => {
+        switch (page) {
+          case pages.CONFIG:
+            return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
+          case pages.GALLERY:
+            return <>
+              <h1>Functionland Sample Gallery</h1>
+              {status===Status.Online && <Uploader onUpload={onUpload}/>}
+              {status!==Status.Connecting && <Gallery photos={photos}/> }
+            </>
+
+          default:
+            return <h1>Route not found</h1>
+        }
+      })()}
+    </div>
+    <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
+  </>
 }
 
 export default App;
@@ -138,8 +150,9 @@ export const readQuery = `
     }){
       cid
     }
-  } 
-`;
+
+  }
+`
 
 export const createMutation = `
   mutation addImage($values:JSON){

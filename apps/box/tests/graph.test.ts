@@ -105,5 +105,12 @@ test('Graphgql on OrbitDB test', async function (t) {
         console.log('error', error);
         t.end(error);
     }
-    await p.stop()
+
+    t.teardown(async () => {
+        await p.stop()
+
+    })
+
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    t.end()
 });

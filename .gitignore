@@ -125,3 +125,6 @@ pnpm-lock.yaml
 #vim
 *.swp
 *.swo
+/apps/cluster/compose/
+/apps/cluster/data/
+/apps/cluster/config/swarm.key

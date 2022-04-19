@@ -87,7 +87,28 @@ or using CDN
     reader.readAsDataURL(data);
     reader.onloadend = (e) => setContent(reader.result)
    ```
-
+ For using it With private network:
+   ```js
+    import {Fula, createClient} from '@functionland/fula'
+    // key_file is file_input[0] (value of file input)
+    const privateKey = await key_file.arrayBuffer() 
+    // Create a fula client 
+    const fulaClient = await createClient({},privateKey);
+    // ...
+    // connect to a fula server by its base58 string PeerId
+    await fulaClient.connect(serverId)
+    // send file and get cid
+    // selectedFile send file use StreamReader interface or AsyncItrable and get cid
+    // meta {name,type,lastModified,size}
+    const FileCid = await fulaClient.sendStreamFile(selectedFile,meta);
+    // recive meta data 
+    const data = await fulaClient.receiveMeta(fileId);
+    // recive file using cid
+    const data = await fulaClient.receiveFile(FileCid);
+    let reader = new FileReader();
+    reader.readAsDataURL(data);
+    reader.onloadend = (e) => setContent(reader.result)
+   ```
 
 _For more examples, please refer to the [Examples](/examples/react-cra)_
 
@@ -100,7 +121,7 @@ _For more examples, please refer to the [Examples](/examples/react-cra)_
 
 - [X] Protocols
   - [X] File
-  - [ ] Data
+  - [X] GraphQL
   - [ ] AI
 - [ ] Identity
 - [ ] Encryption

@@ -27,5 +27,6 @@ Your meeting code is : wfaw-f8qc-fqw1-i2or
 **@TODO** fetch is not currently implemented
 
 ```
-  > BOX_ID=${YOUR_BOX_ID} fsync -o /path/to/output
+  > fsync -o /path/to/output -boxid [YOUR_BOX_ID]
+
 ```

@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Wed, 16 Mar 2022 13:51:21 GMT and should not be manually modified.
+This log was last generated on Tue, 19 Apr 2022 07:28:44 GMT and should not be manually modified.
+
+## 0.6.1
+Tue, 19 Apr 2022 07:28:44 GMT
+
+### Patches
+
+- Fix browser field in package.json
 
 ## 1.0.0
 Wed, 16 Mar 2022 13:51:21 GMT

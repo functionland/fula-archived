@@ -15,7 +15,7 @@ Execute the cmd passing in the path to the file you want to share and get a meet
 ### Share a doc
 
 ```
-  > BOX_ID=${YOUR_BOX_ID} fsync -i /path/to/file
+  > fsync -i /path/to/file -boxid [YOUR_BOX_ID]
 
 Your meeting code is : wfaw-f8qc-fqw1-i2or
 

@@ -2,6 +2,18 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.6.1",
+      "tag": "@functionland/fula_v0.6.1",
+      "date": "Tue, 19 Apr 2022 07:28:44 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Fix browser field in package.json"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.0",
       "tag": "@functionland/fula_v1.0.0",
       "date": "Wed, 16 Mar 2022 13:51:21 GMT",

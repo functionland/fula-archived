@@ -58,7 +58,7 @@ Install NPM package
    ```
 or using CDN
   ```html
-<script src="https://cdn.jsdelivr.net/npm/@functionland/fula/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@functionland/fula/dist/web/index.js"></script>
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 

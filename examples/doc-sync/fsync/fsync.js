@@ -9,8 +9,9 @@ var _ = require('lodash');
 
 
 const argv = require('yargs/yargs')(process.argv.slice(2))
-      .usage('Usage: $0 -i [input-file]')
-      .demandOption(['i'])
+      .usage('Usage: $0 -i [input-file] -boxid [Box ID]')
+      .demandOption(['i'], 'Please specify an input file')
+      .demandOption(['boxid'], 'Please specify the Box ID that you would like to connect to.')
       .argv;
 
 const DOC_PATH = argv.i
@@ -20,8 +21,12 @@ if(!fs.existsSync(DOC_PATH)) {
   process.exit(1)
 }
 
-const BOX_ID = process.env.BOX_ID
+const BOX_ID = argv.boxid
 
+if(!BOX_ID) {
+  console.error(`Must specify a Box ID of the Box you are connecting to.`)
+  process.exit(1)
+}
 
 async function setup() {
 
@@ -82,7 +87,9 @@ const createMeeting = async (fula, file) => {
     const cid = await fula.sendFile(file)
     await fula.graphql(createMutation, {values: [{id:meetingCode, cid,}]})
     console.log('Your meeting code is : ' + meetingCode)
-    console.log('Launch http://localhost:3000?meeting='+meetingCode)
+    console.log('Launch one of the following in the browser:')
+    console.log('http://localhost:1234?meeting='+meetingCode)
+    console.log('http://ipfs.io/ipfs/Qmde5F5VMPSku2bWiRPQPc4DVvWzXqcWJoDZbypTNNieNR?meeting='+meetingCode)
     return meetingCode;
   } catch (e) {
     console.log(e.message)

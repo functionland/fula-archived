@@ -8,12 +8,19 @@ import Mplex from 'libp2p-mplex';
 import { constructorOptions, Libp2pOptions } from 'libp2p';
 import { SIG_SERVER } from './constant';
 import Protector from "libp2p/src/pnet/index.js"
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import wrtc from 'wrtc';
 
 const noise = new Noise();
+
+const isNode = (typeof process !== 'undefined') && (process.release.name === 'node')
+
 
 export async function configure(
   config = {}, netSecret=undefined
 ): Promise<Libp2pOptions & Partial<constructorOptions>> {
+  const transportKey = WebRTCStar.prototype[Symbol.toStringTag]
   return {
     addresses: {
       listen: SIG_SERVER
@@ -38,6 +45,11 @@ export async function configure(
       movingAverageInterval: 60000
     },
     config: {
+      transport: {
+        [transportKey]: {
+          wrtc:isNode?wrtc:undefined // You can use `wrtc` when running in Node.js
+        }
+      },
       peerDiscovery: {
         autoDial: true,
         webRTCStar: {

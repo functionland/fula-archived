@@ -38,5 +38,5 @@ build({
       define: { 'process.env.NODE_ENV': '"production"' } // inject will override define, to keep env vars you must also pass define here https://github.com/evanw/esbuild/issues/660
     })
   ],
-  external:["expo-file-system",'react','react-native','react-native-webview']
+  external:["@functionland/fula","expo-file-system",'react','react-native','react-native-webview']
 });

@@ -1,14 +1,9 @@
 import test from 'tape';
 import {createClient} from '../src';
 import {Status} from "../src/connection";
+import {File} from '@web-std/file'
 
 const serverIds = ['12D3KooWPRpVw8od6xtsGTjzoKkQMN2xdEnAssQi8mQeK1VTizKa'];
-
-const key = `/key/swarm/psk/1.0.0/
-/base16/
-a1e0683ab23f269409a862c1180350d7fb6dad957ef6a08726ca61982f643543
-`
-const buffer = new TextEncoder().encode(key)
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,
@@ -31,7 +26,7 @@ async function* testFileGenerator() {
 test('Setup', async function (t) {
   t.plan(14);
   try {
-    const client = await createClient({},buffer);
+    const client = await createClient();
     t.pass('Client ready');
     const connection = client.connect(serverIds);
 
@@ -161,9 +156,11 @@ test('Setup', async function (t) {
       cnt += 1
     }
 
-    client.close();
+    await client.close();
   } catch (e) {
     t.error(e);
   }
-
+  t.end()
 });
+
+test.onFinish (() => {process.exit (0)})

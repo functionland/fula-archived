@@ -10,7 +10,8 @@
 	"scripts": {
 		"build": "node scripts/build.js && tsc",
 		"build:test": "node scripts/build-test.js",
-		"test": "rushx build:test && cat dist/test.js | testling -u",
+		"test:web": "rushx build:test && cat dist/test.js | testling -u",
+		"test:node": "rushx build:test && tape dist/node_test.cjs",
 		"lint": "eslint src --fix",
 		"type-check": "tsc"
 	  },
@@ -29,7 +30,8 @@
 		"libp2p-mplex": "~0.10.7",
 		"libp2p-webrtc-star": "~0.25.0",
 		"@chainsafe/libp2p-noise": "~5.0.2",
-		"events": "~3.3.0"
+		"events": "~3.3.0",
+		"wrtc": "~0.4.7"
 	},
 	"devDependencies": {
 		"@functionland/file-protocol": "~0.3.4",
@@ -42,7 +44,6 @@
 		"@esbuild-plugins/node-modules-polyfill": "~0.1.4",
 		"@esbuild-plugins/esm-externals": "~0.0.6",
 		"build-helpers": "~0.0.1",
-		"wrtc": "~0.4.7",
 		"magic-string": "~0.26.1",
 		"esbuild": "~0.14.25",
 		"typescript": "~4.6.2",

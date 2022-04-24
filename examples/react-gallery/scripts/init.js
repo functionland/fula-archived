@@ -1,5 +1,3 @@
-const WebRTCStar = require('libp2p-webrtc-star');
-const wrtc = require('wrtc');
 const {createClient} = require("@functionland/fula");
 const fs=require('fs');
 const { File } =  require("@web-std/file")
@@ -7,23 +5,9 @@ const { File } =  require("@web-std/file")
 const PHOTOS_PATH= './scripts/photos/'
 const BOX_ID = process.env.BOX_ID
 
-const pkey = fs.readFileSync(__dirname + '/swarm.key')
+
 async function main() {
-  const fula = await createClient({
-    config: {
-      transport: {
-        [WebRTCStar.prototype[Symbol.toStringTag]]: {
-          wrtc // You can use `wrtc` when running in Node.js
-        }
-      },
-      peerDiscovery: {
-        autoDial: false,
-        [WebRTCStar.prototype[Symbol.toStringTag]]: {
-          enabled: false
-        }
-      }
-    }
-  }, pkey)
+  const fula = await createClient()
 
   const conn = fula.connect(BOX_ID)
   conn.on('connected',async ()=>{

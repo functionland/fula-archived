@@ -1,5 +1,3 @@
-const WebRTCStar = require('libp2p-webrtc-star');
-const wrtc = require('wrtc');
 const {createClient} = require("@functionland/fula");
 const fs=require('fs');
 const { File } =  require('@web-std/file');
@@ -9,7 +7,7 @@ var _ = require('lodash');
 
 
 const argv = require('yargs/yargs')(process.argv.slice(2))
-      .usage('Usage: $0 -i [input-file] -boxid [Box ID]')
+      .usage('Usage: $0 -i [input-file] --boxid [Box ID]')
       .demandOption(['i'], 'Please specify an input file')
       .demandOption(['boxid'], 'Please specify the Box ID that you would like to connect to.')
       .argv;
@@ -30,21 +28,7 @@ if(!BOX_ID) {
 
 async function setup() {
 
-  const fula = await createClient({
-    config: {
-      transport: {
-        [WebRTCStar.prototype[Symbol.toStringTag]]: {
-          wrtc // You can use `wrtc` when running in Node.js
-        }
-      },
-      peerDiscovery: {
-        autoDial: false,
-        [WebRTCStar.prototype[Symbol.toStringTag]]: {
-          enabled: false
-        }
-      }
-    }
-  })
+  const fula = await createClient()
 
   const conn = fula.connect(BOX_ID)
 

@@ -14,7 +14,7 @@ import wrtc from 'wrtc';
 
 const noise = new Noise();
 
-const isNode = (typeof process !== 'undefined') && (process.release.name === 'node')
+const isNode = (typeof process !== 'undefined') && ("release" in process && process.release.name === 'node')
 
 
 export async function configure(

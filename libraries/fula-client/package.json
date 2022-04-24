@@ -1,7 +1,7 @@
 {
 
 	"name": "@functionland/fula",
-	"version": "0.6.1",
+	"version": "0.6.2",
 	"description": "Fula client for building Box Dapp",
 	"type": "module",
 	"main": "dist/node/index.js",
@@ -34,8 +34,8 @@
 		"wrtc": "~0.4.7"
 	},
 	"devDependencies": {
-		"@functionland/file-protocol": "~0.3.4",
-		"@functionland/graph-protocol": "~0.2.0",
+		"@functionland/file-protocol": "~0.3.5",
+		"@functionland/graph-protocol": "~0.2.1",
 		"@ipld/schema-validation": "~1.1.0",
 		"multiaddr": "~10.0.1",
 		"peer-id": "~0.16.0",

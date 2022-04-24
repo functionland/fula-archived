@@ -1,6 +1,6 @@
 {
   "name": "@functionland/file-protocol",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "",
   "types": "dist/types/src/index.d.ts",
   "main": "./dist/node/cjs.cjs",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@ipld/dag-cbor": "~7.0.1",
     "@ipld/dag-json": "~8.0.8",
-    "async-later": "0.1.9",
+    "async-later": "0.1.10",
     "it-pipe": "~2.0.3",
     "multiformats": "~9.6.4",
     "pako": "~2.0.4",

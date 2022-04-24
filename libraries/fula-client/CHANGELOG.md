@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Tue, 19 Apr 2022 07:28:44 GMT and should not be manually modified.
+This log was last generated on Sun, 24 Apr 2022 09:20:16 GMT and should not be manually modified.
+
+## 0.6.2
+Sun, 24 Apr 2022 09:20:16 GMT
+
+### Patches
+
+- Fix build warning
 
 ## 0.6.1
 Tue, 19 Apr 2022 07:28:44 GMT

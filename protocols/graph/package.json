@@ -1,6 +1,6 @@
 {
   "name": "@functionland/graph-protocol",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "types": "dist/types/src/index.d.ts",
   "main": "./dist/node/cjs.cjs",
@@ -20,7 +20,7 @@
     "@babel/runtime": "~7.17.2"
   },
   "devDependencies": {
-    "async-later": "0.1.9",
+    "async-later": "0.1.10",
     "it-pipe": "~2.0.3",
     "multiformats": "~9.6.4",
     "rxjs": "~7.5.4",

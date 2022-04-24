@@ -1,9 +1,9 @@
 {
-  "name": "@functionland/file-protocol",
+  "name": "@functionland/graph-protocol",
   "entries": [
     {
-      "version": "0.3.5",
-      "tag": "@functionland/file-protocol_v0.3.5",
+      "version": "0.2.1",
+      "tag": "@functionland/graph-protocol_v0.2.1",
       "date": "Sun, 24 Apr 2022 09:20:16 GMT",
       "comments": {
         "patch": [
@@ -19,13 +19,13 @@
       }
     },
     {
-      "version": "0.3.4",
-      "tag": "@functionland/file-protocol_v0.3.4",
+      "version": "0.1.2",
+      "tag": "@functionland/graph-protocol_v0.1.2",
       "date": "Tue, 08 Mar 2022 08:50:12 GMT",
       "comments": {
         "patch": [
           {
-            "comment": "fix types and build"
+            "comment": "fix type and build"
           }
         ],
         "dependency": [
@@ -36,8 +36,8 @@
       }
     },
     {
-      "version": "0.3.3",
-      "tag": "@functionland/file-protocol_v0.3.3",
+      "version": "0.1.1",
+      "tag": "@functionland/graph-protocol_v0.1.1",
       "date": "Sat, 05 Mar 2022 13:27:45 GMT",
       "comments": {
         "patch": [
@@ -51,12 +51,6 @@
           }
         ]
       }
-    },
-    {
-      "version": "0.3.2",
-      "tag": "@functionland/file-protocol_v0.3.2",
-      "date": "Tue, 30 Nov 2021 16:00:51 GMT",
-      "comments": {}
     }
   ]
 }

@@ -2,6 +2,18 @@
   "name": "async-later",
   "entries": [
     {
+      "version": "0.1.10",
+      "tag": "async-later_v0.1.10",
+      "date": "Sun, 24 Apr 2022 09:20:16 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Fix build warning"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.1.9",
       "tag": "async-later_v0.1.9",
       "date": "Tue, 08 Mar 2022 08:50:12 GMT",

@@ -1,6 +1,6 @@
 {
   "name": "@functionland/fula",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Fula client for building Box Dapp",
   "type": "module",
   "main": "dist/node/index.js",
@@ -30,14 +30,6 @@
     "libp2p-webrtc-star": "~0.25.0",
     "@chainsafe/libp2p-noise": "~5.0.2",
     "events": "~3.3.0"
-  },
-  "peerDependencies": {
-    "wrtc": "~0.4.7"
-  },
-  "peerDependenciesMeta": {
-    "wrtc": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@functionland/file-protocol": "~0.3.5",

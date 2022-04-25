@@ -17,7 +17,7 @@
     "typescript": "~4.6.2",
     "web-vitals": "^2.1.4",
     "graphql":"16.3.0",
-    "@functionland/fula": "~0.6.2",
+    "@functionland/fula": "~0.6.3",
     "@functionland/fula-client-react":"~0.1.6"
   },
   "scripts": {

@@ -8,18 +8,18 @@ import Mplex from 'libp2p-mplex';
 import { constructorOptions, Libp2pOptions } from 'libp2p';
 import { SIG_SERVER } from './constant';
 import Protector from "libp2p/src/pnet/index.js"
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import wrtc from 'wrtc';
 
 const noise = new Noise();
 
 const isNode = (typeof process !== 'undefined') && ("release" in process && process.release.name === 'node')
 
 
-export async function configure(
-  config = {}, netSecret=undefined
-): Promise<Libp2pOptions & Partial<constructorOptions>> {
+export interface Option {
+  netSecret?: Uint8Array,
+  wrtc?: unknown
+}
+
+export async function configure(option?:Option): Promise<Libp2pOptions & Partial<constructorOptions>> {
   const transportKey = WebRTCStar.prototype[Symbol.toStringTag]
   return {
     addresses: {
@@ -29,7 +29,7 @@ export async function configure(
       transport: [WebRTCStar],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
-      connProtector: netSecret?new Protector(netSecret):undefined
+      connProtector: option?.netSecret?new Protector(option.netSecret):undefined
     },
     connectionManager: {
       autoDial: true,
@@ -47,7 +47,7 @@ export async function configure(
     config: {
       transport: {
         [transportKey]: {
-          wrtc:isNode?wrtc:undefined // You can use `wrtc` when running in Node.js
+          wrtc:option?.wrtc?option.wrtc:undefined // You can use `wrtc` when running in Node.js
         }
       },
       peerDiscovery: {
@@ -59,7 +59,6 @@ export async function configure(
     },
     connectionGater: {
       denyInboundConnection: async ()=> true
-    },
-    ...config
+    }
   };
 }

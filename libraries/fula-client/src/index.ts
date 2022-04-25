@@ -7,8 +7,8 @@ import {
   submitQuery,
   submitSubscriptionQuery
 } from '@functionland/graph-protocol'
-import {configure} from './config';
-import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
+import {configure, Option} from './config';
+import Libp2p from 'libp2p';
 import {FulaConnection, Status} from "./connection"
 import debug from "debug";
 import PeerId from "peer-id";
@@ -38,8 +38,8 @@ export interface Fula {
 
 // end of types
 
-export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey = undefined): Promise<Fula> {
-  const conf = await configure(config, pKey);
+export async function createClient(option?:Option): Promise<Fula> {
+  const conf = await configure(option);
   const node = await Libp2p.create(conf);
 
   let connection: undefined | FulaConnection = undefined;

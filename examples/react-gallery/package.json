@@ -11,12 +11,11 @@
     "react-scripts": "5.0.0",
     "react-icons": "^4.3.1",
     "web-vitals": "^2.1.4",
-    "@functionland/fula": "~0.6.1"
+    "@functionland/fula": "~0.6.4"
   },
   "devDependencies": {
-    "libp2p-webrtc-star": "~0.25.0",
-    "wrtc": "~0.4.7",
-    "@web-std/file": "~3.0.2"
+    "@web-std/file": "~3.0.2",
+    "wrtc": "~0.4.7"
   },
   "scripts": {
     "start": "react-scripts start",

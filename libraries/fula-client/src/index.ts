@@ -7,11 +7,12 @@ import {
   submitQuery,
   submitSubscriptionQuery
 } from '@functionland/graph-protocol'
-import {configure} from './config';
-import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
+import {configure, Option} from './config';
+import Libp2p from 'libp2p';
 import {FulaConnection, Status} from "./connection"
 import debug from "debug";
 import PeerId from "peer-id";
+import {File,Blob} from '@web-std/file'
 
 // debug.disable()
 
@@ -37,14 +38,14 @@ export interface Fula {
 
 // end of types
 
-export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey = undefined): Promise<Fula> {
-  const conf = await configure(config, pKey);
+export async function createClient(option?:Option): Promise<Fula> {
+  const conf = await configure(option);
   const node = await Libp2p.create(conf);
+
   let connection: undefined | FulaConnection = undefined;
-  node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
+  await node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
 
   await node.start();
-
   const _getStreamConnection = async (protocol?: string) => {
     if (!node) {
       throw Error('node not ready')
@@ -72,7 +73,7 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
       if (typeof peers === 'string'){
         peerIds = peers.trim().split(',').map((peer)=> PeerId.createFromB58String(peer))
       }
-      if (peerIds) {
+      if (peerIds.length>0) {
         connection = new FulaConnection(node, peerIds)
         connection.start()
         return connection

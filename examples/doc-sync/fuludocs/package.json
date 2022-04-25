@@ -8,7 +8,7 @@
     "start": "parcel",
     "build": "parcel build",
     "rmdist": "rm -rf ./dist",
-    "deploy":"npm run rmdist && npm run build && ipfs add -r dist",
+    "deploy": "npm run rmdist && npm run build && ipfs add -r dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,10 +16,11 @@
   "license": "ISC",
   "devDependencies": {
     "parcel": "^2.4.1",
+    "process": "^0.11.10",
     "punycode": "^2.1.1"
   },
   "dependencies": {
-    "@functionland/fula": "../../../libraries/fula-client/src",
+    "@functionland/fula": "0.6.3",
     "markdown-it": "^12.3.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

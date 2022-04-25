@@ -2,6 +2,18 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.6.3",
+      "tag": "@functionland/fula_v0.6.3",
+      "date": "Sun, 24 Apr 2022 13:47:16 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix build and wrtc not found"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.6.2",
       "tag": "@functionland/fula_v0.6.2",
       "date": "Sun, 24 Apr 2022 09:20:16 GMT",

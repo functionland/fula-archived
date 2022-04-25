@@ -1,13 +1,14 @@
 const {createClient} = require("@functionland/fula");
 const fs=require('fs');
 const { File } =  require("@web-std/file")
+const wrtc = require("wrtc")
 
 const PHOTOS_PATH= './scripts/photos/'
 const BOX_ID = process.env.BOX_ID
 
 
 async function main() {
-  const fula = await createClient()
+  const fula = await createClient({wrtc})
 
   const conn = fula.connect(BOX_ID)
   conn.on('connected',async ()=>{

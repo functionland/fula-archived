@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@functionland/fula": "../../../libraries/fula-client/",
+    "@functionland/fula": "0.6.3",
     "@web-std/file": "~3.0.2",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2",

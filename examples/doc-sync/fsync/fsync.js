@@ -4,6 +4,7 @@ const { File } =  require('@web-std/file');
 const uuid = require('uuid');
 const yargs = require('yargs')
 var _ = require('lodash');
+const wrtc = require("wrtc")
 
 
 const argv = require('yargs/yargs')(process.argv.slice(2))
@@ -28,7 +29,7 @@ if(!BOX_ID) {
 
 async function setup() {
 
-  const fula = await createClient()
+  const fula = await createClient({wrtc})
 
   const conn = fula.connect(BOX_ID)
 

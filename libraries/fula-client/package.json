@@ -1,6 +1,6 @@
 {
   "name": "@functionland/fula",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Fula client for building Box Dapp",
   "type": "module",
   "main": "dist/node/index.js",

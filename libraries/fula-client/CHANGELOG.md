@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Sun, 24 Apr 2022 13:47:16 GMT and should not be manually modified.
+This log was last generated on Mon, 25 Apr 2022 07:43:12 GMT and should not be manually modified.
+
+## 0.6.4
+Mon, 25 Apr 2022 07:43:12 GMT
+
+### Patches
+
+- Change how to pass option in createClient
 
 ## 0.6.3
 Sun, 24 Apr 2022 13:47:16 GMT

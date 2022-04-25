@@ -22,7 +22,7 @@
     "es-module-lexer": "~0.10.0",
     "esbuild": "~0.14.25",
     "vite": "~2.8.6",
-    "@functionland/fula": "~0.6.3",
+    "@functionland/fula": "~0.6.4",
     "esbuild-plugin-ignore": "~1.1.1"
   },
   "peerDependencies": {

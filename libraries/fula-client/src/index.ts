@@ -12,6 +12,7 @@ import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
 import {FulaConnection, Status} from "./connection"
 import debug from "debug";
 import PeerId from "peer-id";
+import aesjs from "aes-js";
 
 // debug.disable()
 
@@ -25,8 +26,10 @@ export interface Fula {
   connect: (peerIds: string[]|string) => FulaConnection
   disconnect: () => Promise<void>
   sendFile: (file: File) => Promise<FileId>
+  sendEncryptedFile: (file: File) => Promise<{ cid: FileId, key: {symKey: Uint8Array, iv: Uint8Array}  }>
   sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
   receiveFile: (fileId: FileId) => Promise<File>
+  receiveDecryptedFile: (fileId: FileId, symKey: Uint8Array, iv: Uint8Array) => Promise<File>
   receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
   receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
   graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
@@ -91,6 +94,27 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         throw new Error((e as Error).message)
       }
     },
+    async sendEncryptedFile(file: File) {
+      const randomKey = (len=32) => {
+        const arr = []
+        for(let i=0; i<len; i+=1)
+          arr.push(Math.floor(Math.random() * 255))
+
+        return new Uint8Array(arr)
+      }
+      try{
+        const connectionObj = await _getStreamConnection()
+        const key = {
+          symKey: randomKey(),
+          iv: randomKey(16)
+        }
+        const fileId = await FileProtocol.sendFile({connection: connectionObj, file, symKey: key.symKey, iv: key.iv})
+        connectionObj.stream.close()
+        return {cid: fileId, key}
+      } catch (e) {
+        throw new Error((e as Error).message)
+      }
+    },
     async sendStreamFile(source, meta: SchemaProtocol.Meta) {
       try {
         const connectionObj = await _getStreamConnection()
@@ -119,6 +143,28 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         throw Error((e as Error).message)
       }
 
+    },
+    async receiveDecryptedFile(id: FileId, symKey: Uint8Array, iv: Uint8Array){
+      try {
+        const connectionObj = await _getStreamConnection()
+        const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
+        const connectionObj2 = await _getStreamConnection()
+        const source = FileProtocol.receiveContent({connection: connectionObj2, id})
+        let content: Array<number> = [];
+        for await (const chunk of source) {
+          content = content.concat(Array.from(chunk));
+        }
+
+        const aescbc = new aesjs.ModeOfOperation.cbc(symKey, iv)
+        const decBlob = aesjs.padding.pkcs7.strip(aescbc.decrypt(new Uint8Array(content)))
+
+        connectionObj.stream.close()
+        connectionObj2.stream.close()
+
+        return new File([decBlob], meta.name, {type: meta.type, lastModified: meta.lastModified});
+      } catch (e) {
+        throw Error((e as Error).message)
+      }
     },
     async receiveStreamFile(id: FileId) {
       try {

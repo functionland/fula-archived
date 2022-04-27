@@ -2,7 +2,7 @@ import test from 'tape';
 import {createClient} from '../src';
 import {Status} from "../src/connection";
 
-const serverIds = ['12D3KooWPRpVw8od6xtsGTjzoKkQMN2xdEnAssQi8mQeK1VTizKa'];
+const serverIds = ['12D3KooWLJcUKiY433MEsMX7jofKw2Qj5ogTNiJdAeX3hC9wLjkr'];
 
 const key = `/key/swarm/psk/1.0.0/
 /base16/
@@ -31,7 +31,8 @@ async function* testFileGenerator() {
 test('Setup', async function (t) {
   t.plan(14);
   try {
-    const client = await createClient({},buffer);
+    // const client = await createClient({},buffer);
+    const client = await createClient()
     t.pass('Client ready');
     const connection = client.connect(serverIds);
 
@@ -48,6 +49,13 @@ test('Setup', async function (t) {
     t.pass('Client Connected');
     const fileId = await client.sendFile(testFile);
     t.equal(typeof fileId, 'string', `file uploaded with ${fileId}`);
+
+    const {cid: encFileId, key} = await client.sendEncryptedFile(testFile)
+    t.equal(typeof encFileId, 'string', `file encrypted and uploaded with cid: ${encFileId}`)
+
+    const decFile = await client.receiveDecryptedFile(encFileId, key.symKey, key.iv)
+    t.equal(await decFile.text(), await testFile.text(), 'incoming file should decrypt correctly')
+
     const fileId2 = await client.sendStreamFile(testFileGenerator(), {
       name: testFile.name,
       type: testFile.type,

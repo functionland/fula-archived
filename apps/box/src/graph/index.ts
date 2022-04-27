@@ -12,16 +12,26 @@ import {parse} from "graphql";
 import {iterateLater, toAsyncIterable} from "async-later";
 import {ORBITDB_PATH} from "../const";
 import OrbitDB from 'orbit-db';
+import * as IPFS from "ipfs";
+import {resolveLater} from "async-later";
 
 
 type DBCollections = { [dbName: string]: any }
+type OrbitDBNode = any
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
+
+const [orbitDBPromise, resolveOrbitDB] = resolveLater<OrbitDBNode>();
+
+export async function getOrbitDb() {
+  return orbitDBPromise;
+}
 
 export const registerGraph = async (libp2pNode, ipfsNode) => {
   libp2pNode.handle(PROTOCOL, handler);
 
   const orbitDBNode = await OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH})
+  resolveOrbitDB(orbitDBNode)
   const resolvers = createResolver(orbitDBNode)
   const dbCollections: DBCollections = {}
 
@@ -69,8 +79,8 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
       const db = await orbitDBNode.docs(dbName, options)
       await db.load()
       dbCollections[dbName] = db
-      await sendDBName({list: [...Object.keys(dbCollections)]})
       if (await ipfsNode.swarm.peers() > 0) {
+        await sendDBName({list: [...Object.keys(dbCollections)]})
         await new Promise(((resolve, reject) => {
           db.events.once('replicated',
             () => {

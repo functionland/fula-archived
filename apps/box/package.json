@@ -10,10 +10,10 @@
     "build": "node scripts/build.mjs",
     "build:watch": "node scripts/build.mjs",
     "lint": "eslint src --fix",
-    "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:graphql": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/graphql.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:sel": "nyc --reporter=lcov --require esbuild-runner/register tape $TEST_PATH | tap-spec; nyc report ---reporter=text"
+    "test": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/*.test.{ts,js} | tap-spec",
+    "test:orbitDB": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/orbitDB.test.{ts,js} | tap-spec",
+    "test:graphql": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/graphql.test.{ts,js} | tap-spec",
+    "test:sel": "node -r esbuild-runner/register node_modules/tape/bin/tape $TEST_PATH | tap-spec"
   },
   "repository": {
     "type": "git",

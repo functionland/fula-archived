@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  box:
+    build:
+      dockerfile: ./Dockerfile.box
+    working_dir: /opt/box
+    command: sleep infinity
+    volumes:
+      - ./apps/box/src:/opt/box/src
+
+  fsync:
+    build:
+      context: ./examples/doc-sync/fsync
+      dockerfile: ./Dockerfile.local
+    working_dir: /opt/fsync
+    volumes:
+      - ./examples/doc-sync/fsync:/opt/fsync
+    command: sleep infinity
+    environment:
+      PORT: 3002
+    ports:
+      - 3002:3002

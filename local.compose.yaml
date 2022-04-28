@@ -1,0 +1,10 @@
+version: '2.4'
+
+services:
+  box:
+    build:
+      dockerfile: ./Dockerfile.box
+    working_dir: /opt/box
+    command: npm start
+    volumes:
+      - ./apps/box/src:/opt/box/src

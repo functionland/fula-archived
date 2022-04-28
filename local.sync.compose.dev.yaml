@@ -17,7 +17,3 @@ services:
     volumes:
       - ./examples/doc-sync/fsync:/opt/fsync
     command: sleep infinity
-    environment:
-      PORT: 3002
-    ports:
-      - 3002:3002

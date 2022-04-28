@@ -12,7 +12,7 @@ services:
   fsync:
     build:
       context: ./examples/doc-sync/fsync
-      dockerfile: ./Dockerfile.local
+      dockerfile: ./Dockerfile.fsync
     working_dir: /opt/fsync
     volumes:
       - ./examples/doc-sync/fsync:/opt/fsync

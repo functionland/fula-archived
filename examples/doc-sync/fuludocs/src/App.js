@@ -27,24 +27,58 @@ const AppContent = (props) => {
 
   useEffect(() => {
     if (query.get('meeting')!==null && props.page === pages.HOME && props.status === Status.Online) {
-      (async () => {
-        const readQuery = createReadQuery(query.get('meeting'))
-        const resultIterator = props.fula.graphqlSubscribe(readQuery)
-        setIsLoadingDoc((prev) => false)
+      if(query.get('polling')=='true') {
+        let isUpdating = false;
+        let curCid;
 
-        for await (const res of resultIterator) {
-          const allData = res.data
-
-          if (allData && allData.read) {
-            for (const obj of allData.read) {
-              const file = await props.fula.receiveFile(obj.cid)
-              const content = await file.text()
-              setCurrentDoc((prev) => content)
+        async function getUpdates() {
+          if(!isUpdating) {
+            isUpdating = true;
+            const readQuery = createReadQuery(query.get('meeting'))
+            const allData = await props.fula.graphql(readQuery)
+            if (allData && allData.data && allData.data.read) {
+              for (const obj of allData.data.read) {
+                if(obj.cid !== curCid) {
+                  const file = await props.fula.receiveFile(obj.cid)
+                  curCid = obj.cid;
+                  const content = await file.text()
+                  setCurrentDoc((prev) => content)
+                }
+              }
             }
+            isUpdating = false;
+            setIsLoadingDoc((prev) => false)
           }
 
         }
-      })()
+
+        setInterval(() => {
+          getUpdates()
+        }, 1000)
+
+      } else {
+
+        (async () => {
+          const readQuery = createReadQuery(query.get('meeting'))
+          const resultIterator = props.fula.graphqlSubscribe(readQuery)
+          setIsLoadingDoc((prev) => false)
+
+          for await (const res of resultIterator) {
+            const allData = res.data
+
+            if (allData && allData.read) {
+              for (const obj of allData.read) {
+                const file = await props.fula.receiveFile(obj.cid)
+                const content = await file.text()
+                setCurrentDoc((prev) => content)
+              }
+            }
+
+          }
+
+        })()
+      }
+
     }
   }, [props.page, props.status, props.fula])
 

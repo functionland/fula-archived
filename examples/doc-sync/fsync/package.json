@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@functionland/fula": "~0.6.0",
+    "@functionland/fula": "0.6.0",
     "@web-std/file": "~3.0.2",
     "libp2p-webrtc-star": "~0.25.0",
     "lodash": "^4.17.21",

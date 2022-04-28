@@ -1,5 +1,6 @@
 import test from 'tape';
-import {app, getLibp2p, getIPFS, getOrbitDb} from '../src/app';
+import {app, getLibp2p, getIPFS} from '../src/app';
+import {getOrbitDb} from '../src/graph'
 import {queryResultMap, testData, testEventGenerator} from "./test-data";
 import {connect, createClient} from "./helper";
 import {PROTOCOL, submitQuery, Request, Result, submitSubscriptionQuery} from "@functionland/graph-protocol";
@@ -13,7 +14,13 @@ test('Graphgql on OrbitDB test', async function (t) {
         const ipfs = await getIPFS();
         const orbitDB = await getOrbitDb();
         // t.comment('Start Insert Sample Data')
-        const db = await orbitDB.docs('profile');
+        const options = {
+            // Give write access to ourselves
+            accessController: {
+                write: ['*']
+            }
+        }
+        const db = await orbitDB.docs('profile', options);
         await db.load();
         await db.drop();
         await db.load();

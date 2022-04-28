@@ -1,5 +1,6 @@
 import test from 'tape';
-import {app, getLibp2p, getIPFS, getOrbitDb} from '../src/app';
+import {app, getLibp2p, getIPFS} from '../src/app';
+import {getOrbitDb} from "../src/graph";
 import {connect, createClient} from "./helper";
 import {PROTOCOL, submitQuery, Request, Result} from "@functionland/graph-protocol";
 

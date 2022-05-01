@@ -31,7 +31,8 @@ await build({
     'libp2p-webrtc-star',
     'libp2p-bootstrap',
     'libp2p-mplex',
-    'libp2p-websockets'
+    'libp2p-websockets',
+    'libp2p-tcp'
   ]
 });
 
@@ -66,7 +67,8 @@ await build({
     'libp2p-bootstrap',
     'libp2p-mplex',
     'libp2p-websockets',
-    'wrtc'
+    'wrtc',
+    'libp2p-tcp'
   ]
 });
 

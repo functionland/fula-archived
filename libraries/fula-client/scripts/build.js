@@ -32,7 +32,7 @@ await build({
     bundle: true,
     sourcemap: false,
     outfile: 'dist/node/index.cjs',
-    external: ['wrtc','libp2p-webrtc-star','libp2p-mplex','libp2p','@chainsafe/libp2p-noise']
+    external: ['wrtc','libp2p-webrtc-star','libp2p-mplex','libp2p','@chainsafe/libp2p-noise','libp2p-tcp','libp2p-websockets']
 });
 
 

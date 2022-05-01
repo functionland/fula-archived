@@ -3,7 +3,7 @@ import {createClient} from '../src';
 import {Status} from "../src/connection";
 import {File} from '@web-std/file'
 
-const serverIds = ['12D3KooWPRpVw8od6xtsGTjzoKkQMN2xdEnAssQi8mQeK1VTizKa'];
+const serverIds = ['12D3KooWQnEmxzocejZTHHSP2VxWs9z93rzAjkiWo2xhXgaWcBbK'];
 
 const testFile = new File(['test'], 'test', {
   lastModified: 1639579330347,

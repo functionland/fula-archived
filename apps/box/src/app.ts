@@ -4,7 +4,7 @@ import { resolveLater } from 'async-later';
 import debug from 'debug';
 import {registerFile} from "./file";
 import {libConfig, ipfsConfig} from "./config";
-import {registerGraph} from "./graph";
+import {registerGraph, getOrbitDb} from "./graph";
 import {IPFS_PATH, IPFS_HTTP} from "./const";
 import config from "config";
 import {create} from "ipfs-http-client";
@@ -77,6 +77,8 @@ export async function graceful() {
   debug('\nStopping server...');
   const ipfs = await getIPFS();
   const libp2p = await getLibp2p();
+  const otbitDb = await getOrbitDb();
+  await otbitDb.stop();
   if(!IPFS_HTTP)
     await ipfs.stop();
   await libp2p.stop()

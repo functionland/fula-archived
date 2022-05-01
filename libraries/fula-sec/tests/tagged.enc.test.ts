@@ -17,7 +17,6 @@ describe('Tagged Encription', () => {
             CID: 'aaaaaaaaaaaaaaa'
         }
         let jwe = await Atagged.encrypt(plaintext.symetricKey, plaintext.CID, [BfulaDID.did.id])
-        console.log('jwe: ', jwe)
 
         let dec = await Btagged.decrypt(jwe)
         should().not.Throw

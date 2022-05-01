@@ -5,13 +5,13 @@ import { build } from 'esbuild';
 // import * as fs from 'fs'
 
 await build({
-  entryPoints: ['tests/asym.enc.test.ts','tests/tagged.enc.test.ts','tests/wallet.test.ts'],
+  entryPoints: ['tests/asym.enc.test.ts','tests/tagged.enc.test.ts','tests/did.test.ts'],
   platform: 'node',
   format: 'cjs',
   bundle: true,
   sourcemap: true,
   outExtension: {'.js':'.cjs'},
-  outdir: 'dist/test/',
+  outdir: 'dist/tests/',
 });
 
 // const b = browserify()

@@ -11,6 +11,7 @@ import * as fs from "fs"
 import peerId from "peer-id"
 import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP} from "./const";
 import TCP from 'libp2p-tcp'
+import WS from 'libp2p-websockets'
 
 const getPeerId = async () => {
     if (fs.existsSync(LIBP2P_PATH + '/identity.json')) {
@@ -42,7 +43,7 @@ export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pO
             listen
         },
         modules: {
-            transport: [WebRTCStar, TCP],
+            transport: [WebRTCStar, TCP, WS],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
             peerDiscovery: [Bootstrap],
@@ -79,10 +80,7 @@ export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pO
 
 export const ipfsConfig = () => ({
     Addresses: {
-        Swarm: [
-            '/ip4/0.0.0.0/tcp/4002',
-            '/ip4/127.0.0.1/tcp/4003/ws'
-        ],
+        Swarm: listen,
         Announce: [],
         NoAnnounce: [],
         API: '/ip4/127.0.0.1/tcp/5002',

@@ -5,6 +5,9 @@ import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Mplex from 'libp2p-mplex';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import WS from 'libp2p-websockets'
 import { constructorOptions, Libp2pOptions } from 'libp2p';
 import { SIG_SERVER } from './constant';
 import Protector from "libp2p/src/pnet/index.js"
@@ -26,7 +29,7 @@ export async function configure(option?:Option): Promise<Libp2pOptions & Partial
       listen: SIG_SERVER
     },
     modules: {
-      transport: [WebRTCStar],
+      transport: [WebRTCStar,WS],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
       connProtector: option?.netSecret?new Protector(option.netSecret):undefined

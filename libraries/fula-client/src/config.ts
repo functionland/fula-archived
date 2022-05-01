@@ -12,7 +12,7 @@ import Protector from "libp2p/src/pnet/index.js"
 const noise = new Noise();
 
 export async function configure(
-  config = {}, pKey=undefined
+  config = {}, netSecret=undefined
 ): Promise<Libp2pOptions & Partial<constructorOptions>> {
   return {
     addresses: {
@@ -22,12 +22,25 @@ export async function configure(
       transport: [WebRTCStar],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
-      connProtector: pKey?new Protector(pKey):undefined
+      connProtector: netSecret?new Protector(netSecret):undefined
+    },
+    connectionManager: {
+      autoDial: true,
+      maxConnections: 1,
+      minConnections: 1,
+      pollInterval: 2000,
+      defaultPeerValue: 1,
+      // The below values will only be taken into account when Metrics are enabled
+      maxData: Infinity,
+      maxSentData: Infinity,
+      maxReceivedData: Infinity,
+      maxEventLoopDelay: Infinity,
+      movingAverageInterval: 60000
     },
     config: {
       peerDiscovery: {
-        autoDial: false,
-        [WebRTCStar.tag]: {
+        autoDial: true,
+        webRTCStar: {
           enabled: false
         }
       }

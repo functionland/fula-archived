@@ -2,7 +2,7 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "outDir": "dist",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "sourceMap": true,
     "lib": ["ES2019"],
@@ -13,7 +13,7 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "importHelpers": true,
+    "importHelpers": false,
     "skipLibCheck": true
   },
   "typedocOptions": {

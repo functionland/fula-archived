@@ -9,24 +9,27 @@ import {
 } from '@functionland/graph-protocol'
 import {configure} from './config';
 import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
-import {Connection, Status} from "./connection"
+import {FulaConnection, Status} from "./connection"
 import debug from "debug";
 import PeerId from "peer-id";
+import aesjs from "aes-js";
 
-debug.disable()
+// debug.disable()
 
 
 // types
 declare type FileId = string
 
-export {Connection, Status}
+export {FulaConnection, Status}
 
 export interface Fula {
-  connect: (peerId: string) => Connection
+  connect: (peerIds: string[]|string) => FulaConnection
   disconnect: () => Promise<void>
   sendFile: (file: File) => Promise<FileId>
+  sendEncryptedFile: (file: File) => Promise<{ cid: FileId, key: {symKey: Uint8Array, iv: Uint8Array}  }>
   sendStreamFile: (source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta) => Promise<FileId>
   receiveFile: (fileId: FileId) => Promise<File>
+  receiveDecryptedFile: (fileId: FileId, symKey: Uint8Array, iv: Uint8Array) => Promise<File>
   receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
   receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
   graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
@@ -40,34 +43,46 @@ export interface Fula {
 export async function createClient(config?: Partial<Libp2pOptions & constructorOptions>, pKey = undefined): Promise<Fula> {
   const conf = await configure(config, pKey);
   const node = await Libp2p.create(conf);
-  let connection: undefined | Connection = undefined;
+  let connection: undefined | FulaConnection = undefined;
   node.handle(FileProtocol.PROTOCOL, FileProtocol.handler);
+
   await node.start();
 
   const _getStreamConnection = async (protocol?: string) => {
     if (!node) {
       throw Error('node not ready')
-    } else if (!connection || !connection.serverPeerId) {
-      throw Error('peer id of th Box not set')
-    } else if (!connection || connection.status === Status.Offline || !connection.lpConnection) {
-      throw Error('Server no Availibale')
-    } else if (protocol) {
-      return await connection.lpConnection.newStream(protocol)
+    } else if (!connection || connection.boxPeerIds.length===0) {
+      throw Error('Peer id of th Box not set')
+    } else if (!connection || connection.status === Status.Offline) {
+      throw Error(`Server not Available, connection status: ${connection.status}`)
+    }
+    const conn = connection.getConnection()
+    if(!conn){
+      throw Error(`No Available Connection`)
+    }
+    if (protocol) {
+      return await conn.newStream(protocol)
     } else
-      return await connection.lpConnection.newStream(FileProtocol.PROTOCOL)
+      return await conn.newStream(FileProtocol.PROTOCOL)
   }
 
   return {
-    connect(peer: string) {
-      const serverPeer = PeerId.createFromB58String(peer)
-      if (serverPeer) {
-        connection = new Connection(node, serverPeer)
+    connect(peers: string[]|string) {
+      let peerIds: PeerId[] = []
+      if(Array.isArray(peers)){
+        peerIds = peers.map((peer)=> PeerId.createFromB58String(peer))
+      }
+      if (typeof peers === 'string'){
+        peerIds = peers.trim().split(',').map((peer)=> PeerId.createFromB58String(peer))
+      }
+      if (peerIds) {
+        connection = new FulaConnection(node, peerIds)
         connection.start()
         return connection
-      } else throw Error('Id it not in right format')
+      } else throw Error('Please insert a valid a Box address')
     },
     async disconnect() {
-      await connection?.close()
+      await connection?.stop()
     },
     async sendFile(file) {
       try {
@@ -75,6 +90,27 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         const fileId = await FileProtocol.sendFile({connection: connectionObj, file});
         connectionObj.stream.close()
         return fileId
+      } catch (e) {
+        throw new Error((e as Error).message)
+      }
+    },
+    async sendEncryptedFile(file: File) {
+      const randomKey = (len=32) => {
+        const arr = []
+        for(let i=0; i<len; i+=1)
+          arr.push(Math.floor(Math.random() * 255))
+
+        return new Uint8Array(arr)
+      }
+      try{
+        const connectionObj = await _getStreamConnection()
+        const key = {
+          symKey: randomKey(),
+          iv: randomKey(16)
+        }
+        const fileId = await FileProtocol.sendFile({connection: connectionObj, file, symKey: key.symKey, iv: key.iv})
+        connectionObj.stream.close()
+        return {cid: fileId, key}
       } catch (e) {
         throw new Error((e as Error).message)
       }
@@ -107,6 +143,28 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
         throw Error((e as Error).message)
       }
 
+    },
+    async receiveDecryptedFile(id: FileId, symKey: Uint8Array, iv: Uint8Array){
+      try {
+        const connectionObj = await _getStreamConnection()
+        const meta = await FileProtocol.receiveMeta({connection: connectionObj, id})
+        const connectionObj2 = await _getStreamConnection()
+        const source = FileProtocol.receiveContent({connection: connectionObj2, id})
+        let content: Array<number> = [];
+        for await (const chunk of source) {
+          content = content.concat(Array.from(chunk));
+        }
+
+        const aescbc = new aesjs.ModeOfOperation.cbc(symKey, iv)
+        const decBlob = aesjs.padding.pkcs7.strip(aescbc.decrypt(new Uint8Array(content)))
+
+        connectionObj.stream.close()
+        connectionObj2.stream.close()
+
+        return new File([decBlob], meta.name, {type: meta.type, lastModified: meta.lastModified});
+      } catch (e) {
+        throw Error((e as Error).message)
+      }
     },
     async receiveStreamFile(id: FileId) {
       try {
@@ -171,7 +229,7 @@ export async function createClient(config?: Partial<Libp2pOptions & constructorO
     },
     async close() {
       if (connection)
-        await connection.close()
+        await connection.stop()
       await node.stop()
     }
   }

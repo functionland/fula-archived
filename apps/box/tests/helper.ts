@@ -3,23 +3,20 @@ import WebRTCStar from 'libp2p-webrtc-star';
 import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 import wrtc from 'wrtc';
 import Mplex from 'libp2p-mplex';
-import Protector from "libp2p/src/pnet"
-import * as fs from 'fs';
+import {listen,netSecret} from "../src/config";
 
 new Noise();
 
 export const createClient = async () =>{
     const node = await Libp2p.create({
         addresses: {
-            listen: [
-                '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-                '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star'
-            ]
+            listen
         },
         modules: {
             transport: [WebRTCStar],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
+            connProtector:netSecret
         },
         config: {
             transport: {

@@ -46,6 +46,7 @@
     "libp2p-webrtc-direct": "~0.7.1",
     "libp2p-webrtc-star": "~0.25.0",
     "libp2p-websockets": "~0.16.2",
+    "libp2p-tcp": "^0.17.2",
     "multiformats": "~9.6.4",
     "openpgp": "~5.2.0",
     "orbit-db": "~0.28.3",

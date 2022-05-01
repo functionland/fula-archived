@@ -10,11 +10,11 @@ import config from "config"
 import * as fs from "fs"
 import peerId from "peer-id"
 import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP} from "./const";
-
+import TCP from 'libp2p-tcp'
 
 const getPeerId = async () => {
     if (fs.existsSync(LIBP2P_PATH + '/identity.json')) {
-        let identity = JSON.parse(fs.readFileSync(LIBP2P_PATH + '/identity.json'));
+        const identity = JSON.parse(fs.readFileSync(LIBP2P_PATH + '/identity.json'));
         return await peerId.createFromJSON(identity)
     } else {
         let identity = await peerId.create()
@@ -42,7 +42,7 @@ export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pO
             listen
         },
         modules: {
-            transport: [WebRTCStar],
+            transport: [WebRTCStar, TCP],
             streamMuxer: [Mplex],
             connEncryption: [NOISE],
             peerDiscovery: [Bootstrap],

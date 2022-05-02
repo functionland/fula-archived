@@ -1,7 +1,7 @@
 import './App.css';
 import React, {useEffect, useState} from "react";
 import {createClient, Status} from "@functionland/fula";
-import {FulaDID, TaggedEncryption} from '@functionland/fula-sec';
+import {TaggedEncryption} from '@functionland/fula-sec';
 
 import {ConnInfo} from "./components/ConnInfo";
 import {BoxConfig} from "./components/BoxConfig";
@@ -31,11 +31,11 @@ function App() {
   // User DID
   const [userDID, setDidObj] = useState(null);
 
-  const createDID = async () => {
-    const DID = new FulaDID();
-    const didObj = await DID.create();
-    console.log('didObj', didObj);
-  };
+  // const createDID = async () => {
+  //   const DID = new FulaDID();
+  //   const didObj = await DID.create();
+  //   console.log('didObj', didObj);
+  // };
 
   useEffect(() => {
     if (page === pages.GALLERY && status === Status.Online && fula) {
@@ -78,7 +78,7 @@ function App() {
         }
       })();
     }
-  }, [page, status, fula]);
+  }, [page, status, fula, userDID.did]);
 
   const onSet = (peers, key_file) => {
     if (peers.length > 0) {

@@ -50,7 +50,6 @@ export const BoxConfig = ({serverId, onSet}) => {
 
           }}>
               <input
-                type="text"
                 style={{
                     width:"auto",
                     margin: "5"
@@ -69,7 +68,6 @@ export const BoxConfig = ({serverId, onSet}) => {
 
 
         {isChecked && <input
-          type="text"
           placeholder='browse key'
           type="file"
           onChange={handleSelectFile}

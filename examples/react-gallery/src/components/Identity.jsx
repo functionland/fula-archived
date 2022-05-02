@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { Status } from '@functionland/fula';
+// import { Status } from '@functionland/fula';
 import { FulaDID } from '@functionland/fula-sec';
 
-import {
-    IoCloudOfflineSharp,
-    IoCloudSharp,
-    IoBanSharp,
-    IoSettingsSharp
-} from 'react-icons/io5';
+// import {
+//     IoCloudOfflineSharp,
+//     IoCloudSharp,
+//     IoBanSharp,
+//     IoSettingsSharp
+// } from 'react-icons/io5';
 export const Identity = ({ status, onSetting, info }) => {
     const [mode, setMode] = useState('None');
-    const [setep, setStep] = useState(0);
     const [mnemonicText, setMnemonicText] = useState('');
     const [importType, setImportType] = useState('Mnemonic');
     const [didObj, setDidObj] = useState(null);
@@ -18,7 +17,7 @@ export const Identity = ({ status, onSetting, info }) => {
         let didObj = null;
         try {
             const DID = new FulaDID();
-            if (importType == 'Mnemonic') {
+            if (importType === 'Mnemonic') {
                 didObj = await DID.importMnemonic(mnemonicText);
             } else {
                 didObj = await DID.importPrivateKey(mnemonicText);
@@ -71,7 +70,7 @@ export const Identity = ({ status, onSetting, info }) => {
                         <input
                             type="radio"
                             value="Mnemonic"
-                            checked={importType == 'Mnemonic'}
+                            checked={importType === 'Mnemonic'}
                             name="importType"
                             onChange={(e) => setImportType(e.target.value)}
                         />{' '}
@@ -107,7 +106,7 @@ export const Identity = ({ status, onSetting, info }) => {
                 </div>
             );
         }
-        if (mode == 'New') {
+        if (mode === 'New') {
             return !didObj ? (
                 <div className="container flex-column"></div>
             ) : (

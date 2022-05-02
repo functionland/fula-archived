@@ -1,6 +1,6 @@
 {
   "name": "@functionland/box",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Reference implementation of box server in Node.js",
   "main": "dist/index.js",
   "bin": "./cli.js",
@@ -10,10 +10,10 @@
     "build": "node scripts/build.mjs",
     "build:watch": "node scripts/build.mjs",
     "lint": "eslint src --fix",
-    "test": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/*.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:orbitDB": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/orbitDB.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:graphql": "nyc --reporter=lcov --require esbuild-runner/register tape tests/**/graphql.test.{ts,js} | tap-spec; nyc report ---reporter=text",
-    "test:sel": "nyc --reporter=lcov --require esbuild-runner/register tape $TEST_PATH | tap-spec; nyc report ---reporter=text"
+    "test": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/*.test.{ts,js} | tap-spec",
+    "test:orbitDB": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/orbitDB.test.{ts,js} | tap-spec",
+    "test:graphql": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/graphql.test.{ts,js} | tap-spec",
+    "test:sel": "node -r esbuild-runner/register node_modules/tape/bin/tape $TEST_PATH | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,10 @@
   "homepage": "https://github.com/functionland/fula#readme",
   "dependencies": {
     "@chainsafe/libp2p-noise": "~5.0.2",
-    "@functionland/file-protocol": "~0.3.4",
-    "@functionland/graph-protocol": "~0.2.0",
+    "@functionland/file-protocol": "~0.3.5",
+    "@functionland/graph-protocol": "~0.2.1",
     "@ipld/dag-json": "~8.0.8",
-    "async-later": "0.1.9",
+    "async-later": "0.1.10",
     "graphql": "16.3.0",
     "graphql-tag": "2.12.6",
     "graphql-tools": "8.2.0",
@@ -46,6 +46,7 @@
     "libp2p-webrtc-direct": "~0.7.1",
     "libp2p-webrtc-star": "~0.25.0",
     "libp2p-websockets": "~0.16.2",
+    "libp2p-tcp": "^0.17.2",
     "multiformats": "~9.6.4",
     "openpgp": "~5.2.0",
     "orbit-db": "~0.28.3",

@@ -2,6 +2,50 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.6.4",
+      "tag": "@functionland/fula_v0.6.4",
+      "date": "Mon, 25 Apr 2022 07:43:12 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Change how to pass option in createClient"
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.6.3",
+      "tag": "@functionland/fula_v0.6.3",
+      "date": "Sun, 24 Apr 2022 13:47:16 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix build and wrtc not found"
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.6.2",
+      "tag": "@functionland/fula_v0.6.2",
+      "date": "Sun, 24 Apr 2022 09:20:16 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Fix build warning"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/file-protocol\" from `~0.3.4` to `~0.3.5`"
+          },
+          {
+            "comment": "Updating dependency \"@functionland/graph-protocol\" from `~0.2.0` to `~0.2.1`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.6.1",
       "tag": "@functionland/fula_v0.6.1",
       "date": "Tue, 19 Apr 2022 07:28:44 GMT",

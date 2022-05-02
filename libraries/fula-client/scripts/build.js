@@ -1,5 +1,4 @@
 import {NodeGlobalsPolyfillPlugin} from '@esbuild-plugins/node-globals-polyfill';
-import {NodeModulesPolyfillPlugin} from '@esbuild-plugins/node-modules-polyfill';
 import {build} from 'esbuild';
 import {clean} from 'build-helpers'
 
@@ -31,9 +30,9 @@ await build({
     target: 'node16',
     format: 'cjs',
     bundle: true,
-    sourcemap: true,
+    sourcemap: false,
     outfile: 'dist/node/index.cjs',
-    external: ['libp2p-webrtc-star','libp2p-mplex','libp2p','@chainsafe/libp2p-noise']
+    external: ['wrtc','libp2p-webrtc-star','libp2p-mplex','libp2p','@chainsafe/libp2p-noise','libp2p-tcp','libp2p-websockets']
 });
 
 

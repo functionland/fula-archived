@@ -1,13 +1,14 @@
 import './App.css';
-
-import React, {useEffect, useState} from 'react';
-import {createClient, Status} from '@functionland/fula';
+import React, {useEffect, useState} from "react";
+import {createClient, Status} from "@functionland/fula";
 import {FulaDID, TaggedEncryption} from '@functionland/fula-sec';
-import {ConnInfo} from './components/ConnInfo';
-import {BoxConfig} from './components/BoxConfig';
-import {Uploader} from './components/Uploader';
-import {Gallery} from './components/Gallery';
+
+import {ConnInfo} from "./components/ConnInfo";
+import {BoxConfig} from "./components/BoxConfig";
+import {Uploader} from "./components/Uploader";
+import {Gallery} from "./components/Gallery";
 import {Identity} from './components/Identity';
+
 
 const pages = {
   GALLERY: 'home',
@@ -36,15 +37,6 @@ function App() {
     console.log('didObj', didObj);
   };
 
-  // create client on component creation
-
-  // useEffect(() => {
-  //   (async () => {
-  //     setFula(await createClient())
-  //   })()
-  //
-  // }, [])
-
   useEffect(() => {
     if (page === pages.GALLERY && status === Status.Online && fula) {
       (async () => {
@@ -56,7 +48,6 @@ function App() {
             console.log({cid, jwe})
             if (jwe) {
               console.log("encrypted photo")
-
               const tagged = new TaggedEncryption(userDID.did)
 
               let plainObject
@@ -66,7 +57,6 @@ function App() {
                 console.log(e)
                 continue
               }
-
               const _iv = []
               for (let i=0; i<16; i+=1)
                 _iv.push(plainObject.symetricKey.iv[i])
@@ -94,36 +84,33 @@ function App() {
     if (peers.length > 0) {
       setBoxIds(peers);
       (async () => {
-        if (peers && peers.length > 0) {
-          try {
-
-            setConnInfo("")
-            if (fula)
-              fula.close()
-            let _fula
-            if (key_file) {
-              const key = await key_file.arrayBuffer()
-              _fula = await createClient({}, key)
-              setFula(_fula)
-            } else {
-              _fula = await createClient()
-              setFula(_fula)
-            }
-            let con = _fula.connect(peers)
-            setStatus(Status.Connecting)
-
-            con.on('status', (_status) => {
-              setStatus(_status);
-              _status === Status.Online && setConnInfo('');
-            });
-            con.on('error', () => {
-              setConnInfo('Server not available');
-            });
-            setPage(pages.GALLERY);
-          } catch (e) {
-            setConnInfo(e.message);
+        try {
+          setConnInfo("")
+          if (fula)
+            fula.close()
+          let _fula
+          if (key_file) {
+            const key = await key_file.arrayBuffer()
+            _fula = await createClient({netSecret:key})
+            setFula(_fula)
+          } else {
+            _fula = await createClient()
+            setFula(_fula)
           }
+          let con = _fula.connect(peers)
+          setStatus(Status.Connecting)
+          con.on('status', (_status) => {
+            setStatus(_status)
+            _status === Status.Online && setConnInfo("")
+          })
+          con.on('error', () => {
+            setConnInfo("Server not available")
+          })
+          setPage(pages.GALLERY)
+        } catch (e) {
+          setConnInfo(e.message)
         }
+
       })();
     }
   };
@@ -152,7 +139,6 @@ function App() {
   };
 
   // call back for routing to setting
-
   const onSetting = () => {
     setPage(pages.CONFIG)
   }

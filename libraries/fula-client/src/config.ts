@@ -5,24 +5,34 @@ import { NOISE, Noise } from '@chainsafe/libp2p-noise';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Mplex from 'libp2p-mplex';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import WS from 'libp2p-websockets'
 import { constructorOptions, Libp2pOptions } from 'libp2p';
 import { SIG_SERVER } from './constant';
 import Protector from "libp2p/src/pnet/index.js"
 
 const noise = new Noise();
 
-export async function configure(
-  config = {}, netSecret=undefined
-): Promise<Libp2pOptions & Partial<constructorOptions>> {
+const isNode = (typeof process !== 'undefined') && ("release" in process && process.release.name === 'node')
+
+
+export interface Option {
+  netSecret?: Uint8Array,
+  wrtc?: unknown
+}
+
+export async function configure(option?:Option): Promise<Libp2pOptions & Partial<constructorOptions>> {
+  const transportKey = WebRTCStar.prototype[Symbol.toStringTag]
   return {
     addresses: {
       listen: SIG_SERVER
     },
     modules: {
-      transport: [WebRTCStar],
+      transport: [WebRTCStar,WS],
       streamMuxer: [Mplex],
       connEncryption: [NOISE],
-      connProtector: netSecret?new Protector(netSecret):undefined
+      connProtector: option?.netSecret?new Protector(option.netSecret):undefined
     },
     connectionManager: {
       autoDial: true,
@@ -38,6 +48,11 @@ export async function configure(
       movingAverageInterval: 60000
     },
     config: {
+      transport: {
+        [transportKey]: {
+          wrtc:option?.wrtc?option.wrtc:undefined // You can use `wrtc` when running in Node.js
+        }
+      },
       peerDiscovery: {
         autoDial: true,
         webRTCStar: {
@@ -47,7 +62,6 @@ export async function configure(
     },
     connectionGater: {
       denyInboundConnection: async ()=> true
-    },
-    ...config
+    }
   };
 }

@@ -1,23 +1,22 @@
-import { Ed25519Provider } from 'key-did-provider-ed25519'
-import {generateMnemonic} from 'bip39'
-import HDWallet from 'ethereum-hdwallet'
 import { DID } from 'dids'
+import {ethers, utils } from 'ethers'
 import KeyResolver from 'key-did-resolver'
-
+import { Ed25519Provider } from 'key-did-provider-ed25519'
+import {Buffer} from 'buffer';
 /**
  * @class FullaDID
- * @description Creates Decentrilized Identity for Clinet side application 
+ * @description Creates Decentrilized Identity for Clinet side application
  * based on Ed25519 Private Key - Edwards-curve Digital Signature Algorithm(EdDSA)
  */
 
-interface IFullaDID {
+interface IFulaDID {
     privateKey: string;
     mnemonic: string;
     authDID: string;
     did: any;
 }
 
-export class FullaDID implements IFullaDID {
+export class FulaDID implements IFulaDID {
     privateKey!: string
     mnemonic!: string;
     authDID!: string;
@@ -29,9 +28,11 @@ export class FullaDID implements IFullaDID {
      * @returns  authDID
      */
     private async didProvider () {
-        let provider = new Ed25519Provider(Buffer.from(this.privateKey, 'hex'))
-        this.did = new DID({ provider, resolver: KeyResolver.getResolver()})
-        return await this.did.authenticate();
+        const pvkey=this.privateKey.replace("0x","")
+        const seed=Buffer.from(pvkey, 'hex');
+        const provider = new Ed25519Provider(seed)
+        this.did = new DID({ provider, resolver: KeyResolver.getResolver() })
+        return this.did.authenticate();
     }
     /**
      * Creates mnemocic phrase and private key
@@ -39,9 +40,9 @@ export class FullaDID implements IFullaDID {
 	 * @returns Object - {authDID, privateKey, mnemonic}
 	 */
     async create () {
-        this.mnemonic = generateMnemonic()
-        let hdwallet = HDWallet.fromMnemonic(this.mnemonic)
-        this.privateKey = hdwallet.derive(`m/44'/60'/0'/0/0`).getPrivateKey().toString('hex')
+        const wallet = ethers.Wallet.createRandom()
+        this.mnemonic = wallet.mnemonic.phrase
+        this.privateKey = wallet.privateKey
         this.authDID = await this.didProvider();
         return {
             mnemonic: this.mnemonic,
@@ -68,8 +69,8 @@ export class FullaDID implements IFullaDID {
 	 * @returns Object - {authDID, privateKey}
 	 */
     async importMnemonic (mnemonic: string) {
-        let hdwallet = HDWallet.fromMnemonic(mnemonic);
-        this.privateKey = hdwallet.derive(`m/44'/60'/0'/0/0`).getPrivateKey().toString('hex')
+        const hdwallet = utils.HDNode.fromMnemonic(mnemonic);
+        this.privateKey = hdwallet.derivePath(`m/44'/60'/0'/0/0`).privateKey //.getPrivateKey().toString('hex')
         this.authDID = await this.didProvider();
         return {
             privateKey: this.privateKey,

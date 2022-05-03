@@ -17,47 +17,49 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "~7.17.2",
     "@protobuf-ts/runtime": "~2.2.2",
-    "@babel/runtime": "~7.17.2"
+    "aes-js": "^3.1.2"
   },
   "devDependencies": {
-    "@ipld/dag-cbor": "~7.0.1",
-    "@ipld/dag-json": "~8.0.8",
-    "async-later": "0.1.10",
-    "it-pipe": "~2.0.3",
-    "multiformats": "~9.6.4",
-    "pako": "~2.0.4",
-    "rxjs": "~7.5.4",
-    "streaming-iterables": "~6.2.0",
-    "peer-id": "~0.16.0",
+    "@babel/core": "~7.17.5",
+    "@babel/plugin-transform-runtime": "~7.17.0",
+    "@babel/preset-env": "~7.16.11",
+    "@babel/preset-typescript": "~7.16.7",
     "@esbuild-plugins/node-globals-polyfill": "~0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "~0.1.4",
-    "build-helpers": "~0.0.1",
-    "tslib": "~2.3.1",
+    "@ipld/dag-cbor": "~7.0.1",
+    "@ipld/dag-json": "~8.0.8",
     "@protobuf-ts/plugin": "~2.2.2",
+    "@types/aes-js": "^3.1.1",
     "@types/bl": "~5.0.2",
     "@types/pako": "~1.0.3",
-    "libp2p": "~0.36.2",
-    "esbuild": "~0.14.25",
-    "typescript": "~4.6.2",
-    "@babel/core": "~7.17.5",
-    "esbuild-plugin-babel": "~0.2.3",
-    "@babel/preset-typescript": "~7.16.7",
-    "@babel/preset-env": "~7.16.11",
-    "@babel/plugin-transform-runtime": "~7.17.0",
-    "eslint": "~8.10.0",
     "@typescript-eslint/eslint-plugin": "~5.13.0",
     "@typescript-eslint/parser": "~5.13.0",
-    "it-stream-types": "^1.0.4"
+    "build-helpers": "~0.0.1",
+    "esbuild": "~0.14.25",
+    "esbuild-plugin-babel": "~0.2.3",
+    "eslint": "~8.10.0",
+    "async-later": "0.1.10",
+    "it-pipe": "~2.0.3",
+    "it-stream-types": "^1.0.4",
+    "libp2p": "~0.36.2",
+    "multiformats": "~9.6.4",
+    "pako": "~2.0.4",
+    "peer-id": "~0.16.0",
+    "rxjs": "~7.5.4",
+    "streaming-iterables": "~6.2.0",
+    "tslib": "~2.3.1",
+    "typescript": "~4.6.2"
   },
-  "exports":{
-    ".":{
+  "exports": {
+    ".": {
       "browser": {
-        "import":"./dist/browser/esm.js",
+        "import": "./dist/browser/esm.js",
         "require": "./dist/browser/cjs.js"
       },
       "node": {
-        "default":"./dist/node/cjs.cjs"
+        "default": "./dist/node/cjs.cjs"
       }
     }
   }

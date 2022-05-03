@@ -32,6 +32,7 @@ export const BoxConfig = ({serverId, onSet}) => {
               display:"flex"
           }}>
               <input
+                type="text"
                 placeholder='Enter your server Ids comma seperated'
                 value={_serverId}
                 onChange={(e) => _setServerId(e.target.value)}
@@ -80,9 +81,3 @@ export const BoxConfig = ({serverId, onSet}) => {
 
   </>
 }
-
-
-
-
-
-

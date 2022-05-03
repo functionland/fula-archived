@@ -6,6 +6,7 @@ import { resolveLater, toAsyncIterable } from 'async-later';
 import { Meta, Request } from '../schema';
 import { PROTOCOL } from '../constants';
 import * as it from "it-stream-types";
+import aes from 'aes-js'
 
 export const incomingFiles = new Subject<{
     meta: Meta;
@@ -26,9 +27,11 @@ export async function save({meta, bytes}: { meta: Meta, bytes: AsyncIterable<Uin
     return toAsyncIterable(promiseId);
 }
 
-export async function sendFile({connection, file}: {
+export async function sendFile({connection, file, symKey=Uint8Array.from([]), iv=Uint8Array.from([])}: {
     connection: { stream: MuxedStream, protocol: string },
-    file: File;
+    file: File,
+    symKey?: Uint8Array,
+    iv?: Uint8Array
 }): Promise<string> {
     if (connection.protocol !== PROTOCOL) {
         throw Error('Protocol mismatched')
@@ -52,7 +55,12 @@ export async function sendFile({connection, file}: {
             if (done) {
                 break;
             }
-            yield value;
+            if(symKey.length){
+                const aescbc = new aes.ModeOfOperation.cbc(symKey, iv)
+                const _encrypted = await aescbc.encrypt(aes.padding.pkcs7.pad(value))
+                yield _encrypted
+            }else
+                yield value;
         }
     };
 

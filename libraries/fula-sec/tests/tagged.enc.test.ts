@@ -1,23 +1,22 @@
 // test tagged.enc.ts
 import { expect, should } from 'chai';
-import {FullaDID, TaggedEncryption} from "../src/index"
+import {FulaDID, TaggedEncryption} from "../src/index"
 
 describe('Tagged Encription', () => {
     it('1- Add DID address to encrypt', async () => {
-        const AfullaDID = new FullaDID();
-        await AfullaDID.create();
-        const Atagged = new TaggedEncryption(AfullaDID.did);
+        const AfulaDID = new FulaDID();
+        await AfulaDID.create();
+        const Atagged = new TaggedEncryption(AfulaDID.did);
 
-        const BfullaDID = new FullaDID();
-        await BfullaDID.create();
-        const Btagged = new TaggedEncryption(BfullaDID.did);
+        const BfulaDID = new FulaDID();
+        await BfulaDID.create();
+        const Btagged = new TaggedEncryption(BfulaDID.did);
 
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'
         }
-        let jwe = await Atagged.encrypt(plaintext.symetricKey, plaintext.CID, [BfullaDID.did.id])
-        console.log('jwe: ', jwe)
+        let jwe = await Atagged.encrypt(plaintext.symetricKey, plaintext.CID, [BfulaDID.did.id])
 
         let dec = await Btagged.decrypt(jwe)
         should().not.Throw

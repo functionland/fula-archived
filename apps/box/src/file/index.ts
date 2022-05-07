@@ -1,8 +1,5 @@
 import {FileProtocol as Protocol, SchemaProtocol as Schema} from "@functionland/file-protocol";
-import config from "config";
-import { create } from 'ipfs-http-client'
 
-const IPFS_HTTP = config.get("ipfs.http")
 
 export const registerFile = async (libp2pNode, ipfsNode) => {
 
@@ -11,25 +8,40 @@ export const registerFile = async (libp2pNode, ipfsNode) => {
 
 
     Protocol.setMetaRetrievalMethod(async ({id}) => {
-        for await (const file of ipfsNode.cat(id)) {
-            const {meta} = Schema.File.fromBinary(file);
-            return meta;
+        try{
+            for await (const file of ipfsNode.cat(id)) {
+                const {meta} = Schema.File.fromBinary(file);
+                return meta;
+            }
+        }catch (e) {
+            console.log(e)
         }
+
     });
 
     Protocol.setContentRetrievalMethod(async ({id}) => {
-        for await (const file of ipfsNode.cat(id)) {
-            const {contentPath} = Schema.File.fromBinary(file);
-            return ipfsNode.cat(contentPath);
+        try {
+            for await (const file of ipfsNode.cat(id)) {
+                const {contentPath} = Schema.File.fromBinary(file);
+                return ipfsNode.cat(contentPath);
+            }
+        }catch (e) {
+            console.log(e)
         }
+
     });
 
     Protocol.incomingFiles.subscribe(async ({getContent, meta, declareId}) => {
-        const {cid: file} = await ipfsNode.add(
-          getContent()
-        );
-        const {cid} = await ipfsNode.add(Schema.File.toBinary({contentPath: file.toString(), meta}));
-        declareId(cid.toString());
+        try{
+            const {cid: file} = await ipfsNode.add(
+              getContent()
+            );
+            const {cid} = await ipfsNode.add(Schema.File.toBinary({contentPath: file.toString(), meta}));
+            declareId(cid.toString());
+        }catch (e) {
+            console.log(e)
+        }
+
     });
 }
 

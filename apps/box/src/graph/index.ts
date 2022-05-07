@@ -97,37 +97,47 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
   }
 
   setQueryResolutionMethod(async function (req: Request) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
 
-    const {query, variableValues, operationName} = Request.toJson(req)
-    const gqlQuery = parse(query)
-    const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB)
-    const s = Result.fromJson(data)
-    const bytes = Result.toBinary(s)
-    return bytes && toAsyncIterable([bytes]);
+    try{
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const {query, variableValues, operationName} = Request.toJson(req)
+      const gqlQuery = parse(query)
+      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB)
+      const s = Result.fromJson(data)
+      const bytes = Result.toBinary(s)
+      return bytes && toAsyncIterable([bytes]);
+    }catch (e) {
+      console.log(e)
+    }
+
   })
 
   setSubscriptionQueryResolutionMethod(async function* (req: Request) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    try{
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
 
-    const {query, variableValues, operationName} = Request.toJson(req)
-    const gqlQuery = parse(query)
+      const {query, variableValues, operationName} = Request.toJson(req)
+      const gqlQuery = parse(query)
 
-    const [values, next, complete] = iterateLater()
+      const [values, next, complete] = iterateLater()
 
-    const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB, next, true)
-    const s = Result.fromJson(data)
-    const bytes = Result.toBinary(s)
-
-    yield bytes
-
-    for await (const res of values) {
-      const s = Result.fromJson(res)
+      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB, next, true)
+      const s = Result.fromJson(data)
       const bytes = Result.toBinary(s)
 
       yield bytes
+
+      for await (const res of values) {
+        const s = Result.fromJson(res)
+        const bytes = Result.toBinary(s)
+
+        yield bytes
+      }
+    }catch (e) {
+      console.log(e)
     }
+
   })
 }

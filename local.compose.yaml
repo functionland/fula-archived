@@ -1,9 +1,10 @@
-version: '2.4'
+version: '3'
 
 services:
   box:
     build:
       dockerfile: ./Dockerfile.box
+    network_mode: 'host'
     working_dir: /opt/box
     command: npm start
     volumes:

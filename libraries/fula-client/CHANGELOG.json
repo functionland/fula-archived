@@ -2,6 +2,26 @@
   "name": "@functionland/fula",
   "entries": [
     {
+      "version": "0.6.5",
+      "tag": "@functionland/fula_v0.6.5",
+      "date": "Tue, 10 May 2022 06:52:04 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "remove internal package from dep"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/file-protocol\" from `~0.3.5` to `~0.3.6`"
+          },
+          {
+            "comment": "Updating dependency \"@functionland/graph-protocol\" from `~0.2.1` to `~0.2.2`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.6.4",
       "tag": "@functionland/fula_v0.6.4",
       "date": "Mon, 25 Apr 2022 07:43:12 GMT",

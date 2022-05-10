@@ -14,11 +14,18 @@ export const createResolver = (orbitDB): IResolvers => {
     return {
         read: async (args: ReadArgs, {isSubscription, next, loadDB}) => {
             const db = await loadDB(args.input.collection)
-            if(isSubscription)
-                db.events.on('write', async () => {
-                    const res = db.query(_reGetFilter(args.input.filter))
-                    next({read: res})
-                })
+
+            const onChange = async () => {
+                const res = db.query(_reGetFilter(args.input.filter))
+                console.log('onchange fired')
+                next({read: res})
+            }
+
+            if(isSubscription) {
+                db.events.on('write', onChange)
+                db.events.on('replicated', onChange)
+            }
+
             return db.query(_reGetFilter(args.input.filter));
         },
         readSubscribe: async (args: ReadArgs) => {

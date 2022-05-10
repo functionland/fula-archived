@@ -2,6 +2,18 @@
   "name": "@functionland/box",
   "entries": [
     {
+      "version": "0.6.4",
+      "tag": "@functionland/box_v0.6.4",
+      "date": "Tue, 10 May 2022 07:15:54 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix replication propagation"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.6.3",
       "tag": "@functionland/box_v0.6.3",
       "date": "Tue, 10 May 2022 06:52:04 GMT",

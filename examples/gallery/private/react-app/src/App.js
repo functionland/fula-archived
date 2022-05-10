@@ -1,12 +1,12 @@
 import './App.css';
 
-import React, { useEffect, useState } from "react";
-import { createClient, Status } from "@functionland/fula";
+import React, {useEffect, useState} from "react";
+import {createClient, Status} from "@functionland/fula";
 
-import { ConnInfo } from "./components/ConnInfo";
-import { BoxConfig } from "./components/BoxConfig";
-import { Uploader } from "./components/Uploader";
-import { Gallery } from "./components/Gallery";
+import {ConnInfo} from "./components/ConnInfo";
+import {BoxConfig} from "./components/BoxConfig";
+import {Uploader} from "./components/Uploader";
+import {Gallery} from "./components/Gallery";
 
 
 const pages = {
@@ -35,47 +35,48 @@ function App() {
         const allData = await fula.graphql(readQuery)
         if (allData && allData.data && allData.data.read) {
           setPhotos([])
-          for (const { cid } of allData.data.read) {
+          for (const {cid} of allData.data.read) {
             const file = await fula.receiveFile(cid)
             setPhotos((prev) => [...prev, file])
           }
-        }else {
+        } else {
           setPhotos([])
         }
       })()
     }
   }, [page, status, fula])
 
-  const onSet = (peers,key_file) => {
-    if (peers.length>0) {
+  const onSet = (peers, key_file) => {
+    if (peers.length > 0) {
       setBoxIds(peers);
+      setPage(pages.GALLERY);
+      setStatus(Status.Connecting);
       (async () => {
-          try {
-            setConnInfo("")
-            if(fula)
-              fula.close()
-            let _fula
-            if(key_file){
-              const key = await key_file.arrayBuffer()
-              _fula = await createClient({},key)
-              setFula(_fula)
-            }else{
-              _fula = await createClient()
-              setFula(_fula)
-            }
-            let con = _fula.connect(peers)
-            setStatus(Status.Connecting)
-            con.on('status', (_status) => {
-              setStatus(_status)
-              _status===Status.Online && setConnInfo("")
-            })
-            con.on('error', ()=>{
-              setConnInfo("Server not available")
-            })
-            setPage(pages.GALLERY)
-          } catch (e) {
-            setConnInfo(e.message)
+        try {
+          setConnInfo("")
+          if (fula)
+            fula.close()
+          let _fula
+          if (key_file) {
+            const key = await key_file.arrayBuffer()
+            _fula = await createClient({netSecret:key})
+            setFula(_fula)
+          } else {
+            _fula = await createClient()
+            setFula(_fula)
           }
+          let con = _fula.connect(peers)
+          con.on('status', (_status) => {
+            setStatus(_status)
+            _status === Status.Online && setConnInfo("")
+          })
+          con.on('error', () => {
+            setConnInfo("Server not available")
+          })
+
+        } catch (e) {
+          setConnInfo(e.message)
+        }
       })();
     }
 
@@ -95,7 +96,7 @@ function App() {
   }
 
   // call back for routing to setting
-  const onSetting = () =>{
+  const onSetting = () => {
     setPage(pages.CONFIG)
   }
 
@@ -108,8 +109,8 @@ function App() {
           case pages.GALLERY:
             return <>
               <h1>Functionland Sample Gallery</h1>
-              {status===Status.Online && <Uploader onUpload={onUpload}/>}
-              {status!==Status.Connecting && <Gallery photos={photos}/> }
+              {status === Status.Online && <Uploader onUpload={onUpload}/>}
+              {status === Status.Online && <Gallery photos={photos}/>}
             </>
 
           default:

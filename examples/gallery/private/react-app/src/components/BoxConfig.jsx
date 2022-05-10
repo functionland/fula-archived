@@ -16,11 +16,6 @@ export const BoxConfig = ({serverId, onSet}) => {
     onSet(_serverId.split(','), selectedFile)
   }
 
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleOnChange = () => {
-    setIsChecked(!isChecked);
-  };
 
   return <>
     <div className="container">
@@ -46,33 +41,14 @@ export const BoxConfig = ({serverId, onSet}) => {
               </div>
           </div>
 
-          <div style={{
-
-          }}>
-              <input
-                style={{
-                    width:"auto",
-                    margin: "5"
-                }}
-                type="checkbox"
-                id="topping"
-                name="topping"
-                value="Paneer"
-                checked={isChecked}
-                onChange={handleOnChange}
-              />
-              <label style={{
-                  margin: 0
-              }}>private network</label>
-          </div>
 
 
-        {isChecked && <input
+        <input
           placeholder='browse key'
           type="file"
           onChange={handleSelectFile}
           name='file'
-        />}
+        />
       </div>
 
       </div>

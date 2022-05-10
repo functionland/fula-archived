@@ -1,0 +1,15 @@
+{
+  "name": "react-gallery-uploader",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@web-std/file": "~3.0.2",
+    "wrtc": "~0.4.7",
+    "@functionland/fula": "~0.6.5",
+    "yargs": "^17.4.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

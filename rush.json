@@ -64,12 +64,6 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@functionland/rn-fula",
-      "projectFolder": "libraries/rn-fula",
-      "reviewCategory": "production",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@functionland/file-protocol",
       "projectFolder": "protocols/file",
       "reviewCategory": "production",
@@ -82,37 +76,16 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@functionland/fx",
-      "projectFolder": "tools/cli",
-      "reviewCategory": "prototypes"
-    },
-    {
       "packageName": "@functionland/box",
       "projectFolder": "apps/box",
       "reviewCategory": "production",
       "shouldPublish": true
     },
     {
-      "packageName": "@functionland/signal",
-      "projectFolder": "apps/signal",
-      "reviewCategory": "production"
-    },
-    {
       "packageName": "@functionland/fula-sec",
       "projectFolder": "libraries/fula-sec",
       "reviewCategory": "production",
       "shouldPublish": true
-    },
-    {
-      "packageName": "react-todo-app",
-      "projectFolder": "examples/react-todo-app",
-      "reviewCategory": "prototypes"
-
-    },
-    {
-      "packageName": "react-gallery",
-      "projectFolder": "examples/react-gallery",
-      "reviewCategory": "prototypes"
     },
     {
       "packageName": "build-helpers",

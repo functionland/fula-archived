@@ -30,7 +30,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "build-helpers": "~0.0.1",
     "esbuild": "~0.14.25",
     "streaming-iterables": "~6.2.0",
     "tap-spec": "~5.0.0",

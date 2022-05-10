@@ -1,7 +1,4 @@
 import { build } from 'esbuild';
-import { clean } from 'build-helpers'
-
-clean()
 
 await build({
   entryPoints: ['src/index.ts'],

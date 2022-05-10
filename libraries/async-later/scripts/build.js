@@ -2,9 +2,6 @@ import { build } from 'esbuild';
 import babel from 'esbuild-plugin-babel';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import {NodeModulesPolyfillPlugin} from '@esbuild-plugins/node-modules-polyfill'
-import {clean} from 'build-helpers'
-
-clean()
 
 build({
   entryPoints: ['src/index.ts'],

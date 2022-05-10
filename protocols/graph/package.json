@@ -28,7 +28,6 @@
     "peer-id": "~0.16.0",
     "@esbuild-plugins/node-globals-polyfill": "~0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "~0.1.4",
-    "build-helpers": "~0.0.1",
     "tslib": "~2.3.1",
     "@protobuf-ts/plugin": "~2.2.2",
     "@types/bl": "~5.0.2",

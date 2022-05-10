@@ -36,7 +36,6 @@
     "@types/pako": "~1.0.3",
     "@typescript-eslint/eslint-plugin": "~5.13.0",
     "@typescript-eslint/parser": "~5.13.0",
-    "build-helpers": "~0.0.1",
     "esbuild": "~0.14.25",
     "esbuild-plugin-babel": "~0.2.3",
     "eslint": "~8.10.0",

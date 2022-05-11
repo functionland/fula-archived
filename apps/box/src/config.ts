@@ -18,7 +18,7 @@ const getPeerId = async () => {
         const identity = JSON.parse(fs.readFileSync(LIBP2P_PATH + '/identity.json'));
         return await peerId.createFromJSON(identity)
     } else {
-        let identity = await peerId.create()
+        const identity = await peerId.create()
         fs.writeFileSync(LIBP2P_PATH + '/identity.json', JSON.stringify(identity.toJSON()))
         return identity
     }
@@ -28,6 +28,7 @@ const getNetSecret = ()=> {
     if(config.get("network.key_path")===""){
         return undefined
     }
+    console.log("Private Mode Enabled")
     const key = fs.readFileSync(config.get("network.key_path"))
     return new Protector(key)
 }

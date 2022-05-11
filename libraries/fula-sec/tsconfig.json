@@ -14,7 +14,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
   "typedocOptions": {
     "entryPoints": ["src/did.ts"],

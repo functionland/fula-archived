@@ -1,6 +1,6 @@
 {
   "name": "@functionland/fula-sec",
-  "version": "0.6.3",
+  "version": "0.6.5",
   "description": "",
   "type": "module",
   "types": "dist/types/src/index.d.ts",
@@ -14,7 +14,7 @@
     "doc": "npx typedoc src/*.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "jamshid@fx.land",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "~4.3.0",
@@ -53,6 +53,9 @@
     ".": {
       "browser": {
         "default": "./dist/br/index.js"
+      },
+      "node": {
+        "require":"./dist/node/index.cjs"
       }
     }
   }

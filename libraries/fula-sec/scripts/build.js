@@ -8,11 +8,16 @@ await build({
   bundle: true,
   sourcemap: false,
   outfile: 'dist/br/index.js',
-  external: [
-    'react','react-dom',
-  ]
 });
 
+await build({
+  entryPoints: ['src/index.ts'],
+  platform: 'node',
+  format: 'cjs',
+  bundle: true,
+  sourcemap: false,
+  outfile: 'dist/node/index.cjs'
+});
 
 
 

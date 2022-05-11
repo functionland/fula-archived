@@ -31,11 +31,6 @@ function App() {
   // User DID
   const [userDID, setDidObj] = useState(null);
 
-  // const createDID = async () => {
-  //   const DID = new FulaDID();
-  //   const didObj = await DID.create();
-  //   console.log('didObj', didObj);
-  // };
 
   useEffect(() => {
     if (page === pages.GALLERY && status === Status.Online && fula) {
@@ -149,7 +144,7 @@ function App() {
 
   return <>
     <div className="app">
-      <Identity onSetting={onDIDSet}/>
+      <Identity onDIDSet={onDIDSet}/>
       {(() => {
         switch (page) {
           case pages.CONFIG:

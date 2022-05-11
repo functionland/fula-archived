@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-// import { Status } from '@functionland/fula';
 import { FulaDID } from '@functionland/fula-sec';
 
-// import {
-//     IoCloudOfflineSharp,
-//     IoCloudSharp,
-//     IoBanSharp,
-//     IoSettingsSharp
-// } from 'react-icons/io5';
-export const Identity = ({ status, onSetting, info }) => {
+
+export const Identity = ({onDIDSet}) => {
     const [mode, setMode] = useState('None');
     const [mnemonicText, setMnemonicText] = useState('');
     const [importType, setImportType] = useState('Mnemonic');
@@ -23,7 +17,7 @@ export const Identity = ({ status, onSetting, info }) => {
                 didObj = await DID.importPrivateKey(mnemonicText);
             }
             setDidObj(didObj);
-            onSetting(DID)
+            onDIDSet(DID)
         } catch (error) {
             alert(error);
         }

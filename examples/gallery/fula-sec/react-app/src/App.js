@@ -78,7 +78,7 @@ function App() {
         }
       })();
     }
-  }, [page, status, fula, userDID.did]);
+  }, [page, status, fula, userDID?.did]);
 
   const onSet = (peers, key_file) => {
     if (peers.length > 0) {

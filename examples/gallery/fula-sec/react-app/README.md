@@ -1,22 +1,18 @@
 # Gallery in react
 
-It's a react web app that you can play with and learn:
-- How connect to Boxes
-- How to upload/download Photos using File-API.
-- How to use graphql to Store and Retrieve `JSON`.
+It's a React web app that you can play with and learn:
+- How Use @functionland/fula-sec, for create and importing DIDs.
+- How to encrypt data and store it in Box with DID. 
+- How to retrieve data and decrypt it in Client with DID.
 
 ## Installation
 Clone the repository and change to project directory
 ```bash
-cd ./examples/react-gallery
+cd ./examples/gallery/fula-sec/react-app
 npm install
 ```
 
 ## Usage
-
-### `BOX_ID="YOUR_BOX_ID" npm run init`
-Run's the script for populating BOX with FXland NFTs that local under ./scripts/photos. \
-Note:you most pass boxId as environment variable `BOX_ID="YOUR_BOX_ID"`
 
 ### `npm start`
 

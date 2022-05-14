@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  fsync:
+    build:
+      context: ../../examples/doc-sync/fsync
+      dockerfile: ./Dockerfile.fsync
+    working_dir: /opt/fsync
+    volumes:
+      - ../../examples/doc-sync/fsync:/opt/fsync
+    command: sleep infinity
+
   box0:
     container_name: box0
     restart: always

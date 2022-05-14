@@ -1,0 +1,10 @@
+# syntax=docker/dockerfile:1
+
+FROM node:16
+
+COPY ./apps/box /opt/box
+WORKDIR /opt/box
+RUN mkdir /opt/box/node_modules
+COPY ./tools/build-helpers /opt/box/node_modules/build-helpers
+RUN npm install
+RUN npm run build

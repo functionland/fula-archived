@@ -160,14 +160,3 @@ export const createReadQuery = (meetingId) => {
     }
   `
 }
-
-export const createMutation = `
-  mutation addImage($values:JSON){
-    create(input:{
-      collection:"gallery",
-      values: $values
-    }){
-      cid
-    }
-  }
-`;

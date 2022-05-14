@@ -1,0 +1,19 @@
+version: '2.4'
+
+services:
+  box:
+    build:
+      dockerfile: ./Dockerfile.box
+    working_dir: /opt/box
+    command: sleep infinity
+    volumes:
+      - ./apps/box/src:/opt/box/src
+
+  fsync:
+    build:
+      context: ./examples/doc-sync/fsync
+      dockerfile: ./Dockerfile.fsync
+    working_dir: /opt/fsync
+    volumes:
+      - ./examples/doc-sync/fsync:/opt/fsync
+    command: sleep infinity

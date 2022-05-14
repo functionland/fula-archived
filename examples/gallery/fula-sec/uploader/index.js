@@ -7,22 +7,33 @@ const wrtc = require("wrtc")
 
 const argv = require('yargs/yargs')(process.argv.slice(2))
   .usage('Usage: $0 -i [input-file] --boxid [Box ID] -p ./swarm.key')
-  .demandOption(['i'], 'Please specify folder path')
-  .demandOption(['p'], 'Please specify swarm-key')
-  .demandOption(['boxid'], 'Please specify the Box ID that you would like to connect to.')
+  .option('image-path', {
+    alias: 'i',
+    type: 'string',
+    description: 'Please specify folder path'
+  })
+  .option('boxid', {
+    alias: 'b',
+    type: 'string',
+    description: 'Please specify the Box ID that you would like to connect to.'
+  })
   .option('identity', {
     alias: 'u',
     type: 'string',
     description: 'Run with your Mnemonic'
   })
+  .option('swarm-key', {
+    alias: 'p',
+    type: 'string',
+    description: 'Please specify swarm-key'
+  })
+  .demandOption(['i','boxid'], 'Please provide both run and path arguments to work with this tool')
   .argv;
 
 const PHOTOS_PATH= argv.i
 const BOX_ID = argv.boxid
 const PKEY_PATH = argv.p
 const MNEMONIC = argv.u
-
-const netSecret = fs.readFileSync(PKEY_PATH)
 
 
 async function main() {
@@ -33,7 +44,13 @@ async function main() {
   } else {
     didObj = await DID.create();
   }
-  const fula = await createClient({wrtc,netSecret})
+  let fula;
+  if(PKEY_PATH){
+    const netSecret = fs.readFileSync(PKEY_PATH)
+    fula = await createClient({wrtc,netSecret})
+  }else{
+    fula = await createClient({wrtc})
+  }
   console.log("BoxID:",BOX_ID)
   console.log("authDID:",didObj.authDID)
   const conn = fula.connect(BOX_ID)

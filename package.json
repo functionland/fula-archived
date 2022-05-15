@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "jose": "^4.8.1"
+  }
+}

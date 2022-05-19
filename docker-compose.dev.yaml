@@ -2,35 +2,32 @@ version: '3.8'
 
 services:
   box:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fula-pack
     working_dir: /opt/fula/apps/box
     command: rushx start
 
-  react-cra:
-    build: .
-    working_dir: /opt/fula/examples/react-cra
-    command: rushx start
+
+  react-gallery:
+    image: fula-pack
+    working_dir: ./examples/gallery/simple/react-app:/opt/fula/examples/gallery/simple/react-app
+    command: npm install && npm start
     ports:
       - 3000:3000
+    depends_on:
+      - box
 
   react-todo-app:
-    build: .
+    image: fula-pack
     working_dir: /opt/fula/examples/react-todo-app
     volumes:
       - ./examples/react-todo-app/src:/opt/fula/examples/react-todo-app/src
-    command: rushx start
+    command: npm install && npm start
     environment:
       PORT: 3001
     ports:
       - 3001:3001
-
-  react-gallery:
-    build: .
-    working_dir: /opt/fula/examples/react-gallery
-    volumes:
-      - ./examples/react-gallery/src:/opt/fula/examples/react-gallery/src
-    command: rushx start
-    environment:
-      PORT: 3002
-    ports:
-      - 3002:3002
+    depends_on:
+      - box

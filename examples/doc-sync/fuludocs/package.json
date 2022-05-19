@@ -21,7 +21,7 @@
     "punycode": "^2.1.1"
   },
   "dependencies": {
-    "@functionland/fula": "0.6.3",
+    "@functionland/fula": "../../../libraries/fula-client",
     "markdown-it": "^12.3.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

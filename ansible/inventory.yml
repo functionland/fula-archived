@@ -3,3 +3,6 @@
 
 [ipfs_cluster:children]
 ipfs
+
+[box:children]
+ipfs

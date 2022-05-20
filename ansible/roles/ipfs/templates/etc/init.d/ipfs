@@ -12,7 +12,7 @@
 export IPFS_FD_MAX={{ ipfs_fd_max }}
 
 dir="/usr/local/bin"
-cmd="ipfs daemon"
+cmd="ipfs daemon --enable-pubsub-experiment"
 user="ipfs"
 
 name=`basename $0`

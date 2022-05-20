@@ -1,0 +1,17 @@
+[Unit]
+Description=Box daemon
+After=network.target
+
+[Service]
+Type=notify
+User=ipfs
+Group=ipfs
+ExecStart=/bin/bash -c  "cd {{ ipfs_home }}/.fula/apps/box && node dist/index.js"
+Type=simple
+
+
+Restart=on-failure
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

@@ -3,13 +3,24 @@ const fs=require('fs');
 const { File } =  require("@web-std/file")
 const wrtc = require("wrtc")
 
-const PHOTOS_PATH= './scripts/photos/'
-const BOX_ID = process.env.BOX_ID
+
+const argv = require('yargs/yargs')(process.argv.slice(2))
+  .usage('Usage: $0 -i [input-file] --boxid [Box ID] -p ./swarm.key')
+  .demandOption(['i'], 'Please specify folder path')
+  .demandOption(['p'], 'Please specify swarm-key')
+  .demandOption(['boxid'], 'Please specify the Box ID that you would like to connect to.')
+  .argv;
+
+const PHOTOS_PATH= argv.i
+const BOX_ID = argv.boxid
+const PKEY_PATH = argv.p
+
+const netSecret = fs.readFileSync(PKEY_PATH)
 
 
 async function main() {
-  const fula = await createClient({wrtc})
-
+  const fula = await createClient({wrtc,netSecret})
+  console.log("BoxID:",BOX_ID)
   const conn = fula.connect(BOX_ID)
   conn.on('connected',async ()=>{
     for await (const file of readFiles(PHOTOS_PATH)) {

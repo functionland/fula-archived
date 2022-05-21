@@ -1,8 +1,5 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import { build } from 'esbuild';
-// import browserify from 'browserify';
-// import * as fs from 'fs'
+
 
 await build({
   entryPoints: ['tests/asym.enc.test.ts','tests/tagged.enc.test.ts','tests/did.test.ts'],

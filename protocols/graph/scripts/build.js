@@ -1,9 +1,8 @@
 import esbuild from 'esbuild';
 import path from 'path';
 import babel from 'esbuild-plugin-babel';
-import {clean} from 'build-helpers'
 
-clean()
+
 esbuild.build({
   entryPoints: ['src/index.ts'],
   platform: 'browser',

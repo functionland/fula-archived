@@ -1,6 +1,13 @@
 # Change Log - @functionland/fula
 
-This log was last generated on Mon, 25 Apr 2022 07:43:12 GMT and should not be manually modified.
+This log was last generated on Tue, 10 May 2022 06:52:04 GMT and should not be manually modified.
+
+## 0.6.5
+Tue, 10 May 2022 06:52:04 GMT
+
+### Patches
+
+- remove internal package from dep
 
 ## 0.6.4
 Mon, 25 Apr 2022 07:43:12 GMT

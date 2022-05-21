@@ -2,35 +2,38 @@ version: '3.8'
 
 services:
   box:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: fula-pack
     working_dir: /opt/fula/apps/box
     command: rushx start
 
-  react-cra:
-    build: .
-    working_dir: /opt/fula/examples/react-cra
-    command: rushx start
+
+  react-gallery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: examples
+      args:
+        EXAMPLE_PATH: /opt/fula/examples/gallery/simple/react-app
     ports:
       - 3000:3000
+    depends_on:
+      - box
 
   react-todo-app:
-    build: .
-    working_dir: /opt/fula/examples/react-todo-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: examples
+      args:
+        EXAMPLE_PATH: /opt/fula/examples/react-todo-app
     volumes:
       - ./examples/react-todo-app/src:/opt/fula/examples/react-todo-app/src
-    command: rushx start
     environment:
       PORT: 3001
     ports:
       - 3001:3001
-
-  react-gallery:
-    build: .
-    working_dir: /opt/fula/examples/react-gallery
-    volumes:
-      - ./examples/react-gallery/src:/opt/fula/examples/react-gallery/src
-    command: rushx start
-    environment:
-      PORT: 3002
-    ports:
-      - 3002:3002
+    depends_on:
+      - box

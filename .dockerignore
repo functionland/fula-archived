@@ -2,6 +2,7 @@
 **/common/temp
 **/common/deploy
 **/compose
+node_modules
 .git
 .idea
 .github
@@ -9,5 +10,7 @@
 Dockerfile
 .dockerignore
 docker-compose*
-
+common/temp
+dist
+build
 !./common/deploy

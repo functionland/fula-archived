@@ -1,9 +1,7 @@
 import { build } from 'esbuild';
 import path from 'path';
 import fs from 'fs';
-import {clean} from 'build-helpers'
 
-clean()
 const packages = JSON.parse(
   fs.readFileSync(path.resolve('./package.json'), { encoding: 'utf8' })
 );

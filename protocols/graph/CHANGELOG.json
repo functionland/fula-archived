@@ -2,6 +2,23 @@
   "name": "@functionland/graph-protocol",
   "entries": [
     {
+      "version": "0.2.2",
+      "tag": "@functionland/graph-protocol_v0.2.2",
+      "date": "Tue, 10 May 2022 06:52:04 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "remove internal package from dep"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"async-later\" from `0.1.10` to `0.1.11`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.2.1",
       "tag": "@functionland/graph-protocol_v0.2.1",
       "date": "Sun, 24 Apr 2022 09:20:16 GMT",

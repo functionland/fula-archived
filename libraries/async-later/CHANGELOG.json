@@ -2,6 +2,18 @@
   "name": "async-later",
   "entries": [
     {
+      "version": "0.1.11",
+      "tag": "async-later_v0.1.11",
+      "date": "Tue, 10 May 2022 06:52:04 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "remove internal package from dep"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.1.10",
       "tag": "async-later_v0.1.10",
       "date": "Sun, 24 Apr 2022 09:20:16 GMT",

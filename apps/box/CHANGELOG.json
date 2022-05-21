@@ -2,6 +2,41 @@
   "name": "@functionland/box",
   "entries": [
     {
+      "version": "0.6.4",
+      "tag": "@functionland/box_v0.6.4",
+      "date": "Tue, 10 May 2022 07:15:54 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix replication propagation"
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.6.3",
+      "tag": "@functionland/box_v0.6.3",
+      "date": "Tue, 10 May 2022 06:52:04 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "fix fatal error on box protocol implimention."
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@functionland/file-protocol\" from `~0.3.5` to `~0.3.6`"
+          },
+          {
+            "comment": "Updating dependency \"@functionland/graph-protocol\" from `~0.2.1` to `~0.2.2`"
+          },
+          {
+            "comment": "Updating dependency \"async-later\" from `0.1.10` to `0.1.11`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.6.2",
       "tag": "@functionland/box_v0.6.2",
       "date": "Sun, 24 Apr 2022 09:20:16 GMT",

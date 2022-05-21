@@ -1,4 +1,5 @@
 import { build } from 'esbuild';
+import {EsmExternalsPlugin} from '@esbuild-plugins/esm-externals'
 
 
 await build({
@@ -7,11 +8,9 @@ await build({
   target: 'es2018',
   format: 'esm',
   bundle: true,
-  sourcemap: true,
+  sourcemap: false,
   outfile: 'dist/br/index.js',
-  external: [
-    'react','react-dom'
-  ]
+  plugins: [EsmExternalsPlugin({ externals: ['react', 'react-dom'] })]
 });
 
 

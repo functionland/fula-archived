@@ -5,26 +5,32 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: fula-pack
+      target: fula-pack
     working_dir: /opt/fula/apps/box
     command: rushx start
 
 
   react-gallery:
-    image: fula-pack
-    working_dir: ./examples/gallery/simple/react-app:/opt/fula/examples/gallery/simple/react-app
-    command: npm install && npm start
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: examples
+      args:
+        EXAMPLE_PATH: /opt/fula/examples/gallery/simple/react-app
     ports:
       - 3000:3000
     depends_on:
       - box
 
   react-todo-app:
-    image: fula-pack
-    working_dir: /opt/fula/examples/react-todo-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: examples
+      args:
+        EXAMPLE_PATH: /opt/fula/examples/react-todo-app
     volumes:
       - ./examples/react-todo-app/src:/opt/fula/examples/react-todo-app/src
-    command: npm install && npm start
     environment:
       PORT: 3001
     ports:

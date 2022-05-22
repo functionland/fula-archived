@@ -13,6 +13,7 @@
     "@functionland/fula": "0.6.3",
     "@web-std/file": "~3.0.2",
     "lodash": "^4.17.21",
+    "node-pre-gyp": "^0.17.0",
     "uuid": "^8.3.2",
     "wrtc": "~0.4.7",
     "yargs": "^17.4.0"

@@ -1,0 +1,8 @@
+[ipfs]
+# Write here your ipfs nodes
+
+[ipfs_cluster:children]
+ipfs
+
+[box:children]
+ipfs

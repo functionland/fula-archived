@@ -1,0 +1,152 @@
+- name: install the gpg key for nodejs LTS
+  become: yes
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+  notify:
+    - restart Box
+
+
+- name: install the nodejs LTS repos
+  become: yes
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ nodejs_version }}.x {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+  notify:
+    - restart Box
+
+
+- name: Install the nodejs
+  become: yes
+  apt:
+    name: nodejs
+    state: present
+  notify:
+    - restart Box
+
+
+- name: Check if repo exists
+  stat:
+    path: "{{ ipfs_home }}/.fula"
+  register: fula_repo
+  notify:
+    - restart Box
+
+
+- name: clean github repo if it exists
+  become: yes
+  ansible.builtin.shell: git checkout -- .
+  args:
+    chdir: "{{ ipfs_home }}/.fula"
+  when: fula_repo.stat.exists
+  notify:
+    - restart Box
+
+
+- name: clone a github repository
+  become: yes
+  become_user: ipfs
+  git:
+    #repo: https://github.com/functionland/fula.git
+    repo: https://github.com/farhoud/fula.git
+    dest: "{{ ipfs_home }}/.fula"
+    clone: yes
+    update: yes
+    version: organize-examples
+  notify:
+    - restart Box
+
+- name: copy box config
+  become: yes
+  template:
+    src: "{{ item }}"
+    dest: "{{ ipfs_home }}/.fula/apps/box/config/{{ item }}"
+    mode: 0600
+    owner: ipfs
+    group: ipfs
+  with_items:
+      - default.json
+  tags:
+    - config
+  notify:
+    - restart Box
+
+- name: copy box config
+  become: yes
+  template:
+    src: "{{ item }}"
+    dest: "{{ ipfs_home }}/.fula/apps/box/src/{{ item }}"
+    mode: 0600
+    owner: ipfs
+    group: ipfs
+  with_items:
+      - config.ts
+
+  tags:
+    - config
+  notify:
+    - restart Box
+
+
+- name: create data  dir
+  become_user: ipfs
+  become: yes
+  file:
+    path: "{{ ipfs_home}}/.fula/apps/box/data"
+    state: directory
+  notify:
+    - restart Box
+
+
+- name: install Box with npm
+  become_user: ipfs
+  become: yes
+  community.general.npm:
+    path: "{{ ipfs_home }}/.fula/apps/box"
+  notify:
+    - restart Box
+
+
+- name: build Box with npm
+  become_user: ipfs
+  become: yes
+  command: npm run  build
+  args:
+    chdir: "{{ ipfs_home }}/.fula/apps/box"
+  notify:
+    - restart Box
+
+- name: install Box service
+  become: yes
+  template:
+    src: etc/systemd/system/box.service
+    dest: /etc/systemd/system/box.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart Box
+  when:
+    - not (ansible_distribution == "Amazon" and ansible_distribution_major_version == "NA")
+    - not (ansible_distribution == "Ubuntu" and ansible_distribution_version is version('15.04', '<'))
+    - not (ansible_distribution == "Debian" and ansible_distribution_version is version('8', '<'))
+
+- name: reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: box
+  when:
+    - not (ansible_distribution == "Amazon" and ansible_distribution_major_version == "NA")
+    - not (ansible_distribution == "Ubuntu" and ansible_distribution_version is version('15.04', '<'))
+    - not (ansible_distribution == "Debian" and ansible_distribution_version is version('8', '<'))
+
+
+- name: enable and start box
+  become: yes
+  service:
+    name: box
+    state: started
+    enabled: yes

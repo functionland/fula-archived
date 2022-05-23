@@ -17,7 +17,7 @@
     "skipLibCheck": true
   },
   "typedocOptions": {
-    "entryPoints": ["src/did.ts"],
+    "entryPoints": ["src/index.ts"],
     "out": "docs"
   },
   "include": [

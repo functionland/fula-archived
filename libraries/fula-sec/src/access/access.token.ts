@@ -1,5 +1,4 @@
-import jose from "jose"
-
+import * as jose from 'jose'
 /*
     Generate Signature per content
     FulaSign is utility for creating Signature per content 
@@ -7,12 +6,14 @@ import jose from "jose"
 
 interface ISign {
     payload: Uint8Array
-    alg?: string 
+    alg?: string
+    jws: string | Uint8Array
 }
 
 class Sign {
-    private _payload: Uint8Array
+    _payload: Uint8Array
     _alg?:string 
+    _jws: string | Uint8Array 
 
     constructor(options: ISign) {
         if (!(options.payload instanceof Uint8Array)) {
@@ -20,6 +21,7 @@ class Sign {
         }
         this._payload = options.payload;
         this._alg = options.alg;
+        this._jws = options.jws;
     }
 
     async sign(privateKey: any) {
@@ -31,23 +33,23 @@ class Sign {
     }
 
     async verify(publicKey: any) {
-        return await jose.compactVerify(this._payload, publicKey)
+        return await jose.compactVerify(this._jws, publicKey)
     }
 }
 
 interface IAccessToken extends ISign {
     payload: any
     issuer:string
-    audience: string[]
+    audience: string
     expt: number
-    token: string
-
+    token: string,
+    alg?: string 
 }
 
 export class AccessToken extends Sign {
     payload: any
     issuer:string
-    audience: string[]
+    audience: string
     expt: number
     token: string
 
@@ -65,15 +67,15 @@ export class AccessToken extends Sign {
         @param: payload {alg, issuer, audience, expt} , key
         @return: token string
     */
-    async createToken(key:any) {
-        return await new jose.EncryptJWT(this.payload)
-        .setProtectedHeader({ alg: 'dir', enc: this._alg || 'A256GCM' })
+    async createToken(jwkPrivateKey:any) {
+        return await new jose.SignJWT(this.payload)
+        .setProtectedHeader({ alg: this._alg || 'ES256' })
         .setIssuedAt()
         .setNotBefore(Math.floor(Date.now() / 1000))
         .setIssuer(this.issuer)
         .setAudience(this.audience)
         .setExpirationTime(this.expt)
-        .encrypt(key)
+        .sign(jwkPrivateKey)
     }
 
     /*
@@ -82,7 +84,7 @@ export class AccessToken extends Sign {
         @return: { payload, protectedHeader }
     */
     async verifyToken(key:any) {
-        return  await jose.jwtDecrypt(this.token, key, {
+        return  await jose.jwtVerify(this.token, key, {
             issuer: this.issuer,
             audience: this.audience
         })

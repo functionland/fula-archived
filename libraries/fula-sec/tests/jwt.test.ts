@@ -6,22 +6,22 @@ import {FulaDID, TaggedEncryption} from "../src/index"
 
 describe('Tagged Encription', () => {
     it('1- Add DID address to encrypt', async () => {
-        // const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
-        // let jwk = getPublicJWK(privateKey)
-        // console.log('jwk: ', jwk)
+        const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
+        let jwk = getPublicJWK(privateKey)
+        console.log('jwk: ', jwk)
 
-        // const IpublicJWK = await jose.importJWK(jwk, 'ES256')
-        // console.log('IpublicJWK: ', IpublicJWK)
+        const IpublicJWK = await jose.importJWK(jwk, 'ES256')
+        console.log('IpublicJWK: ', IpublicJWK)
 
 
-        // const prJWK = getPrivateJWK(privateKey)
-        // console.log('prJWK: ', prJWK)
+        const prJWK = getPrivateJWK(privateKey)
+        console.log('prJWK: ', prJWK)
 
-        // const IprivateJwk = await jose.importJWK(prJWK, 'ES256')
-        // console.log('IprivateJwk: ', IprivateJwk)
+        const IprivateJwk = await jose.importJWK(prJWK, 'ES256')
+        console.log('IprivateJwk: ', IprivateJwk)
 
-        // const privateJwk = await jose.exportJWK(IprivateJwk)
-        // console.log(privateJwk)
+        const privateJwk = await jose.exportJWK(IprivateJwk)
+        console.log(privateJwk)
         should().not.Throw
     });
 
@@ -64,23 +64,21 @@ describe('Tagged Encription', () => {
 
 
     it('3- Add DID address to encrypt', async () => {
-        // const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
-        // let jwk = getPublicJWK(privateKey)
-        // console.log('jwk: ', jwk)
+        const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
+        let jwk = getPublicJWK(privateKey)
+        console.log('jwk: ', jwk)
 
-        // const IpublicJWK = await jose.importJWK(jwk, 'ES256K')
-        // console.log('IpublicJWK: ', IpublicJWK)
+        const IpublicJWK = await jose.importJWK(jwk, 'ES256K')
+        console.log('IpublicJWK: ', IpublicJWK)
 
-        // let jwt = "eyJhbGciOiJFUzI1NksifQ.eyJhbGciOiJFUzI1NksifQ.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiaWF0IjoxNjUzMjQ2Mjk5LCJpc3MiOiJ1cm46ZXhhbXBsZTppc3N1ZXIiLCJhdWQiOiJ1cm46ZXhhbXBsZTphdWRpZW5jZSIsImV4cCI6MTY1MzI1MzQ5OX0.fMNMEvxDgJKznawrx54_X3Y8MhIKKQWAHaG032j4_1u_xC7UjWrYpKKDcItOXaDGJpf7XyLpt7h5lqxBpzqgJA"    
+        let jwt = "eyJhbGciOiJFUzI1NksifQ.eyJhbGciOiJFUzI1NksifQ.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiaWF0IjoxNjUzMjQ2Mjk5LCJpc3MiOiJ1cm46ZXhhbXBsZTppc3N1ZXIiLCJhdWQiOiJ1cm46ZXhhbXBsZTphdWRpZW5jZSIsImV4cCI6MTY1MzI1MzQ5OX0.fMNMEvxDgJKznawrx54_X3Y8MhIKKQWAHaG032j4_1u_xC7UjWrYpKKDcItOXaDGJpf7XyLpt7h5lqxBpzqgJA"    
 
-        // jose.jwtDecrypt(jwt, IpublicJWK, {
-        //     issuer: 'urn:example:issuer',
-        //     audience: 'urn:example:audience'
-        // })
-        // .then((res)=> console.log('res: >>', res))
-        // .catch((err) => console.log("err: >>", err ))
-
-
+        jose.jwtDecrypt(jwt, IpublicJWK, {
+            issuer: 'urn:example:issuer',
+            audience: 'urn:example:audience'
+        })
+        .then((res)=> console.log('res: >>', res))
+        .catch((err) => console.log("err: >>", err ))
         should().not.Throw
         });
 

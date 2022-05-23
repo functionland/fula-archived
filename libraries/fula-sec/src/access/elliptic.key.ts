@@ -1,17 +1,9 @@
 import { ec as EC } from 'elliptic'
-import { bytesToBase58, bytesToBase64, hexToBytes, bytesToBase64url } from '../utils/index'
+import { hexToBytes, bytesToBase64url } from '../utils/index'
 
-
-
-export function getPublicJWK(privateKey: string) {
+export function getPublicJWK(_privateKey: string) {
     const secp256k1 = new EC('secp256k1')
-    // const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
-    const kp = secp256k1.keyFromPrivate(privateKey)
-    const publicKey = String(kp.getPublic('hex'))
-    const compressedPublicKey = String(kp.getPublic().encode('hex', true))
-    const publicKeyBase64 = bytesToBase64(hexToBytes(publicKey))
-    const publicKeyBase58 = bytesToBase58(hexToBytes(publicKey))
-    
+    const kp = secp256k1.keyFromPrivate(_privateKey)
     return  {
       crv: 'secp256k1',
       kty: 'EC',
@@ -22,12 +14,8 @@ export function getPublicJWK(privateKey: string) {
 
 export function getPrivateJWK(_privateKey: string) {
   const secp256k1 = new EC('secp256k1')
-  // const privateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
   const kp = secp256k1.keyFromPrivate(_privateKey)
   const privateKey = String(kp.getPrivate('hex'))
-  const compressedPublicKey = String(kp.getPrivate())
-  const publicKeyBase64 = bytesToBase64(hexToBytes(privateKey))
-  const publicKeyBase58 = bytesToBase58(hexToBytes(privateKey))
   
  /* privateJwk:  {
     kty: 'EC',

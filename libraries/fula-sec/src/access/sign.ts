@@ -20,7 +20,7 @@ export class ProduceSign {
     protected _payload!: Uint8Array
 
     constructor(options: ISign) {
-        if (!isObjects(options.payload)) {
+        if (!isObjects(options)) {
             throw new TypeError('Set MUST be an object')
         }
         this._payload = stringToBytes(JSON.stringify(options.payload));

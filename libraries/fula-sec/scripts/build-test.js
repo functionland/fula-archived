@@ -5,7 +5,7 @@ import { build } from 'esbuild';
 // import * as fs from 'fs'
 
 await build({
-  entryPoints: ['tests/asym.enc.test.ts','tests/tagged.enc.test.ts','tests/did.test.ts', 'tests/jwt.test.ts'],
+  entryPoints: ['tests/asym.enc.test.ts','tests/tagged.enc.test.ts','tests/did.test.ts', 'tests/jwt.test.ts', 'tests/access.token.test.ts'],
   platform: 'node',
   format: 'cjs',
   bundle: true,

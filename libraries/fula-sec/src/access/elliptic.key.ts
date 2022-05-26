@@ -1,7 +1,7 @@
 import { ec as EC } from 'elliptic'
-import { hexToBytes, bytesToBase64url } from '../utils/index'
+import { hexToBytes, bytesToBase64url } from '../utils/u8a.multifoamats'
 
-export function getPublicJWK(_privateKey: string) {
+export function getFromPrivateJWK(_privateKey: string) {
     const secp256k1 = new EC('secp256k1')
     const kp = secp256k1.keyFromPrivate(_privateKey)
     return  {
@@ -10,6 +10,17 @@ export function getPublicJWK(_privateKey: string) {
       x: bytesToBase64url(hexToBytes(kp.getPublic().getX().toString('hex'))),
       y: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex'))),
     }
+}
+
+export function getPublicJWK(_publicKey: string) {
+  const secp256k1 = new EC('secp256k1')
+  const kp = secp256k1.keyFromPublic(_publicKey)
+  return  {
+    crv: 'secp256k1',
+    kty: 'EC',
+    x: bytesToBase64url(hexToBytes(kp.getPublic().getX().toString('hex'))),
+    y: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex'))),
+  }
 }
 
 export function getPrivateJWK(_privateKey: string) {

@@ -6,27 +6,24 @@ import { stringToBytes } from '../utils/u8a.multifoamats'
     Generate Signature per content
     FulaSign is utility for creating Signature per content 
 */
-interface IPayLoad {
-    jweHash: any
-    issuer: string
-}
-
-interface ISign {
-    payload: IPayLoad
-    signature: string | Uint8Array
+interface ISigPayLoad {
+    jwe: any
+    CID: string,
+    issuer: string,
+    audience: string
 }
 
 export class ProduceSign {
     protected _payload!: Uint8Array
 
-    constructor(options: ISign) {
+    setSignOption(options: ISigPayLoad) {
         if (!isObjects(options)) {
             throw new TypeError('Set MUST be an object')
         }
-        this._payload = stringToBytes(JSON.stringify(options.payload));
+        this._payload = stringToBytes(JSON.stringify(options));
     }
 
-    async sign(privateKey: any) {
+    async signKey(privateKey: any) {
         return await new jose.CompactSign(
             this._payload
           )
@@ -34,7 +31,7 @@ export class ProduceSign {
             .sign(privateKey)
     }
 
-    async verify(signature: string | Uint8Array, publicKey: any) {
+    async verifySign(signature: string | Uint8Array, publicKey: any) {
         return await jose.compactVerify(signature, publicKey)
     }
 }

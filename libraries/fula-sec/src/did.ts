@@ -11,13 +11,15 @@ import {Buffer} from 'buffer';
 
 interface IFulaDID {
     privateKey: string;
+    address: string;
     mnemonic: string;
     authDID: string;
     did: any;
 }
 
 export class FulaDID implements IFulaDID {
-    privateKey!: string
+    privateKey!: string;
+    address!: string;
     mnemonic!: string;
     authDID!: string;
     did: any;
@@ -43,10 +45,12 @@ export class FulaDID implements IFulaDID {
         const wallet = ethers.Wallet.createRandom()
         this.mnemonic = wallet.mnemonic.phrase
         this.privateKey = wallet.privateKey
+        this.address = wallet.address
         this.authDID = await this.didProvider();
         return {
             mnemonic: this.mnemonic,
             privateKey: this.privateKey,
+            address: this.address,
             authDID: this.authDID
         }
     }
@@ -59,6 +63,7 @@ export class FulaDID implements IFulaDID {
         return {
             mnemonic: this.mnemonic,
             privateKey: this.privateKey,
+            address: this.address,
             authDID: this.authDID
         }
     }

@@ -1,5 +1,6 @@
 // test tagged.enc.ts
 import { expect, should } from 'chai';
+import { TextDecoder, TextEncoder } from 'util';
 import  { AsymEncryption }  from "../src/asym.enc"
 import {FulaDID} from "../src/did"
 
@@ -9,6 +10,7 @@ describe('Asymetric Encription', () => {
         const fulaDID = new FulaDID();
         await fulaDID.create();
         const asymEnc = new AsymEncryption(fulaDID.privateKey.slice(2));
+       
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'

@@ -1,5 +1,6 @@
 import * as u8a from 'uint8arrays'
 import { bases } from 'multiformats/basics'
+import { TextDecoder } from 'util'
 
 /**
  * @deprecated Signers will be expected to return base64url `string` signatures.
@@ -54,6 +55,11 @@ export function bytesToHex(b: Uint8Array): string {
 
 export function stringToBytes(s: string): Uint8Array {
   return u8a.fromString(s)
+}
+
+export function bytesToString(b: Uint8Array): string {
+  var enc = new TextDecoder("utf-8");
+  return enc.decode(b)
 }
 
 export function toJose({ r, s, recoveryParam }: EcdsaSignature, recoverable?: boolean): string {

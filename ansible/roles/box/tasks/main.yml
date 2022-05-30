@@ -1,3 +1,28 @@
+- name: update apt cache
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: ensure gpg binary is installed
+  become: yes
+  apt:
+    name: gpg
+
+- name: ensure git is installed
+  become: yes
+  apt:
+    name: git
+
+- name: ensure make is installed
+  become: yes
+  apt:
+    name: make
+
+- name: ensure g++ is installed
+  become: yes
+  apt:
+    name: g++
+
 - name: install the gpg key for nodejs LTS
   become: yes
   apt_key:
@@ -5,7 +30,6 @@
     state: present
   notify:
     - restart Box
-
 
 - name: install the nodejs LTS repos
   become: yes
@@ -32,7 +56,6 @@
   register: fula_repo
   notify:
     - restart Box
-
 
 - name: clean github repo if it exists
   become: yes

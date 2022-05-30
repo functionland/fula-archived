@@ -1,7 +1,7 @@
 import { ec as EC } from 'elliptic'
 import { hexToBytes, bytesToBase64url } from '../utils/u8a.multifoamats'
 
-export function getPublicJWKfromPrivateKey(_privateKey: string) {
+export function getPublicJWK(_privateKey: string) {
     const secp256k1 = new EC('secp256k1')
     const kp = secp256k1.keyFromPrivate(_privateKey)
     return  {
@@ -12,9 +12,11 @@ export function getPublicJWKfromPrivateKey(_privateKey: string) {
     }
 }
 
-export function getPublicJWK(_publicKey: string) {
+export function recoverPublicJWK(msgHash:string, signature: any, ) {
   const secp256k1 = new EC('secp256k1')
-  const kp = secp256k1.keyFromPublic(_publicKey)
+  let hexToDecimal = (x:any) => secp256k1.keyFromPrivate(x, "hex").getPrivate().toString(10);
+  const kp = secp256k1.recoverPubKey(
+    hexToDecimal(msgHash), signature, signature.recoveryParam, "hex");
   return  {
     crv: 'secp256k1',
     kty: 'EC',
@@ -44,4 +46,17 @@ export function getPrivateJWK(_privateKey: string) {
     d: bytesToBase64url(hexToBytes(privateKey)),
   }
   
+}
+
+export function getECSecp256k1KeyPair(_privateKey: string) {
+  const secp256k1 = new EC('secp256k1')
+  let keyPair = secp256k1.keyFromPrivate(_privateKey);
+  let privKey = keyPair.getPrivate("hex");
+  let pubKey = keyPair.getPublic();
+
+  return {
+    privateKey: privKey,
+    publicKey: pubKey,
+    address: pubKey.encodeCompressed("hex")
+  }
 }

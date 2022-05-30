@@ -1,7 +1,7 @@
 import { expect, should } from 'chai';
 import {FulaDID, TaggedEncryption} from "../src/index"
 import {ProtectedAccessHeader} from '../src/access/access.token'
-import {getPublicJWK, getPrivateJWK, getPublicJWKfromPrivateKey} from '../src/access/elliptic.key'
+import {getPublicJWK, getPrivateJWK} from '../src/access/elliptic.key'
 import * as jose from 'jose'
 
 describe('Access Token and Signature Verifyer', () => {
@@ -19,16 +19,16 @@ describe('Access Token and Signature Verifyer', () => {
                 jwe: "aaa",
                 CID: "bbbb"
             }
-        }).signer(result.privateKey);
+        }).sign(result.privateKey);
 
         console.log('jwt: ', jwt)
 
         
-        let pubJWK = getPublicJWKfromPrivateKey(result.privateKey)
+        let pubJWK = getPublicJWK(result.privateKey)
         console.log('pubJWK: ', pubJWK)
 
         const verify = await new ProtectedAccessHeader()
-        .verifyAccessKey(jwt, pubJWK);
+        .verifyAccess(jwt, '45', pubJWK);
         console.log('verify: ', verify)
 
         should().not.Throw

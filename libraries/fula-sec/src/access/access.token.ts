@@ -1,23 +1,19 @@
 import * as jose from 'jose'
-import { ProduceSign } from './sign'
+import { ProduceAccessKey } from './sign'
 import isObjects from '../utils/isObject'
-import { stringToBytes, bytesToString } from '../utils/u8a.multifoamats'
-import {getPublicJWK, getPrivateJWK, getPublicJWKfromPrivateKey} from './elliptic.key'
+import { stringToBytes, bytesToString, randomKey } from '../utils/u8a.multifoamats'
+import {getPublicJWK, getPrivateJWK} from './elliptic.key'
 import { bytes } from 'multiformats'
-
-interface IAccessHeaderPayload {
-    jwe: any,
-    CID: string,
-}
+let sha3 = require('js-sha3');
 
 interface IAccessHeader {
-    payload: IAccessHeaderPayload
+    payload: any
     issuer:string
     audience: string
     expt?: string | undefined
 }
 
-export class ProtectedAccessHeader extends ProduceSign {
+export class ProtectedAccessHeader extends ProduceAccessKey {
     private _issuer!: string
     private _audience!: string
     private _expt?: string | undefined
@@ -39,16 +35,16 @@ export class ProtectedAccessHeader extends ProduceSign {
         @param: payload {alg, issuer, audience, expt} , key
         @return: token string
     */
-    async signer(_privateKey: string) {
-        let jwkPrivateKey:any = await jose.importJWK(getPrivateJWK(_privateKey), 'ES256K')
+
+    async sign(_privateKey: string) {
         this.setSignOption({
-            jwe: this._payload.jwe,
-            CID: this._payload.CID,
             issuer: this._issuer,
-            audience: this._audience
+            audience: this._audience,
+            accessKey: randomKey(32)
         })
-        let signature = await this.signKey(jwkPrivateKey)
-        return await new jose.SignJWT({signature})
+        let signedAccessKey = this.signAccessKey(_privateKey)
+        let jwkPrivateKey:any = await jose.importJWK(getPrivateJWK(_privateKey), 'ES256K')
+        return await new jose.SignJWT({accessKey: signedAccessKey})
         .setProtectedHeader({ alg: 'ES256K' })
         .setIssuedAt()
         .setNotBefore(Math.floor(Date.now() / 1000))
@@ -63,12 +59,21 @@ export class ProtectedAccessHeader extends ProduceSign {
         @param: token , key
         @return: { payload, protectedHeader }
     */
-    async verifyAccessKey(accessKey: string, _publicKey: any) {
+    async verifyAccess(jwt: string, accessKey: any, _publicKey: any) {
         try {
             let jwkPublicKey: any = await jose.importJWK(_publicKey, 'ES256K')
-            let verify: any = await jose.jwtVerify(accessKey, jwkPublicKey, this._payload)
-            let status:any = await this.verifySign(verify.payload.signature, jwkPublicKey)
-            return {verify, status: bytesToString(status.payload)}  
+            let  { payload } = await jose.jwtVerify(jwt, jwkPublicKey)
+            let msgHash = sha3.keccak256(stringToBytes(JSON.stringify(
+                {
+                    issuer: payload.iss,
+                    audience: payload.aud,
+                    accessKey: accessKey
+                }
+            )));
+
+            let sig: any = payload.accessKey
+            let status = this.verifyAccessKey(msgHash, sig.signature)
+            return {payload, status}
         } catch (error) {
             return error
         } 

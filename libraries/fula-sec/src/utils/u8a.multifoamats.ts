@@ -94,3 +94,12 @@ export function leftpad(data: string, size = 64): string {
   if (data.length === size) return data
   return '0'.repeat(size - data.length) + data
 }
+
+export const randomKey = (len: number) => {
+  const arr:any = []
+  for(let i=0; i<len; i+=1) {
+    arr.push(Math.floor(Math.random() * 255))
+  }
+
+  return new Uint8Array(arr)
+}

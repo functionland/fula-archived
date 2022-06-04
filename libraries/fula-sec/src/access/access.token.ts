@@ -37,12 +37,11 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
     */
 
     async sign(_privateKey: string) {
-        this.setSignOption({
+        let signedAccessKey = this.setSignOption({
             issuer: this._issuer,
             audience: this._audience,
-            accessKey: randomKey(32)
-        })
-        let signedAccessKey = this.signAccessKey(_privateKey)
+            rootKey: randomKey(32)
+        }).signAccessKey(_privateKey)
         let jwkPrivateKey:any = await jose.importJWK(getPrivateJWK(_privateKey), 'ES256K')
         return await new jose.SignJWT({accessKey: signedAccessKey})
         .setProtectedHeader({ alg: 'ES256K' })
@@ -59,21 +58,21 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
         @param: token , key
         @return: { payload, protectedHeader }
     */
-    async verifyAccess(jwt: string, accessKey: any, _publicKey: any) {
+    async verifyAccess(jwt: string, rootKey: any, _publicKey: any) {
         try {
             let jwkPublicKey: any = await jose.importJWK(_publicKey, 'ES256K')
             let  { payload } = await jose.jwtVerify(jwt, jwkPublicKey)
+            console.log('jwt payload: ', payload)
             let msgHash = sha3.keccak256(stringToBytes(JSON.stringify(
                 {
                     issuer: payload.iss,
                     audience: payload.aud,
-                    accessKey: accessKey
+                    rootKey: rootKey
                 }
             )));
-
-            let sig: any = payload.accessKey
-            let status = this.verifyAccessKey(msgHash, sig.signature)
-            return {payload, status}
+            // console.log('jwtVerify ->  payload: ', payload, msgHash)    
+            let status = this.verifyAccessKey(msgHash, payload.accessKey)
+            return { payload, status }
         } catch (error) {
             return error
         } 

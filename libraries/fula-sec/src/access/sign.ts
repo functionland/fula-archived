@@ -9,20 +9,21 @@ import sha3 from 'js-sha3'
 interface ISigPayLoad {
     issuer: string,
     audience: string,
-    accessKey: any
+    rootKey: any
 }
 
 export class ProduceAccessKey {
     protected _msgHash!: string
 
-    setSignOption(options: ISigPayLoad) {
+    protected setSignOption(options: ISigPayLoad) {
         if (!isObjects(options)) {
             throw new TypeError('options must be an object')
         }
         this._msgHash = sha3.keccak256(stringToBytes(JSON.stringify(options)));
+        return this
     }
 
-    signAccessKey(privateKey: any) {
+    protected signAccessKey(privateKey: any) {
         const secp256k1 = new EC('secp256k1')
         let signature = secp256k1.sign(this._msgHash, privateKey, "hex", {canonical: true});
         return {
@@ -31,16 +32,13 @@ export class ProduceAccessKey {
         }
     }
 
-    verifyAccessKey(msgHash: string, signature: any) {
-        console.log('signature: ', signature)
+    protected verifyAccessKey(msgHash: string, accessKey: any) {
         const secp256k1 = new EC('secp256k1')
         let hexToDecimal = (x:any) => secp256k1.keyFromPrivate(x, "hex").getPrivate().toString(10);
         let pubKeyRecovered = secp256k1.recoverPubKey(
-        hexToDecimal(msgHash), signature, signature.recoveryParam, "hex");
+        hexToDecimal(accessKey.msgHash), accessKey.signature, accessKey.signature.recoveryParam, "hex");
         console.log("Recovered pubKey:", pubKeyRecovered.encodeCompressed("hex"));
-
-        let validSig = secp256k1.verify(msgHash, signature, pubKeyRecovered);
-        console.log("Signature valid?", validSig);
+        let validSig = secp256k1.verify(msgHash, accessKey.signature, pubKeyRecovered);
         return validSig
     }
 }

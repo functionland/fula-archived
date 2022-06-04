@@ -10,7 +10,7 @@ describe('Access Token and Signature Verifyer', () => {
         const result = await fulaDID.create();
         // console.log('fulaDID: ', result)
     
-        const jwt = await new ProtectedAccessHeader()
+        let jwt = await new ProtectedAccessHeader()
         .setDeclaration({
             issuer: result.authDID,
             audience: result.authDID,
@@ -21,11 +21,11 @@ describe('Access Token and Signature Verifyer', () => {
             }
         }).sign(result.privateKey);
 
-        console.log('jwt: ', jwt)
+        console.log('jwt: ', jwt);
 
         
         let pubJWK = getPublicJWK(result.privateKey)
-        console.log('pubJWK: ', pubJWK)
+        // console.log('pubJWK: ', pubJWK)
 
         const verify = await new ProtectedAccessHeader()
         .verifyAccess(jwt, '45', pubJWK);

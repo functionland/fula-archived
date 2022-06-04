@@ -12,11 +12,22 @@ export function getPublicJWK(_privateKey: string) {
     }
 }
 
-export function recoverPublicJWK(msgHash:string, signature: any, ) {
+// export function recoverPublicJWK(msgHash:string, signature: any, ) {
+//   const secp256k1 = new EC('secp256k1')
+//   let hexToDecimal = (x:any) => secp256k1.keyFromPrivate(x, "hex").getPrivate().toString(10);
+//   const kp = secp256k1.recoverPubKey(
+//     hexToDecimal(msgHash), signature, signature.recoveryParam, "hex");
+//   return  {
+//     crv: 'secp256k1',
+//     kty: 'EC',
+//     x: bytesToBase64url(hexToBytes(kp.getPublic().getX().toString('hex'))),
+//     y: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex'))),
+//   }
+// }
+
+export function recoverPublicJWK(pubKey: string) {
   const secp256k1 = new EC('secp256k1')
-  let hexToDecimal = (x:any) => secp256k1.keyFromPrivate(x, "hex").getPrivate().toString(10);
-  const kp = secp256k1.recoverPubKey(
-    hexToDecimal(msgHash), signature, signature.recoveryParam, "hex");
+  const kp = secp256k1.keyFromPublic(pubKey, 'hex')
   return  {
     crv: 'secp256k1',
     kty: 'EC',
@@ -29,7 +40,6 @@ export function getPrivateJWK(_privateKey: string) {
   const secp256k1 = new EC('secp256k1')
   const kp = secp256k1.keyFromPrivate(_privateKey)
   const privateKey = String(kp.getPrivate('hex'))
-  
  /* privateJwk:  {
     kty: 'EC',
     crv: 'P-256',

@@ -11,6 +11,10 @@ export interface EcdsaSignature {
   recoveryParam?: number | null
 }
 
+export function stringHexToU8a(string: string): Uint8Array {
+  return new Uint8Array(Buffer.from(string, 'hex'))
+}
+
 export function bytesToBase64url(b: Uint8Array): string {
   return u8a.toString(b, 'base64url')
 }

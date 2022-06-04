@@ -1,6 +1,6 @@
-import { ec as EC } from 'elliptic'
+import secp256k1 from 'secp256k1';
 import isObjects from '../utils/isObject'
-import { stringToBytes } from '../utils/u8a.multifoamats'
+import { stringToBytes, bytesToBase64, base64ToBytes, stringHexToU8a } from '../utils/u8a.multifoamats'
 import sha3 from 'js-sha3'
 /*
     Generate Signature per content
@@ -9,36 +9,36 @@ import sha3 from 'js-sha3'
 interface ISigPayLoad {
     issuer: string,
     audience: string,
-    rootKey: any
+    base: any
 }
 
 export class ProduceAccessKey {
-    protected _msgHash!: string
+    protected _rootHash!: string
 
     protected setSignOption(options: ISigPayLoad) {
         if (!isObjects(options)) {
             throw new TypeError('options must be an object')
         }
-        this._msgHash = sha3.keccak256(stringToBytes(JSON.stringify(options)));
+        this._rootHash = sha3.keccak256(stringToBytes(JSON.stringify(options)));
         return this
     }
 
     protected signAccessKey(privateKey: any) {
-        const secp256k1 = new EC('secp256k1')
-        let signature = secp256k1.sign(this._msgHash, privateKey, "hex", {canonical: true});
+        let _signedKey = secp256k1.ecdsaSign(Buffer.from(this._rootHash, 'hex'), stringHexToU8a(privateKey.slice(2)));
+        let signedKey = bytesToBase64(_signedKey.signature)    
         return {
-            signature,
-            msgHash: this._msgHash
+            signature: signedKey,
+            recid: _signedKey.recid,
+            rootHash: this._rootHash
         }
     }
 
-    protected verifyAccessKey(msgHash: string, accessKey: any) {
-        const secp256k1 = new EC('secp256k1')
-        let hexToDecimal = (x:any) => secp256k1.keyFromPrivate(x, "hex").getPrivate().toString(10);
-        let pubKeyRecovered = secp256k1.recoverPubKey(
-        hexToDecimal(accessKey.msgHash), accessKey.signature, accessKey.signature.recoveryParam, "hex");
-        console.log("Recovered pubKey:", pubKeyRecovered.encodeCompressed("hex"));
-        let validSig = secp256k1.verify(msgHash, accessKey.signature, pubKeyRecovered);
-        return validSig
+    protected verifyAccessKey(rootHash: string, signedAccessKey: any) {
+        let pubKey = secp256k1.ecdsaRecover(base64ToBytes(signedAccessKey.signature), signedAccessKey.recid, Buffer.from(signedAccessKey.rootHash, 'hex'))
+        let validSig =  secp256k1.ecdsaVerify(base64ToBytes(signedAccessKey.signature), Buffer.from(rootHash, 'hex'), pubKey)
+        return {
+            whoIs: Buffer.from(pubKey).toString('hex'),
+            isValid: validSig
+        }
     }
 }

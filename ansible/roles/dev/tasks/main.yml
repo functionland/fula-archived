@@ -1,0 +1,14 @@
+- name: create dev user
+  become: yes
+  user:
+    name: "{{ dev_username }}"
+    password: "{{ dev_password | password_hash('sha512') }}"
+    groups: admin,sudo
+
+- name: update sshd_config to enable password login
+  become: yes
+  template:
+    src: etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config
+  notify:
+    - restart sshd

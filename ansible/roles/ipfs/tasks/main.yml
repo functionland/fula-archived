@@ -1,3 +1,16 @@
+- name: update apt cache
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Wait for /var/lib/dpkg/lock-frontend to be released 
+  shell: while lsof /var/lib/dpkg/lock-frontend ; do sleep 10; done;
+
+- name: ensure acl is installed
+  become: yes
+  apt:
+    name: acl
+
 - name: create download folder for go-ipfs
   become: yes
   file:

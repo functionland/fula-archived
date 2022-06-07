@@ -1,5 +1,7 @@
 [ipfs]
 # Write here your ipfs nodes
+box0
+box1
 
 [ipfs_cluster:children]
 ipfs

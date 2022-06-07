@@ -12,7 +12,7 @@ If you are familiar with Ansible, you can just re-use the modules in the way
 that fits you best. Otherwise follow these steps:
 
 0. Make sure you have ansible installed: `pip install ansible`.
-1. Fill in `inventory.yml` and place the hostnames of your nodes under the `[ipfs]` group.
+1. Fill in `aws-inventory.yml` or `rpi-inventory.yml` and place the hostnames of your nodes under the `[ipfs]` group.
 2. Edit the `group_vars/ipfs.yml` and `group_vars/ipfs_cluster.yml` file
    setting the right configuration values, including generating an
    [IPFS Cluster secret](https://cluster.ipfs.io/documentation/guides/security/#the-cluster-secret)
@@ -21,7 +21,7 @@ that fits you best. Otherwise follow these steps:
    folder as outlined in [`host_vars/README.md`](host_vars/README.md),
    containing the necessary host-specific variables (example in the
    `host_vars` README).
-4. Run `make`.
+4. Run `make` or `make aws`  or `make rpi`.
 
 `make` will run ansible for the `ipfs` and the `ipfs-cluster` roles, which
 apply to the `[ipfs]` and `[ipfs_cluster]` inventory group. Upon successful,

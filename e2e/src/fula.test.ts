@@ -1,21 +1,24 @@
+// @ts-nocheck
+
 import test from 'tape';
 import {createClient, Status} from '@functionland/fula';
 import {FileTest, GraphQL, GraphQLSubscription} from "./test-data";
-import wrtc from "wrtc"
+
+import wrtc from "wrtc";
 import * as process from "process";
 
-let TIMEOUT
-let serverIds
+let TIMEOUT: number
+let boxId: string
 
 const beforeRun = ()=>{
-  if(process.env.SERVER_ID){
-    serverIds = process.env.SERVER_ID
+  if(process.env.BOX_ID){
+    boxId = process.env.BOX_ID
   }else {
-    throw Error(`Provide env variable SERVER_ID` )
+    throw Error(`Provide env variable BOX_ID` )
   }
 
   if(process.env.TIMEOUT){
-    TIMEOUT = process.env.TIMEOUT
+    TIMEOUT = +process.env.TIMEOUT
   }
   else {
     TIMEOUT = 5 * 10000
@@ -37,7 +40,7 @@ test('Setup', async function (t) {
 
   // Connecting Client in Timeout Second
   t.comment("Start Establishing Connection")
-  const connection = client.connect(serverIds);
+  const connection = client.connect(boxId);
   t.ok(connection.status === Status.Connecting, `Connection Status Should be change to ${Status.Connecting.toString()}`)
 
   await new Promise((resolve, reject) => {

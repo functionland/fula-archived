@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "outDir": "./dist/node",
-    "target": "es2015",
-    "rootDir": "./",
-    "baseUrl": "./",
+    "target": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": [
-      "ES2019",
+      "esnext",
       "dom"
     ],
     "allowJs": true,
@@ -24,7 +21,6 @@
   },
   "include": [
     "src/**/*",
-    "tests/**/*"
   ],
   "exclude": [
     "node_modules",

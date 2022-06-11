@@ -16,15 +16,19 @@ If using npm:
 npm install
 ```
 
-## RUN
-With rush:
-```shell
-rushx start
+## Test Scenario
+Scenario and run them.
 ```
-With npm:
-```shell
-npm start
+npm start [path to test file]
 ```
 
-## Roadmap
-- [ ] Add cli to select scenario user want to run 
+### Fula simple api test.
+This is simple single box test to check all available API's.
+Env Variables:
+BOX_ID    required     box peerId.
+TIME_OUT  optional     timeout for connection in milliseconds.
+
+```
+BOX_ID=[peerId] npm start src/fula.test.ts
+```
+

@@ -1,5 +1,5 @@
 # Running Test against Box with JS-Fula
-This project use js-fula and tape to run full api test with box.
+This project uses [fula-client](https://docs.fx.land/api/client-instance) and [tape](https://github.com/substack/tape) to run full api test with box.
 
 ## Prerequisite
 Some dependencies depend on native addon modules, so you'll also need to meet node-gyp's installation prerequisites.

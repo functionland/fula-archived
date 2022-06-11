@@ -15,7 +15,8 @@
     "reviewCategories": [
       "production",
       "tools",
-      "prototypes"
+      "prototypes",
+      "internal"
     ],
 
     "ignoredNpmScopes": ["@types"]
@@ -97,6 +98,12 @@
       "projectFolder": "libraries/fula-client-react",
       "reviewCategory": "production",
       "shouldPublish": true
+    },
+    {
+      "packageName": "e2e",
+      "projectFolder": "e2e",
+      "reviewCategory": "internal",
+      "shouldPublish": false
     }
   ]
 }

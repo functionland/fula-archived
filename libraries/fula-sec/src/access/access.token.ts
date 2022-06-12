@@ -3,7 +3,7 @@ import { ProduceAccessKey } from './sign'
 import isObjects from '../utils/isObject'
 import { randomKey } from '../utils/u8a.multifoamats'
 import { getPrivateJWK} from './elliptic.key'
-
+import splitKey from 'shamirs-secret-sharing'
 interface IAccessHeader {
     CID: string
     issuer:string
@@ -29,16 +29,30 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
     }
 
     /*
-        @function: createToken()
+        @function: sign()
         @param: payload {alg, issuer, audience, expt} , key
         @return: token string
     */
 
+   splitKey(prime: Uint8Array) {
+        let _splitKey: any = []
+        const shares = splitKey.split(Buffer.from(prime), { shares: 2, threshold: 2 })
+        shares.forEach((element: any) => {
+            _splitKey.push(element.toString('hex'))
+        });
+        return {
+            prime,
+            splitKey: _splitKey
+        }
+   }     
+
+
     async sign(_privateKey: string) {
+        let splitKey = this.splitKey(randomKey(32))
         let signedAccessKey = this.setSignOption({
             issuer: this._issuer,
             audience: this._audience,
-            base: randomKey(32)
+            base: splitKey.splitKey[0]
         }).signAccessKey(_privateKey)
         let jwkPrivateKey:any = await jose.importJWK(getPrivateJWK(_privateKey), 'ES256K')
         return await new jose.SignJWT({signedAccessKey})

@@ -1,6 +1,6 @@
 // test access token .ts
 import { expect, should } from 'chai';
-import {getPublicJWK, getPrivateJWK, getPublicJWKfromPrivateKey} from '../src/access/elliptic.key'
+import {getPublicJWK, getPrivateJWK} from '../src/access/elliptic.key'
 import * as jose from 'jose'
 import {FulaDID, TaggedEncryption} from "../src/index"
 

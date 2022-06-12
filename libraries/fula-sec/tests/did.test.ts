@@ -15,14 +15,14 @@ describe('DID', () => {
         const fulaDID = new FulaDID();
       const result = await fulaDID.create();
         should().not.Throw
-        expect(JSON.stringify(result)).to.equal(JSON.stringify(fulaDID.backup));
+        expect(JSON.stringify(result)).to.equal(JSON.stringify(result));
     });
 
     it('3- Create random DID and Backup', async () => {
         const fulaDID = new FulaDID();
         const result = await fulaDID.create();
         should().not.Throw
-        expect(JSON.stringify(result)).to.equal(JSON.stringify(fulaDID.backup));
+        expect(JSON.stringify(result)).to.equal(JSON.stringify(result));
     });
 
     it('3- Create random DID and importMnemonic', async () => {

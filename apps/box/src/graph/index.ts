@@ -6,18 +6,24 @@ import {
   Request,
   setSubscriptionQueryResolutionMethod
 } from "@functionland/graph-protocol";
-import {createResolver} from "./gql-engine/orbit/orbit-resolvers";
-import {executeAndSelect} from "./gql-engine";
-import {parse} from "graphql";
-import {iterateLater, toAsyncIterable} from "async-later";
-import {ORBITDB_PATH} from "../const";
+import { createResolver } from "./gql-engine/orbit/orbit-resolvers";
+import { executeAndSelect } from "./gql-engine";
+import { parse } from "graphql";
+import { iterateLater, toAsyncIterable } from "async-later";
+import { ORBITDB_PATH } from "../const";
 import OrbitDB from 'orbit-db';
 import * as IPFS from "ipfs";
-import {resolveLater} from "async-later";
+import { resolveLater } from "async-later";
+import crypto from "crypto"
 
 
 type DBCollections = { [dbName: string]: any }
 type OrbitDBNode = any
+type RequestCredentials = {
+  userId: string,
+  appId: string,
+  clientId: string
+}
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
@@ -30,7 +36,7 @@ export async function getOrbitDb() {
 export const registerGraph = async (libp2pNode, ipfsNode) => {
   libp2pNode.handle(PROTOCOL, handler);
 
-  const orbitDBNode = await OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH})
+  const orbitDBNode = await OrbitDB.createInstance(ipfsNode, { directory: ORBITDB_PATH })
   resolveOrbitDB(orbitDBNode)
   const resolvers = createResolver(orbitDBNode)
   const dbCollections: DBCollections = {}
@@ -46,12 +52,12 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
   }
 
   const handleDBNameReceived = async (msg) => {
-    if(!msg.topicIDs.includes('open-dbs'))
+    if (!msg.topicIDs.includes('open-dbs'))
       return
     const rawdata = decoder.decode(msg.data)
     const data = JSON.parse(rawdata)
-    if(data.ROI && data.ROI === 'req'){
-      await sendDBName({list: [...Object.keys(dbCollections)], ROI: 'res'})
+    if (data.ROI && data.ROI === 'req') {
+      await sendDBName({ list: [...Object.keys(dbCollections)], ROI: 'res' })
       return
     }
     for (const dbName of data.list) {
@@ -63,7 +69,7 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
   }
 
   await ipfsNode.pubsub.subscribe('open-dbs', handleDBNameReceived)
-  await sendDBName({ROI:'req'})
+  await sendDBName({ ROI: 'req' })
 
   const options = {
     // Give write access to ourselves
@@ -72,58 +78,75 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
     }
   }
 
-  const loadDB = async (dbName: string) => {
-    if (dbCollections[dbName]) {
-      return dbCollections[dbName]
-    } else {
-      const db = await orbitDBNode.docs(dbName, options)
-      await db.load()
-      dbCollections[dbName] = db
-      if (await ipfsNode.swarm.peers() > 0) {
-        await sendDBName({list: [...Object.keys(dbCollections)]})
-        await new Promise(((resolve, reject) => {
-          db.events.once('replicated',
-            () => {
-              resolve('done')
-            }
-          )
-          setTimeout(() => {
-            resolve('done')
-          }, 1000)
-        }))
-      }
-      return db
+  const loadDB = (creds: RequestCredentials) => {
+    const hashDBName = (dbName: string) => {
+      const keyString = [creds.userId, creds.appId, creds.clientId, dbName].join('|||')
+      return crypto.createHash('sha256').update(keyString).digest('hex')
     }
+    return async (dbName: string) => {
+
+      const hashedDBName = hashDBName(dbName)
+      
+      if (dbCollections[hashedDBName]) {
+        return dbCollections[hashedDBName]
+      } else {
+        const db = await orbitDBNode.docs(hashedDBName, options)
+        await db.load()
+        dbCollections[hashedDBName] = db
+        if (await ipfsNode.swarm.peers() > 0) {
+          await sendDBName({ list: [...Object.keys(dbCollections)] })
+          await new Promise(((resolve, reject) => {
+            db.events.once('replicated',
+              () => {
+                resolve('done')
+              }
+            )
+            setTimeout(() => {
+              resolve('done')
+            }, 1000)
+          }))
+        }
+        return db
+      }
+    }
+  }
+
+  // @TODO replace with req.creds
+  const creds = {
+    userId: 'ca7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+    appId: '88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589',
+    clientId: '36bbe50ed96841d10443bcb670d6554f0a34b761be67ec9c4a8ad2c0c44ca42c'
   }
 
   setQueryResolutionMethod(async function (req: Request) {
 
-    try{
+    try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const {query, variableValues, operationName} = Request.toJson(req)
+      const { query, variableValues, operationName } = Request.toJson(req)
       const gqlQuery = parse(query)
-      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB)
+      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB(creds))
       const s = Result.fromJson(data)
       const bytes = Result.toBinary(s)
       return bytes && toAsyncIterable([bytes]);
-    }catch (e) {
+    } catch (e) {
       console.log(e)
     }
 
-  })
+  }) 
 
   setSubscriptionQueryResolutionMethod(async function* (req: Request) {
-    try{
+    try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
 
-      const {query, variableValues, operationName} = Request.toJson(req)
+      const { query, variableValues, operationName } = Request.toJson(req)
+
       const gqlQuery = parse(query)
 
       const [values, next, complete] = iterateLater()
 
-      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB, next, true)
+      const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB(creds), next, true)
       const s = Result.fromJson(data)
       const bytes = Result.toBinary(s)
 
@@ -135,7 +158,7 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
 
         yield bytes
       }
-    }catch (e) {
+    } catch (e) {
       console.log(e)
     }
 

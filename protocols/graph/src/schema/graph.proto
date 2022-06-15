@@ -2,11 +2,18 @@ syntax = "proto3";
 import "google/protobuf/struct.proto";
 package graph;
 
+message Credentials {
+  string app_id = 1;
+  string user_id = 2;
+  string client_id = 3;
+}
+
 message Request {
   string query = 1;
   google.protobuf.Value variable_values = 2;
   string operation_name = 3;
   bool subscribe = 4;
+  Credentials creds = 5;
 }
 
 message Result {

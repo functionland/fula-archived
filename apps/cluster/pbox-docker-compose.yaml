@@ -1,15 +1,17 @@
+
+# An alternate docker-compose to demonstrate using a shared swarm key by each Box
+# in the network to restrict clients without the swarm key from accessing it.
+#
+#
+# cd config
+# echo -e "/key/swarm/psk/1.0.0/\n/base16/\n`tr -dc 'a-f0-9' < /dev/urandom | head -c64`" > swarm.key
+# cd ..
+# docker-compose -f pbox-docker-compose.yaml up
+
+
 version: '3.8'
 
 services:
-  fsync:
-    build:
-      context: ../../examples/doc-sync/fsync
-      dockerfile: ./Dockerfile.fsync
-    working_dir: /opt/fsync
-    volumes:
-      - ../../examples/doc-sync/fsync:/opt/fsync
-    command: sleep infinity
-
   box0:
     container_name: box0
     restart: always
@@ -21,8 +23,10 @@ services:
       dockerfile: ./apps/box/Dockerfile
     volumes:
       - ./data/box0/data:/opt/apps/box/data
+      - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
       NODE_ENV: "production"
+      FULA_NET_SECRET_FILE: "./config/swarm.key"
       FULA_IPFS_HTTP: "http://cluster0:9095"
     ports:
       - "4001:4001" # ipfs swarm - expose if needed/wanted
@@ -32,12 +36,15 @@ services:
     container_name: ipfs0
     build:
       dockerfile: ./ipfs/Dockerfile
+    environment:
+      LIBP2P_FORCE_PNET: 1
     ports:
       - "4002:4001" # ipfs swarm - expose if needed/wanted
       - "5002:5001" # ipfs api - expose if needed/wanted
       - "8082:8080" # ipfs gateway - expose if needed/wanted
     volumes:
       - ./data/ipfs0:/data/ipfs
+      - ./config/swarm.key:/data/ipfs/swarm.key
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
 
@@ -77,8 +84,10 @@ services:
       dockerfile: ./apps/box/Dockerfile
     volumes:
       - ./data/box1/data:/opt/apps/box/data
+      - ./config/swarm.key:/opt/apps/box/config/swarm.key
     environment:
       NODE_ENV: "production"
+      FULA_NET_SECRET_FILE: "./config/swarm.key"
       FULA_IPFS_HTTP: "http://cluster1:9095"
     ports:
       - "4004:4001" # ipfs swarm - expose if needed/wanted
@@ -88,8 +97,11 @@ services:
     container_name: ipfs1
     build:
       dockerfile: ./ipfs/Dockerfile
+    environment:
+      LIBP2P_FORCE_PNET: 1
     volumes:
       - ./data/ipfs1:/data/ipfs
+      - ./config/swarm.key:/data/ipfs/swarm.key
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
   cluster1:

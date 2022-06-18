@@ -1,10 +1,10 @@
 import test from 'tape';
-import {createClient} from '../src';
-import {Status} from "../src/connection";
-import {File} from '@web-std/file'
+import { createClient } from '../src';
+import { Status } from "../src/connection";
+import { File } from '@web-std/file'
 
 
-const serverIds = ['12D3KooWQnEmxzocejZTHHSP2VxWs9z93rzAjkiWo2xhXgaWcBbK'];
+const serverIds = ['12D3KooWBJ2kRZdLGA34a1qTwssNpvMBxoyAPggg9CRA288E3jAg'];
 
 
 const testFile = new File(['test'], 'test', {
@@ -17,7 +17,7 @@ async function* testFileGenerator() {
   // @ts-ignore
   const reader = testFile.stream().getReader();
   while (true) {
-    const {value, done} = await reader.read();
+    const { value, done } = await reader.read();
     if (done) {
       break;
     }
@@ -26,7 +26,7 @@ async function* testFileGenerator() {
 }
 
 test('Setup', async function (t) {
-  t.plan(14);
+  t.plan(19);
   try {
     const client = await createClient()
     t.pass('Client ready');
@@ -91,25 +91,57 @@ test('Setup', async function (t) {
       await testFile.text(),
       'Content Most be the same'
     );
+    const creds = {
+      userId: 'ba7816',
+      appId: '88d4266'
+    }
     const query = `mutation {
                     create(
                       input: {
-                        collection: "profile"
-                        values: [{ _id: "6", age: 33, name: "jamshid", key: "6" }]
+                        collection: "testC"
+                        values: [{ _id: "6", age: 33, name: "jamshid", key: "6", user: "ba7" }]
                       }
                     ) {
                       _id
                       name
                       age
                       key
+                      user
                     }
                   }`
 
-    const result = await client.graphql(query)
+    const result = await client.graphql(query, null, '', creds.userId, creds.appId)
     const expected = {
-      data: {create: [{_id: '6', name: 'jamshid', age: 33, key: '6'}]}
+      data: { create: [{ _id: '6', name: 'jamshid', age: 33, key: '6', user: 'ba7' }] }
     }
     t.deepEqual(result, expected, 'Graphql using query')
+
+    // test wrong credentials
+    const readQ = `
+            query {
+              read(
+                input: {
+                  collection: "testC"
+                  filter: {}
+                }
+              ){
+              _id
+              name
+              age
+              key
+              user
+              }
+            }
+        `
+
+    let readRes = await client.graphql(readQ, null, '', creds.userId + '.', creds.appId)
+    t.deepEqual(readRes, {data: {read: []}}, 'Wrong Creds #1: should return empty')
+
+    readRes = await client.graphql(readQ, null, '', creds.userId, creds.appId + '.')
+    t.deepEqual(readRes, {data: {read: []}}, 'Wrong Creds #2: should return empty')
+
+    readRes = await client.graphql(readQ, null, '', creds.userId + '.', creds.appId + '.')
+    t.deepEqual(readRes, {data: {read: []}}, 'Wrong Creds #3: should return empty')
 
     /*
     test graphqlSubscribe()
@@ -132,8 +164,8 @@ test('Setup', async function (t) {
       }
     `
     const createSampleData = [
-      {_id: "6", age: 33, name: "joe", key: "6"},
-      {_id: "8", age: 40, name: "eddy", key: "8"}
+      { _id: "6", age: 33, name: "joe", key: "6" },
+      { _id: "8", age: 40, name: "eddy", key: "8" }
     ]
 
     const readQuery = `
@@ -151,7 +183,7 @@ test('Setup', async function (t) {
               }
             }
         `
-    const readResult = client.graphqlSubscribe(readQuery)
+    const readResult = client.graphqlSubscribe(readQuery, null, null, creds.userId, creds.appId)
 
     let cnt = 0
     for await (const partialRes of readResult) {
@@ -159,8 +191,8 @@ test('Setup', async function (t) {
       t.deepEqual(sorted, createSampleData.slice(0, cnt), `response #${cnt + 1} must be correct`)
       if (cnt < createSampleData.length) {
         const toCreate = createSampleData.slice(cnt, cnt + 1)
-        const createRes = await client.graphql(createSampleQuery, {values: toCreate})
-        t.deepEqual(createRes, {data: {create: toCreate}}, `should create item #${cnt + 1}`)
+        const createRes = await client.graphql(createSampleQuery, { values: toCreate }, null, creds.userId, creds.appId)
+        t.deepEqual(createRes, { data: { create: toCreate } }, `should create item #${cnt + 1}`)
       }
       cnt += 1
     }
@@ -172,4 +204,4 @@ test('Setup', async function (t) {
   t.end()
 });
 
-test.onFinish (() => {process.exit (0)})
+test.onFinish(() => { process.exit(0) })

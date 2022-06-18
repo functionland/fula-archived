@@ -31,8 +31,8 @@ export interface Fula {
   receiveDecryptedFile: (fileId: FileId, symKey: Uint8Array, iv: Uint8Array) => Promise<File>
   receiveStreamFile: (fileId: FileId) => Promise<{ source: AsyncIterable<Uint8Array>, meta: SchemaProtocol.Meta }>
   receiveMeta: (fileId: FileId) => Promise<SchemaProtocol.Meta>
-  graphql: (query: string, variableValues?: never, operationName?: string) => Promise<unknown>
-  graphqlSubscribe: (query: string, variableValues?: never, operationName?: string) => AsyncIterable<unknown>
+  graphql: (query: string, variableValues?: any, operationName?: string, userId?: string, appId?: string) => Promise<unknown>
+  graphqlSubscribe: (query: string, variableValues?: any, operationName?: string, userId?: string, appId?: string) => AsyncIterable<unknown>
   getNode: () => Libp2p
   close: () => Promise<void>
 }
@@ -187,15 +187,18 @@ export async function createClient(option?:Option): Promise<Fula> {
         throw new Error((e as Error).message)
       }
     },
-    async graphql(query: string, _variableValues?: never, _operationName?: string) {
+    async graphql(query: string, _variableValues?: any, _operationName?: string, userId: string = '', appId: string = '') {
       try {
         const variableValues = _variableValues ? _variableValues : null
         const operationName = _operationName ? _operationName : null
         const connectionObj = await _getStreamConnection(GRAPH_PROTOCOL)
+
+        // @TODO use clientId based on a locally stored random string
         const req = Request.fromJson({
           query,
           variableValues,
-          operationName
+          operationName,
+          creds: {appId: appId, clientId: '', userId: userId}
         })
         const res = await submitQuery({connection: connectionObj, req});
         connectionObj.stream.close()
@@ -204,7 +207,7 @@ export async function createClient(option?:Option): Promise<Fula> {
         throw new Error((e as Error).message)
       }
     },
-    graphqlSubscribe: async function* (query: string, _variableValues?: never, _operationName?: string) {
+    graphqlSubscribe: async function* (query: string, _variableValues?: never, _operationName?: string, userId: string = '', appId: string = '') {
       try {
         const variableValues = _variableValues ? _variableValues : null
         const operationName = _operationName ? _operationName : null
@@ -213,7 +216,8 @@ export async function createClient(option?:Option): Promise<Fula> {
           query,
           variableValues,
           operationName,
-          subscribe: true
+          subscribe: true,
+          creds: {appId, userId, clientId: ''}
         })
         const res = await submitSubscriptionQuery({connection: connectionObj, req})
 

@@ -111,19 +111,12 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
     }
   }
 
-  // @TODO replace with req.creds
-  const creds = {
-    userId: 'ca7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
-    appId: '88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589',
-    clientId: '36bbe50ed96841d10443bcb670d6554f0a34b761be67ec9c4a8ad2c0c44ca42c'
-  }
-
   setQueryResolutionMethod(async function (req: Request) {
 
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const { query, variableValues, operationName } = Request.toJson(req)
+      const { query, variableValues, operationName, creds } = Request.toJson(req)
       const gqlQuery = parse(query)
       const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB(creds))
       const s = Result.fromJson(data)
@@ -140,7 +133,7 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
 
-      const { query, variableValues, operationName } = Request.toJson(req)
+      const { query, variableValues, operationName, creds } = Request.toJson(req)
 
       const gqlQuery = parse(query)
 

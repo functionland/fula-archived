@@ -8,6 +8,7 @@ import {BoxConfig} from "./components/BoxConfig";
 import {Uploader} from "./components/Uploader";
 import {Gallery} from "./components/Gallery";
 import {Identity} from './components/Identity';
+import Wallet from './components/Wallet';
 
 
 const pages = {
@@ -142,27 +143,30 @@ function App() {
     setDidObj(did)
   }
 
-  return <>
-    <div className="app">
-      <Identity onDIDSet={onDIDSet}/>
-      {(() => {
-        switch (page) {
-          case pages.CONFIG:
-            return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
-          case pages.GALLERY:
-            return <>
-              <h1>Functionland Sample Gallery</h1>
-              {status === Status.Online && <Uploader onUpload={onUpload}/>}
-              {status !== Status.Connecting && <Gallery photos={photos}/>}
-            </>
+  return (
+    <>
+      <div className="app">
+        <Identity onDIDSet={onDIDSet}/>
+        <Wallet />
+        {(() => {
+          switch (page) {
+            case pages.CONFIG:
+              return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
+            case pages.GALLERY:
+              return <>
+                <h1>Functionland Sample Gallery</h1>
+                {status === Status.Online && <Uploader onUpload={onUpload}/>}
+                {status !== Status.Connecting && <Gallery photos={photos}/>}
+              </>
 
-          default:
-            return <h1>Route not found</h1>
-        }
-      })()}
-    </div>
-    <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
-  </>
+            default:
+              return <h1>Route not found</h1>
+          }
+        })()}
+      </div>
+      <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
+    </>
+  )
 }
 
 export default App;

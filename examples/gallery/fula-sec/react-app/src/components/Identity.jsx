@@ -39,22 +39,22 @@ export const Identity = ({onDIDSet}) => {
         console.log('New didObj', didObj);
     };
     const renderMode = (mode) => {
-        if (mode === 'None')
-            return (
-                <>
-                    <button className="single" onClick={createNewIdentity}>
-                        New Identity
-                    </button>
-                    <button
-                        className="single"
-                        onClick={() => {
-                            setDidObj(null);
-                            setMode('Import');
-                        }}>
-                        Import Identity
-                    </button>
-                </>
-            );
+        // if (mode === 'None')
+        //     return (
+        //         <>
+        //             <button className="single" onClick={createNewIdentity}>
+        //                 New Identity
+        //             </button>
+        //             <button
+        //                 className="single"
+        //                 onClick={() => {
+        //                     setDidObj(null);
+        //                     setMode('Import');
+        //                 }}>
+        //                 Import Identity
+        //             </button>
+        //         </>
+        //     );
         if (mode === 'Import') {
             return (
                 <div className="container flex-column">

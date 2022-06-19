@@ -11,7 +11,7 @@ body {
           90deg,
           rgb(71, 5, 109) 0%,
           rgba(100, 115, 255, 1) 100%
-  );
+  )!important;
   color: white;
 }
 .app-header{

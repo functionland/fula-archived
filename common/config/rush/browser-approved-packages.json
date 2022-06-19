@@ -127,6 +127,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "elliptic",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "esbuild",
       "allowedCategories": [ "production" ]
     },
@@ -192,6 +196,10 @@
     },
     {
       "name": "it-stream-types",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "js-sha3",
       "allowedCategories": [ "production" ]
     },
     {

@@ -31,7 +31,7 @@ function App() {
   const [photos, setPhotos] = useState([]);
   // User DID
   const [userDID, setDidObj] = useState(null);
-
+  console.log(userDID);
 
   useEffect(() => {
     if (page === pages.GALLERY && status === Status.Online && fula) {
@@ -119,14 +119,13 @@ function App() {
       // const cid = await fula.sendFile(selectedFile);
       // await fula.graphql(createMutation, { values: [{ cid, _id: cid }] });
       const {cid, key} = await fula.sendEncryptedFile(selectedFile)
-      const tagged = new TaggedEncryption(userDID.did)
+      const tagged = new TaggedEncryption(userDID?.did)
 
       let plaintext = {
         symmetricKey: key,
         CID: cid
       }
-
-      let jwe = await tagged.encrypt(plaintext.symmetricKey, plaintext.CID, [userDID.did.id])
+      let jwe = await tagged?.encrypt(plaintext.symmetricKey, plaintext.CID, [userDID?.did?.id])
       await fula.graphql(createMutation, {values: [{cid, _id: cid, jwe}]})
       setPhotos((prev) => [selectedFile, ...prev]);
     } catch (e) {
@@ -147,7 +146,7 @@ function App() {
     <>
       <div className="app">
         <Identity onDIDSet={onDIDSet}/>
-        <Wallet />
+        <Wallet onDIDSet={onDIDSet}/>
         {(() => {
           switch (page) {
             case pages.CONFIG:

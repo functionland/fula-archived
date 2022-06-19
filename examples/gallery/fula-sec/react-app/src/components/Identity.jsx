@@ -8,20 +8,16 @@ export const Identity = ({onDIDSet}) => {
     const [importType, setImportType] = useState('Mnemonic');
     const [didObj, setDidObj] = useState(null);
     const verity = async () => {
-        let didObj = null;
+        let _didObj = null;
         try {
             const DID = new FulaDID();
-            if (importType === 'Mnemonic') {
-                didObj = await DID.importMnemonic(mnemonicText);
-            } else {
-                didObj = await DID.importPrivateKey(mnemonicText);
-            }
-            setDidObj(didObj);
+            _didObj = await DID.create('sadasdasdasdasdasasdas','1234')
+            setDidObj(_didObj);
             onDIDSet(DID)
         } catch (error) {
             alert(error);
         }
-        console.log('didObj', didObj);
+        console.log('didObj', _didObj);
     };
     const createNewIdentity = async () => {
         let didObj = null;
@@ -125,5 +121,9 @@ export const Identity = ({onDIDSet}) => {
             );
         }
     };
-    return <div className="identityContainer">{renderMode(mode)}</div>;
+    return (
+        <div className="identityContainer">
+            {renderMode(mode)}
+        </div>
+    );
 };

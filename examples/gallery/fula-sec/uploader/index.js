@@ -33,17 +33,13 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
 const PHOTOS_PATH= argv.i
 const BOX_ID = argv.boxid
 const PKEY_PATH = argv.p
-const MNEMONIC = argv.u
 
 
-async function main() {
+async function main(pwd = 'password',sign = 'sign') {
   const DID = new FulaDID();
   let didObj;
-  if (MNEMONIC) {
-    didObj = await DID.importMnemonic(MNEMONIC)
-  } else {
-    didObj = await DID.create();
-  }
+  didObj = await DID.create(pwd, sign);
+  
   let fula;
   if(PKEY_PATH){
     const netSecret = fs.readFileSync(PKEY_PATH)

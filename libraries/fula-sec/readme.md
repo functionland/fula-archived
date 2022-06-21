@@ -53,23 +53,8 @@ Install NPM package
 
     // Fulla DID
     const fullaDID = new FullaDID();
-    // ...
-    // Create DID identity () => return {did|authDID, mnemonic, privateKey}
-    await fullaDID.create();
-
-    // You can also call backup option by using getter -> fullaDID.backup () => return {did|authDID, mnemonic, privateKey}
-    
-    // Import Options:
-    // 1. Import with mnemonic
-    // 2. Import with privateKey
-
-    // Import existing mnemonic phrase () => return {did|authDID, privateKey}
-    // mnemonic example: 'mercy drip similar hole oil lock blast absent medal slam world sweet',
-    await fullaDID.importMnemonic(result.mnemonic);
-
-    // Import existing privateKey () => return {did|authDID, privateKey}
-    // privateKey example: ff396d82b24b3f8f200cc240bb6d0770911c82e1d8c0199638373221efedabd5
-    await fullaDID.importPrivateKey(result.privateKey);
+    // Create DID identity (_secretKey, signature) => return {did|authDID, mnemonic, privateKey}
+    await fullaDID.create(secretKey, signature);
    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -81,12 +66,12 @@ Install NPM package
 
     // Alice creates own DID 
     const AliceDID = new FullaDID();
-    await AliceDID.create();
+    await AliceDID.create(secretKey, signature);
     const taggedA = new TaggedEncryption(AliceDID.did);
 
     // Bob creates own DID
     const BobDID = new FullaDID();
-    await BobDID.create();
+    await BobDID.create(secretKey, signature);
     const taggedB = new TaggedEncryption(BobDID.did);
 
     // 1. Handshake             |Alice DID| <---  |Bob DID|      
@@ -113,15 +98,15 @@ Install NPM package
 
      // Alice creates own DID (Issuer)
     const AliceDID = new FullaDID();
-    await AliceDID.create();
+    await AliceDID.create(secretKey, signature);
     // Set privateKey
     const asymEncA = new AsymEncryption(AliceDID.privateKey);
 
      // Bob creates own DID (Audience)
-    const BliceDID = new FullaDID();
-    await BliceDID.create();
+    const BobDID = new FullaDID();
+    await BobDID.create(secretKey, signature);
     // Set privateKey
-    const asymEncB = new AsymEncryption(BliceDID.privateKey);
+    const asymEncB = new AsymEncryption(BobDID.privateKey);
 
     /* 
        1. Bob shares PublicKey with Alice

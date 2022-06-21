@@ -8,6 +8,7 @@ import {BoxConfig} from "./components/BoxConfig";
 import {Uploader} from "./components/Uploader";
 import {Gallery} from "./components/Gallery";
 import {Identity} from './components/Identity';
+import Wallet from './components/Wallet';
 
 
 const pages = {
@@ -30,7 +31,7 @@ function App() {
   const [photos, setPhotos] = useState([]);
   // User DID
   const [userDID, setDidObj] = useState(null);
-
+  console.log(userDID);
 
   useEffect(() => {
     if (page === pages.GALLERY && status === Status.Online && fula) {
@@ -118,14 +119,13 @@ function App() {
       // const cid = await fula.sendFile(selectedFile);
       // await fula.graphql(createMutation, { values: [{ cid, _id: cid }] });
       const {cid, key} = await fula.sendEncryptedFile(selectedFile)
-      const tagged = new TaggedEncryption(userDID.did)
+      const tagged = new TaggedEncryption(userDID?.did)
 
       let plaintext = {
         symmetricKey: key,
         CID: cid
       }
-
-      let jwe = await tagged.encrypt(plaintext.symmetricKey, plaintext.CID, [userDID.did.id])
+      let jwe = await tagged?.encrypt(plaintext.symmetricKey, plaintext.CID, [userDID?.did?.id])
       await fula.graphql(createMutation, {values: [{cid, _id: cid, jwe}]})
       setPhotos((prev) => [selectedFile, ...prev]);
     } catch (e) {
@@ -142,27 +142,30 @@ function App() {
     setDidObj(did)
   }
 
-  return <>
-    <div className="app">
-      <Identity onDIDSet={onDIDSet}/>
-      {(() => {
-        switch (page) {
-          case pages.CONFIG:
-            return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
-          case pages.GALLERY:
-            return <>
-              <h1>Functionland Sample Gallery</h1>
-              {status === Status.Online && <Uploader onUpload={onUpload}/>}
-              {status !== Status.Connecting && <Gallery photos={photos}/>}
-            </>
+  return (
+    <>
+      <div className="app">
+        <Identity onDIDSet={onDIDSet}/>
+        <Wallet onDIDSet={onDIDSet}/>
+        {(() => {
+          switch (page) {
+            case pages.CONFIG:
+              return <BoxConfig onSet={onSet} serverId={boxIds.join(',')}/>
+            case pages.GALLERY:
+              return <>
+                <h1>Functionland Sample Gallery</h1>
+                {status === Status.Online && <Uploader onUpload={onUpload}/>}
+                {status !== Status.Connecting && <Gallery photos={photos}/>}
+              </>
 
-          default:
-            return <h1>Route not found</h1>
-        }
-      })()}
-    </div>
-    <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
-  </>
+            default:
+              return <h1>Route not found</h1>
+          }
+        })()}
+      </div>
+      <ConnInfo onSetting={onSetting} status={status} info={connInfo}/>
+    </>
+  )
 }
 
 export default App;

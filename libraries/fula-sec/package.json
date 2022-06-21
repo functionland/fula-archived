@@ -43,9 +43,11 @@
   },
   "dependencies": {
     "@stablelib/x25519": "~1.0.2",
-    "ethers": "~5.6.4",
     "did-jwt": "~5.12.4",
     "dids": "3.0.0-alpha.12",
+    "elliptic": "^6.5.4",
+    "ethers": "~5.6.4",
+    "js-sha3": "^0.8.0",
     "key-did-provider-ed25519": "~1.1.0",
     "key-did-resolver": "~1.4.4"
   },
@@ -55,7 +57,7 @@
         "default": "./dist/br/index.js"
       },
       "node": {
-        "require":"./dist/node/index.cjs"
+        "require": "./dist/node/index.cjs"
       }
     }
   }

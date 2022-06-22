@@ -4,7 +4,7 @@ import { resolveLater } from 'async-later';
 import debug from 'debug';
 import config from "config";
 import {create} from "ipfs-http-client";
-import {printSwarm} from "./utils";
+import {printBoxListeningAddrs} from "./utils";
 import {registerFile} from "./file";
 import {libConfig, ipfsConfig} from "./config";
 import {registerGraph, getOrbitDb} from "./graph";
@@ -27,7 +27,7 @@ async function createIPFS(createLibp2p){
     createLibp2p()
     const libp2pNode = await getLibp2p();
     await libp2pNode.start()
-    printSwarm(libp2pNode.peerId, libp2pNode.multiaddrs)
+    printBoxListeningAddrs(libp2pNode.peerId, libp2pNode.multiaddrs)
     return  new Promise<IPFS.IPFS>(((resolve, reject) => {
       try{
         resolve(create({url:new URL(IPFS_HTTP)}))

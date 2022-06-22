@@ -187,4 +187,4 @@ test('Setup', async function (t) {
   t.end()
 });
 
-test.onFinish(() => { process.exit(0) })
+// test.onFinish(() => { process.exit(0) })

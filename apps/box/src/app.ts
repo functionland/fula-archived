@@ -24,10 +24,18 @@ export async function getIPFS() {
 
 async function createIPFS(createLibp2p){
   if(IPFS_HTTP){
-    createLibp2p()
-    const libp2pNode = await getLibp2p();
-    await libp2pNode.start()
-    printBoxListeningAddrs(libp2pNode.peerId, libp2pNode.multiaddrs)
+    // createLibp2p()
+    // const libp2pNode = await getLibp2p();
+    // await libp2pNode.start()
+    // printBoxListeningAddrs(libp2pNode.peerId, libp2pNode.multiaddrs)
+    await IPFS.create({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      libp2p: createLibp2p,
+      repo: IPFS_PATH,
+      peerId: config?.peerId,
+      config: ipfsConfig()
+    })
     return  new Promise<IPFS.IPFS>(((resolve, reject) => {
       try{
         resolve(create({url:new URL(IPFS_HTTP)}))

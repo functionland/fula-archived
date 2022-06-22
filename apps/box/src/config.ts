@@ -70,13 +70,14 @@ export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pO
             },
         },
     }
-    if(IPFS_HTTP){
-        return {
-            ...conf,
-          peerId:await getPeerId()
-        }
-    }
-    else return conf
+    // if(IPFS_HTTP){
+    //     return {
+    //         ...conf,
+    //       peerId:await getPeerId()
+    //     }
+    // }
+    // else return conf
+    return conf
 }
 
 export const ipfsConfig = () => ({

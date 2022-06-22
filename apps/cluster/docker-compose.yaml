@@ -16,8 +16,8 @@ services:
       NODE_ENV: "production"
       FULA_IPFS_HTTP: "http://cluster0:9095"
     ports:
-      - "4001:4001" # ipfs swarm - expose if needed/wanted
-      - "5001:5001"
+      - "4002:4002" # TCP
+      - "127.0.0.1:4003:4003" # WS
 
   ipfs0:
     container_name: ipfs0
@@ -25,9 +25,9 @@ services:
       context: .
       dockerfile: ./ipfs/Dockerfile
     ports:
-      - "4002:4001" # ipfs swarm - expose if needed/wanted
-      - "5002:5001" # ipfs api - expose if needed/wanted
-      - "8082:8080" # ipfs gateway - expose if needed/wanted
+      - "4001:4001" # ipfs swarm - expose if needed/wanted
+      - "5001:5001" # ipfs api - expose if needed/wanted
+      - "8080:8080" # ipfs gateway - expose if needed/wanted
     volumes:
       - ./data/ipfs0:/data/ipfs
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
@@ -73,8 +73,8 @@ services:
       NODE_ENV: "production"
       FULA_IPFS_HTTP: "http://cluster1:9095"
     ports:
-      - "4004:4001" # ipfs swarm - expose if needed/wanted
-      - "5004:5001"
+      - "4102:4002" # TCP
+      - "127.0.0.1:4103:4003" # WS
 
   ipfs1:
     container_name: ipfs1

@@ -7,7 +7,7 @@
 interface ITagEncryption {
     didAudience: string;
     CID: string;
-    symetricKey: string;
+    symetricKey: any;
     encrypt(symetricKey: string, CID: string, didAudience: Array<string>): Promise<any>;
     decrypt(jwe: any): Promise<any>;
 }
@@ -16,7 +16,7 @@ export class TaggedEncryption implements ITagEncryption {
     private _did: any;
     didAudience!: string;
     CID!: string;
-    symetricKey!: string
+    symetricKey!: any
 
     constructor (DID: any) {
       this._did = DID;
@@ -28,8 +28,8 @@ export class TaggedEncryption implements ITagEncryption {
      * @property symetricKey: string, CID: string, didAudience: array
      * @returns  jwe {}
      */
-    async encrypt(symetricKey: string, CID: string, didAudience: Array<string>): Promise<any> {
-        return await this._did.createDagJWE({ symetricKey: symetricKey,  CID: CID}, didAudience)
+    async encrypt(symetricKey: any, CID: string, didAudience: Array<string>): Promise<any> {
+        return await this._did.createDagJWE({symetricKey, CID}, didAudience)
     }
 
     /**

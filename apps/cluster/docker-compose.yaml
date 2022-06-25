@@ -17,7 +17,7 @@ services:
       FULA_IPFS_HTTP: "http://cluster0:9095"
     ports:
       - "4002:4002" # TCP
-      - "127.0.0.1:4003:4003" # WS
+      - "4003:4003" # WS
 
   ipfs0:
     container_name: ipfs0
@@ -74,7 +74,7 @@ services:
       FULA_IPFS_HTTP: "http://cluster1:9095"
     ports:
       - "4102:4002" # TCP
-      - "127.0.0.1:4103:4003" # WS
+      - "4103:4003" # WS
 
   ipfs1:
     container_name: ipfs1

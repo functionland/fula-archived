@@ -12,6 +12,7 @@ import peerId from "peer-id"
 import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP} from "./const";
 import TCP from 'libp2p-tcp'
 import WS from 'libp2p-websockets'
+import filters from "libp2p-websockets/src/filters";
 
 const getPeerId = async () => {
     if (fs.existsSync(LIBP2P_PATH + '/identity.json')) {
@@ -34,7 +35,8 @@ const getNetSecret = ()=> {
 }
 export const netSecret = getNetSecret()
 export const listen = config.get("network.listen")
-
+const transportKey = WS.prototype[Symbol.toStringTag]
+const webstarKey = WebRTCStar.prototype[Symbol.toStringTag]
 new Noise();
 
 export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pOptions> => {
@@ -53,9 +55,12 @@ export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pO
         },
         config: {
             transport: {
-                [WebRTCStar.prototype[Symbol.toStringTag]]: {
+                [webstarKey]: {
                     wrtc, // You can use `wrtc` when running in Node.js
                 },
+                [transportKey]: { // Transport properties -- Libp2p upgrader is automatically added
+                    filter: filters.all
+                }
             },
             peerDiscovery: {
                 autoDial: true,

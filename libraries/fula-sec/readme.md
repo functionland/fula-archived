@@ -49,12 +49,12 @@ Install NPM package
 <!-- USAGE EXAMPLES -->
 ## Decentralized Identity (DID) 
    ```js
-    import {FullaDID} from '@functionland/fula-sec'
+    import {FulaDID} from '@functionland/fula-sec'
 
     // Fulla DID
-    const fullaDID = new FullaDID();
+    const fulaDID = new FulaDID();
     // Create DID identity (_secretKey, signature) => return {did|authDID, mnemonic, privateKey}
-    await fullaDID.create(secretKey, signature);
+    await fulaDID.create(secretKey, signature);
    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -62,15 +62,15 @@ Install NPM package
 <!-- USAGE EXAMPLES -->
 ## Tagged Encryption (Tagged DID) 
    ```js
-    import {FullaDID, TaggedEncryption} from '@functionland/fula-sec'
+    import {FulaDID, TaggedEncryption} from '@functionland/fula-sec'
 
     // Alice creates own DID 
-    const AliceDID = new FullaDID();
+    const AliceDID = new FulaDID();
     await AliceDID.create(secretKey, signature);
     const taggedA = new TaggedEncryption(AliceDID.did);
 
     // Bob creates own DID
-    const BobDID = new FullaDID();
+    const BobDID = new FulaDID();
     await BobDID.create(secretKey, signature);
     const taggedB = new TaggedEncryption(BobDID.did);
 
@@ -94,16 +94,16 @@ Install NPM package
 <!-- USAGE EXAMPLES -->
 ## Asymmetric Encryption 
    ```js
-    import {FullaDID, AsymEncryption} from '@functionland/fula-sec'
+    import {FulaDID, AsymEncryption} from '@functionland/fula-sec'
 
      // Alice creates own DID (Issuer)
-    const AliceDID = new FullaDID();
+    const AliceDID = new FulaDID();
     await AliceDID.create(secretKey, signature);
     // Set privateKey
     const asymEncA = new AsymEncryption(AliceDID.privateKey);
 
      // Bob creates own DID (Audience)
-    const BobDID = new FullaDID();
+    const BobDID = new FulaDID();
     await BobDID.create(secretKey, signature);
     // Set privateKey
     const asymEncB = new AsymEncryption(BobDID.privateKey);
@@ -138,7 +138,7 @@ Run doc cmd
     
     npx typedoc --out docs
 
-[Fulla Sec DOC](http://127.0.0.1:5500/libraries/fula-sec/docs/classes/FullaDID.html)
+[Fulla Sec DOC](http://127.0.0.1:5500/libraries/fula-sec/docs/classes/FulaDID.html)
 
 
 

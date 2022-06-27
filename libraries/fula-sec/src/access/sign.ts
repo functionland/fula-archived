@@ -34,6 +34,7 @@ export class ProduceAccessKey {
     }
 
     protected verifyAccessKey(rootHash: string, signedAccessKey: any) {
+        console.log('signedAccessKey: ', signedAccessKey)
         let pubKey = secp256k1.ecdsaRecover(base64ToBytes(signedAccessKey.signature), signedAccessKey.recid, Buffer.from(signedAccessKey.rootHash, 'hex'))
         let validSig =  secp256k1.ecdsaVerify(base64ToBytes(signedAccessKey.signature), Buffer.from(rootHash, 'hex'), pubKey)
         return {

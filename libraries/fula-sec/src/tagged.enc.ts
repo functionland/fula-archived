@@ -6,16 +6,14 @@
 
  interface ITagEncryption {
     didAudience: string;
-    CID: string;
     symetricKey: any;
-    encrypt(symetricKey: any, CID: string, didAudience: Array<string>): Promise<any>;
+    encrypt(symetricKey: any, accessKey: string, didAudience: Array<string>): Promise<any>;
     decrypt(jwe: any): Promise<any>;
 }
 
 export class TaggedEncryption implements ITagEncryption {
     private _did: any;
     didAudience!: string;
-    CID!: string;
     symetricKey!: any
 
     constructor (DID: any) {
@@ -23,20 +21,20 @@ export class TaggedEncryption implements ITagEncryption {
     }
 
      /**
-     * This function encrtps user`s CID and shared symetric keys
+     * This function encrtps user`s accessKey and shared symetric keys
      * @function encrypt()
-     * @property symetricKey: object, CID: string, didAudience: array
+     * @property symetricKey: object, accessKey: string, didAudience: array
      * @returns  jwe {}
      */
-    async encrypt(symetricKey: any, CID: string, didAudience: Array<string>): Promise<any> {
-        return await this._did.createDagJWE({symetricKey, CID}, didAudience)
+    async encrypt(symetricKey: any, accessKey: string, didAudience: Array<string>): Promise<any> {
+        return await this._did.createDagJWE({symetricKey, accessKey}, didAudience)
     }
 
     /**
-     * This function encrtps user`s CID and shared symetric keys
+     * This function decrypts user`s accessKey and shared symetric keys
      * @function decrypt()
      * @property jwe {}
-     * @returns  decrypted message {symetricKey: object, CID: string}
+     * @returns  decrypted message {symetricKey: object, accessKey: string}
      */
     async decrypt(jwe: any): Promise<any>  {
         return await this._did.decryptDagJWE(jwe);

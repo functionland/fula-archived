@@ -1,9 +1,11 @@
 import * as jose from 'jose'
 import { ProduceAccessKey } from './sign'
 import isObjects from '../utils/isObject'
-import { randomKey } from '../utils/u8a.multifoamats'
+import { stringHexToU8a } from '../utils/u8a.multifoamats'
 import { getPrivateJWK} from './elliptic.key'
 import splitKey from 'shamirs-secret-sharing'
+import { buffer } from 'stream/consumers'
+import { type } from 'os'
 interface IAccessHeader {
     CID: string
     issuer:string
@@ -34,35 +36,49 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
         @return: token string
     */
 
-   splitKey(prime: Uint8Array) {
-        let _splitKey: any = []
+   protected _splitKey(prime: Uint8Array) {
+        let _splitKey: Array<string> = []
         const shares = splitKey.split(Buffer.from(prime), { shares: 2, threshold: 2 })
         shares.forEach((element: any) => {
             _splitKey.push(element.toString('hex'))
         });
+        return _splitKey
+    }     
+
+    protected async sideKeySplit() {
+        const sideKey = await jose.generateSecret('HS256')
+        const sideJwk = await jose.exportJWK(sideKey)
+        console.log('sideJwk>', sideJwk)
+        let splitKey = this._splitKey(new Uint8Array(Buffer.from(sideJwk.k as string)))
         return {
-            prime,
-            splitKey: _splitKey
+            sideKey,
+            splitKey
         }
-   }     
+    }
 
 
-    async sign(_privateKey: string) {
-        let splitKey = this.splitKey(randomKey(32))
-        let signedAccessKey = this.setSignOption({
-            issuer: this._issuer,
-            audience: this._audience,
-            base: splitKey.splitKey[0]
-        }).signAccessKey(_privateKey)
-        let jwkPrivateKey:any = await jose.importJWK(getPrivateJWK(_privateKey), 'ES256K')
-        return await new jose.SignJWT({signedAccessKey})
-        .setProtectedHeader({ alg: 'ES256K' })
-        .setIssuedAt()
-        .setNotBefore(Math.floor(Date.now() / 1000))
-        .setIssuer(this._issuer)
-        .setAudience(this._audience)
-        .setExpirationTime(this._expt || '24h')
-        .sign(jwkPrivateKey)
+    protected async sideKeyRecover(keys: Array<string>) {
+        return await jose.importJWK({kty: 'oct', k: splitKey.combine(keys)})
+    }
+
+    async createAccess(CID: string) {
+       try {
+         let jsonKeyStore = await this.sideKeySplit()
+         let accessToken = await new jose.EncryptJWT({CID})
+             .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+             .setIssuedAt()
+             .setNotBefore(Math.floor(Date.now() / 1000))
+             .setIssuer(this._issuer)
+             .setAudience(this._audience)
+             .setExpirationTime(this._expt || '24h')
+             .encrypt(jsonKeyStore.sideKey)
+         return {
+             accessToken,
+             sideKeys: jsonKeyStore.splitKey 
+         }
+       } catch (error) {
+            return error
+       }
     }
 
     /*
@@ -70,12 +86,11 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
         @param: token , key
         @return: { payload, protectedHeader }
     */
-    async verifyAccess(jwt: string, rootHash: any, _publicKey: any) {
+    async verifyAccess(accessToken: string, sideKeys: Array<string>) {
         try {
-            let jwkPublicKey: any = await jose.importJWK(_publicKey, 'ES256K')
-            let  { payload } = await jose.jwtVerify(jwt, jwkPublicKey)
-            let status = this.verifyAccessKey(rootHash, payload.signedAccessKey)
-            return { payload, status }
+            let sideJwk =  await this.sideKeyRecover(sideKeys)
+            let  { payload } = await jose.jwtDecrypt(accessToken, sideJwk)
+            return { payload }
         } catch (error) {
             return error
         } 

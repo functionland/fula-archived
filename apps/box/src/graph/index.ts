@@ -12,7 +12,6 @@ import {parse} from "graphql";
 import {iterateLater, toAsyncIterable} from "async-later";
 import {ORBITDB_PATH} from "../const";
 import OrbitDB from 'orbit-db';
-import * as IPFS from "ipfs";
 import {resolveLater} from "async-later";
 
 

@@ -1,122 +1,118 @@
-import GossipSub from "libp2p-gossipsub";
 import wrtc from 'wrtc';
-import WebRTCStar from 'libp2p-webrtc-star';
-import Mplex from 'libp2p-mplex';
-import {NOISE, Noise} from "@chainsafe/libp2p-noise"
-import Bootstrap  from "libp2p-bootstrap"
+import {WebRTCStar} from '@libp2p/webrtc-star';
+import {Mplex} from '@libp2p/mplex';
+import {Noise} from "@chainsafe/libp2p-noise";
+import {Bootstrap} from "@libp2p/bootstrap";
 import {Libp2pOptions} from "libp2p";
-import Protector from "libp2p/src/pnet"
-import config from "config"
-import * as fs from "fs"
-import peerId from "peer-id"
-import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP} from "./const";
-import TCP from 'libp2p-tcp'
-import WS from 'libp2p-websockets'
-import filters from "libp2p-websockets/src/filters";
+import {FaultTolerance} from "libp2p/transport-manager";
+import { MulticastDNS } from '@libp2p/mdns'
+import { PreSharedKeyConnectionProtector } from 'libp2p/pnet'
+import type { PeerDiscovery } from '@libp2p/interfaces/peer-discovery'
+import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP, LISTENING, PKEY_PATH} from "./const";
+import {createEd25519PeerId, createFromProtobuf, exportToProtobuf} from '@libp2p/peer-id-factory'
+import {TCP} from '@libp2p/tcp';
+import {WebSockets} from '@libp2p/websockets';
+import {create as ipfsHttpClient} from "ipfs-http-client";
+import {DelegatedPeerRouting} from '@libp2p/delegated-peer-routing';
+import { KadDHT } from '@libp2p/kad-dht'
+import * as fs from "fs";
+import {getPublicIP} from "./utils";
 
-const getPeerId = async () => {
-    if (fs.existsSync(LIBP2P_PATH + '/identity.json')) {
-        const identity = JSON.parse(fs.readFileSync(LIBP2P_PATH + '/identity.json'));
-        return await peerId.createFromJSON(identity)
-    } else {
-        const identity = await peerId.create()
-        fs.writeFileSync(LIBP2P_PATH + '/identity.json', JSON.stringify(identity.toJSON()))
-        return identity
-    }
+const _ipfsHttpClient = ipfsHttpClient({url: new URL(IPFS_HTTP)})
+const delegatedPeerRouting = new DelegatedPeerRouting(_ipfsHttpClient);
 
+const getBootstrapNodes = async () => {
+  const swarmAdders = await _ipfsHttpClient.swarm.addrs()
+  const adder: string[] = []
+  swarmAdders.map((ma)=>{
+    ma.addrs.map((_ma)=>{
+      const addrStr = `${_ma.toString()}/p2p/${ma.id}`
+      adder.push(addrStr)
+    })
+  })
+  return [...adder, ...FULA_NODES]
 }
+
+const getAnnounceAddr = async (identity) => {
+  try{
+    const publicIP = await getPublicIP();
+    return [
+      `/ip4/${publicIP}/tcp/4002/p2p/${identity.toString()}`,
+      `/ip4/${publicIP}/tcp/4003/ws/p2p/${identity.toString()}`
+    ]
+  }catch (e){
+    return []
+  }
+}
+const getPeerId = async () => {
+  if (fs.existsSync(LIBP2P_PATH + '/identity')) {
+    const identity = fs.readFileSync(LIBP2P_PATH + '/identity');
+    return await createFromProtobuf(identity)
+  } else {
+    const identity = await createEd25519PeerId()
+    fs.writeFileSync(LIBP2P_PATH + '/identity', exportToProtobuf(identity))
+    return identity
+  }
+}
+
 const getNetSecret = ()=> {
-    if(config.get("network.key_path")===""){
+    if(PKEY_PATH===""){
         return undefined
     }
     console.log("Private Mode Enabled")
-    const key = fs.readFileSync(config.get("network.key_path"))
-    return new Protector(key)
+    const key = fs.readFileSync(PKEY_PATH)
+    return new PreSharedKeyConnectionProtector({enabled:true, psk:key})
 }
+
 export const netSecret = getNetSecret()
-export const listen = config.get("network.listen")
-const transportKey = WS.prototype[Symbol.toStringTag]
-const webstarKey = WebRTCStar.prototype[Symbol.toStringTag]
-new Noise();
 
-export const libConfig = async (config: Partial<Libp2pOptions>): Promise<Libp2pOptions> => {
-    const conf = {
-        ...config,
-        addresses: {
-            listen
-        },
-        modules: {
-            transport: [WebRTCStar, TCP, WS],
-            streamMuxer: [Mplex],
-            connEncryption: [NOISE],
-            peerDiscovery: [Bootstrap],
-            pubsub: GossipSub,
-            connProtector: netSecret
-        },
-        config: {
-            transport: {
-                [webstarKey]: {
-                    wrtc, // You can use `wrtc` when running in Node.js
-                },
-                [transportKey]: { // Transport properties -- Libp2p upgrader is automatically added
-                    filter: filters.all
-                }
-            },
-            peerDiscovery: {
-                autoDial: true,
-                [WebRTCStar.tag]: {
-                    enabled: false,
-                },
-                [Bootstrap.tag]: {
-                    list: FULA_NODES,
-                    interval: 5000,
-                    enabled: FULA_NODES.length > 0
-                }
-            },
-        },
-    }
-    // if(IPFS_HTTP){
-    //     return {
-    //         ...conf,
-    //       peerId:await getPeerId()
-    //     }
-    // }
-    // else return conf
-    return conf
+
+export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
+  const discovery: PeerDiscovery[] = [] ;
+  const peerId = await getPeerId()
+  const boostrapNodes = await getBootstrapNodes()
+  if(boostrapNodes.length>0){
+    discovery.push(new Bootstrap({list: boostrapNodes, interval: 2000}))
+  }
+  discovery.push(new MulticastDNS({
+    interval: 1000
+  }))
+  return {
+    peerId,
+    connectionProtector: netSecret,
+    transportManager: {
+      faultTolerance: FaultTolerance.NO_FATAL
+    },
+    connectionManager: {
+      autoDial: false
+    },
+    dht: new KadDHT(),
+    transports: [new WebRTCStar({wrtc}), new TCP(), new WebSockets()],
+    connectionEncryption: [new Noise()],
+    streamMuxers: [new Mplex()],
+    addresses: {
+      listen: LISTENING,
+      // announce: [...advertise]
+    },
+    peerRouting: [
+      delegatedPeerRouting
+    ],
+    relay: {                   // Circuit Relay options (this config is part of libp2p core configurations)
+      enabled: true,           // Allows you to dial and accept relayed connections. Does not make you a relay.
+      hop: {
+        enabled: true,         // Allows you to be a relay for other peers
+        active: true           // You will attempt to dial destination peers if you are not connected to them
+      },
+      advertise: {
+        bootDelay: 15 * 60 * 1000, // Delay before HOP relay service is advertised on the network
+        enabled: true,          // Allows you to disable the advertise of the Hop service
+        ttl: 30 * 60 * 1000     // Delay Between HOP relay service advertisements on the network
+      },
+      autoRelay: {
+        enabled: true,         // Allows you to bind to relays with HOP enabled for improving node dialability
+        maxListeners: 2         // Configure maximum number of HOP relays to use
+      }
+    },
+    peerDiscovery: discovery
+  }
 }
-
-export const ipfsConfig = () => ({
-    Addresses: {
-        Swarm: listen,
-        Announce: [],
-        NoAnnounce: [],
-        API: '/ip4/127.0.0.1/tcp/5002',
-        Gateway: '/ip4/127.0.0.1/tcp/9090',
-        RPC: '/ip4/127.0.0.1/tcp/5003',
-    },
-    Discovery: {
-        MDNS: {
-            Enabled: true,
-            Interval: 10
-        },
-        webRTCStar: {
-            Enabled: false
-        }
-    },
-    Bootstrap: FULA_NODES,
-    Pubsub: {
-        /** @type {'gossipsub'} */
-        Router: ('gossipsub'),
-        Enabled: true
-    },
-    Swarm: {
-        ConnMgr: {
-            LowWater: 1,
-            HighWater: 10
-        },
-        DisableNatPortMap: false
-    },
-    Routing: {
-        Type: 'dhtclient'
-    }
-})

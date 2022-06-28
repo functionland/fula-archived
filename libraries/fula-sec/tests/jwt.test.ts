@@ -26,9 +26,9 @@ describe('JWT TEST', () => {
     });
 
     it('2', async () => {
-        const fulaDID = new FulaDID();
-        const result = await fulaDID.create();
-        console.log('fulaDID: ', result)
+        // const fulaDID = new FulaDID();
+        // const result = await fulaDID.create();
+        // console.log('fulaDID: ', result)
         // let jwk = getPublicJWKfromPrivateKey(result.privateKey)
         // console.log('jwk: ', jwk)
         
@@ -48,7 +48,7 @@ describe('JWT TEST', () => {
         // let Pubjwk = getPublicJWK('0x420b8bd2afdfa344dc4029f991df08d540336407')
         // console.log('Pubjwk: ', Pubjwk)
 
-        should().not.Throw
+        // should().not.Throw
     });
 
 

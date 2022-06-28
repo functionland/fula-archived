@@ -10,7 +10,7 @@
     "build:test": "node scripts/build-test.js",
     "start": "tsc && node dist/br/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "rushx build:test && mocha './dist/tests/access.token.test.cjs'",
+    "test": "rushx build:test && mocha './dist/tests/full.test.cjs'",
     "doc": "npx typedoc src/*.ts"
   },
   "keywords": [],

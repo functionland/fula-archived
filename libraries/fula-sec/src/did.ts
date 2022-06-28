@@ -15,6 +15,11 @@ interface IFulaDID {
     did: any;
 }
 
+interface IActivateParam {
+    secretKey?: string, 
+    signature: string
+}
+
 export class FulaDID implements IFulaDID {
     privateKey!: string;
     authDID!: string;
@@ -37,10 +42,11 @@ export class FulaDID implements IFulaDID {
      * @property _secretKey: string, signature: string
 	 * @returns Object - { authDID }
 	 */
-    async create (_secretKey: string, signature: string) {
+    async activate (object: IActivateParam) {
+        // todo get wallet address and verift is wallet signed
         this.privateKey = sha3.keccak256(JSON.stringify({
-            secretKey: _secretKey,
-            signature
+            secretKey: object.secretKey || "" ,
+            signature: object.signature
         }));
         this.authDID = await this.didProvider();  
         return {

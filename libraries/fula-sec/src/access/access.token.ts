@@ -7,17 +7,17 @@ import splitKey from 'shamirs-secret-sharing'
 import { buffer } from 'stream/consumers'
 import { type } from 'os'
 interface IAccessHeader {
-    CID: string
+    CID?: string
     issuer:string
     audience: string
     expt?: string | undefined
 }
 
-export class ProtectedAccessHeader extends ProduceAccessKey {
+export class ProtectedAccessHeader {
     private _issuer!: string
     private _audience!: string
     private _expt?: string | undefined
-    protected _CID!: string
+    protected _CID?: string
 
     setDeclaration(options: IAccessHeader) {
         if (!isObjects(options)) {
@@ -48,7 +48,6 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
     protected async sideKeySplit() {
         const sideKey = await jose.generateSecret('HS256')
         const sideJwk = await jose.exportJWK(sideKey)
-        console.log('sideJwk>', sideJwk)
         let splitKey = this._splitKey(new Uint8Array(Buffer.from(sideJwk.k as string)))
         return {
             sideKey,
@@ -58,13 +57,13 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
 
 
     protected async sideKeyRecover(keys: Array<string>) {
-        return await jose.importJWK({kty: 'oct', k: splitKey.combine(keys)})
+         return await jose.importJWK({kty: 'oct', k: splitKey.combine(keys).toString()}, 'HS256')
     }
 
-    async createAccess(CID: string) {
+    async createAccess() {
        try {
          let jsonKeyStore = await this.sideKeySplit()
-         let accessToken = await new jose.EncryptJWT({CID})
+         let accessToken = await new jose.EncryptJWT({CID: this._CID})
              .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
              .setIssuedAt()
              .setNotBefore(Math.floor(Date.now() / 1000))
@@ -89,7 +88,10 @@ export class ProtectedAccessHeader extends ProduceAccessKey {
     async verifyAccess(accessToken: string, sideKeys: Array<string>) {
         try {
             let sideJwk =  await this.sideKeyRecover(sideKeys)
-            let  { payload } = await jose.jwtDecrypt(accessToken, sideJwk)
+            let  { payload } = await jose.jwtDecrypt(accessToken, sideJwk, {
+                issuer: this._issuer,
+                audience: this._audience
+            })
             return { payload }
         } catch (error) {
             return error

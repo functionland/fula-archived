@@ -5,7 +5,6 @@ import {Noise} from "@chainsafe/libp2p-noise";
 import {Bootstrap} from "@libp2p/bootstrap";
 import {Libp2pOptions} from "libp2p";
 import {FaultTolerance} from "libp2p/transport-manager";
-import { MulticastDNS } from '@libp2p/mdns'
 import { PreSharedKeyConnectionProtector } from 'libp2p/pnet'
 import type { PeerDiscovery } from '@libp2p/interfaces/peer-discovery'
 import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP, LISTENING, PKEY_PATH} from "./const";
@@ -14,7 +13,6 @@ import {TCP} from '@libp2p/tcp';
 import {WebSockets} from '@libp2p/websockets';
 import {create as ipfsHttpClient} from "ipfs-http-client";
 import {DelegatedPeerRouting} from '@libp2p/delegated-peer-routing';
-import { KadDHT } from '@libp2p/kad-dht'
 import * as fs from "fs";
 import {getPublicIP} from "./utils";
 
@@ -30,7 +28,7 @@ const getBootstrapNodes = async () => {
       adder.push(addrStr)
     })
   })
-  return [...adder, ...FULA_NODES]
+  return [...FULA_NODES]
 }
 
 const getAnnounceAddr = async (identity) => {
@@ -74,9 +72,6 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
   if(boostrapNodes.length>0){
     discovery.push(new Bootstrap({list: boostrapNodes, interval: 2000}))
   }
-  discovery.push(new MulticastDNS({
-    interval: 1000
-  }))
   return {
     peerId,
     connectionProtector: netSecret,
@@ -86,7 +81,6 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
     connectionManager: {
       autoDial: false
     },
-    dht: new KadDHT(),
     transports: [new WebRTCStar({wrtc}), new TCP(), new WebSockets()],
     connectionEncryption: [new Noise()],
     streamMuxers: [new Mplex()],

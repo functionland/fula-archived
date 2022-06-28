@@ -14,7 +14,8 @@ services:
       - ./data/box0/data:/opt/apps/box/data
     environment:
       NODE_ENV: "production"
-      FULA_IPFS_HTTP: "http://cluster0:9095"
+      FULA_CLUSTER_PROXY: "http://cluster0:9095"
+      FULA_IPFS_HTTP: "http://ipfs0:5001"
     ports:
       - "4002:4002" # TCP
       - "4003:4003" # WS
@@ -69,7 +70,8 @@ services:
       - ./data/box1/data:/opt/apps/box/data
     environment:
       NODE_ENV: "production"
-      FULA_IPFS_HTTP: "http://cluster1:9095"
+      FULA_CLUSTER_PROXY: "http://cluster1:9095"
+      FULA_IPFS_HTTP: "http://ipfs1:5001"
     ports:
       - "4102:4002" # TCP
       - "4103:4003" # WS

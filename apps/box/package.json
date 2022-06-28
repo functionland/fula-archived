@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",
+    "node-pre-gyp": "^0.17.0",
     "@types/tape": "~4.13.2",
     "@typescript-eslint/eslint-plugin": "~5.13.0",
     "@typescript-eslint/parser": "~5.13.0",

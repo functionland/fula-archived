@@ -55,7 +55,7 @@
     "@libp2p/mdns": "~2.0.0",
     "@libp2p/kad-dht": "~3.0.0",
     "@libp2p/interfaces": "~3.0.2",
-    "default-gateway": "^6.0.3"
+    "@achingbrain/ssdp": "4.0.1"
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",

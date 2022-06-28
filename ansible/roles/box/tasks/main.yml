@@ -74,12 +74,10 @@
   become: yes
   become_user: ipfs
   git:
-    #repo: https://github.com/functionland/fula.git
-    repo: https://github.com/farhoud/fula.git
+    repo: https://github.com/functionland/fula.git
     dest: "{{ ipfs_home }}/.fula"
     clone: yes
     update: yes
-    version: organize-examples
   notify:
     - restart Box
 

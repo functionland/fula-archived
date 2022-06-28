@@ -54,7 +54,8 @@
     "ipfs-http-client": "~56.0.3",
     "@libp2p/mdns": "~2.0.0",
     "@libp2p/kad-dht": "~3.0.0",
-    "@libp2p/interfaces": "~3.0.2"
+    "@libp2p/interfaces": "~3.0.2",
+    "default-gateway": "^6.0.3"
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",

@@ -21,9 +21,7 @@ services:
 
   ipfs0:
     container_name: ipfs0
-    build:
-      context: .
-      dockerfile: ./ipfs/Dockerfile
+    image: ipfs/go-ipfs:v0.13.0
     ports:
       - "4001:4001" # ipfs swarm - expose if needed/wanted
       - "5001:5001" # ipfs api - expose if needed/wanted
@@ -35,7 +33,7 @@ services:
 
   cluster0:
     container_name: cluster0
-    image: ipfs/ipfs-cluster:v1.0.1
+    image: functionland/ipfs-cluster:v1.0.1
     depends_on:
       - ipfs0
     environment:
@@ -78,16 +76,14 @@ services:
 
   ipfs1:
     container_name: ipfs1
-    build:
-      context: .
-      dockerfile: ./ipfs/Dockerfile
+    image: ipfs/go-ipfs:v0.13.0
     volumes:
       - ./data/ipfs1:/data/ipfs
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
   cluster1:
     container_name: cluster1
-    image: ipfs/ipfs-cluster:v1.0.1
+    image: functionland/ipfs-cluster:v1.0.1
     depends_on:
       - ipfs1
     environment:

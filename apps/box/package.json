@@ -55,7 +55,6 @@
     "@libp2p/mdns": "~2.0.0",
     "@libp2p/kad-dht": "~3.0.0",
     "@libp2p/interfaces": "~3.0.2",
-    "@achingbrain/ssdp": "4.0.1",
     "default-gateway": "^6.0.2",
     "ipfs-utils": "^9.0.6",
     "leveldown": "^5.0.0"

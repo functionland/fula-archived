@@ -17,7 +17,7 @@ build({
         let contents = await readFile(args.path, 'utf8');
         contents = contents.replace(
           /\bimport\.meta\.url\b/g,
-          JSON.stringify(pathToFileURL(args.path)),
+          "require(\"url\").pathToFileURL(__filename).toString().replace('/dist/index.js','/node_modules/@achingbrain/ssdp/dist/src/'))",
         );
         return { contents, loader: 'default' }
       });

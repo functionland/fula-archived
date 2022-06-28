@@ -57,7 +57,8 @@
     "@libp2p/interfaces": "~3.0.2",
     "default-gateway": "^6.0.2",
     "ipfs-utils": "^9.0.6",
-    "leveldown": "^5.0.0"
+    "leveldown": "^5.0.0",
+    "@achingbrain/ssdp":"^4.0.1"
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",

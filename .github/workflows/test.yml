@@ -20,12 +20,11 @@ jobs:
             - "9095:9095"
 
     steps:
-      - env:
-          FULA_IPFS_HTTP: "http://ipfs:5001"
-          FULA_CLUSTER_PROXY: "http://ipfs:9095"
-
       - uses: actions/checkout@v2
       - name: Use Node.js
+        env:
+          FULA_IPFS_HTTP: "http://ipfs:5001"
+          FULA_CLUSTER_PROXY: "http://ipfs:9095"
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'

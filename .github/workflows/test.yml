@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: node:16-bullseye
     services:
         ipfs:
           image: ipfs/ipfs-cluster-test:v1.0.1

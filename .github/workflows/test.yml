@@ -30,13 +30,9 @@ jobs:
             CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
             CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
           ports:
-            # Open API port (allows ipfs-cluster-ctl usage on host)
-            - "127.0.0.1:9094:9094"
+            - "9094:9094"
             - "9095:9095"
-            # The cluster swarm port would need  to be exposed if this container
-            # was to connect to cluster peers on other hosts.
-            # But this is just a testing cluster.
-            # - "9096:9096" # Cluster IPFS Proxy endpoint
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js

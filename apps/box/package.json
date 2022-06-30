@@ -10,10 +10,7 @@
     "build": "node scripts/build.mjs",
     "build:watch": "node scripts/build.mjs",
     "lint": "eslint src --fix",
-    "test": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/*.test.{ts,js} | tap-spec",
-    "test:orbitDB": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/orbitDB.test.{ts,js} | tap-spec",
-    "test:graphql": "node -r esbuild-runner/register node_modules/tape/bin/tape tests/**/graphql.test.{ts,js} | tap-spec",
-    "test:sel": "node -r esbuild-runner/register node_modules/tape/bin/tape $TEST_PATH | tap-spec"
+    "test": "node scripts/build.mjs && node -r tape dist/test/index.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -56,7 +53,8 @@
     "default-gateway": "^6.0.2",
     "ipfs-utils": "^9.0.6",
     "leveldown": "^5.0.0",
-    "@achingbrain/ssdp":"^4.0.1"
+    "@achingbrain/ssdp":"^4.0.1",
+    "@multiformats/multiaddr": "^10.2.1"
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",

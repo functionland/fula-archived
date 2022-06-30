@@ -81,14 +81,14 @@ export async function sendFile({ connection, file, symKey = Uint8Array.from([]),
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return pipe(streamSendFile, connection.stream as it.Duplex<any>, async function (source: it.Source<any>) {
-        let response: string | undefined = undefined;
+        let response: Uint8Array | undefined = undefined;
         for await (const message of source) {
-            response = String(message); // id
+            response = message; // id
         }
         if (response === undefined) {
             throw Error()
         }
-        return response
+        return new TextDecoder().decode(response)
     });
 
 }
@@ -121,14 +121,15 @@ export async function streamFile({ connection, source, meta }: {
     };
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return pipe(streamSendFile, connection.stream as it.Duplex<any>, async function (_source: any) {
-        let response: string | undefined = undefined;
+        let response: Uint8Array | undefined = undefined;
         for await (const message of _source) {
-            response = String(message); // id
+            response = message; // id
         }
         if (response === undefined) {
             throw Error()
         }
-        return response
+
+        return new TextDecoder().decode(response)
     });
 
 }

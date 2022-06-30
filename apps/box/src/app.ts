@@ -73,9 +73,7 @@ export async function graceful() {
   const libp2p = await getLibp2p();
   const otbitDb = await getOrbitDb();
   await otbitDb.stop();
-  await libp2p.stop()
-  return
-  // process.exit(0);
+  await libp2p.stop();
 }
 
 

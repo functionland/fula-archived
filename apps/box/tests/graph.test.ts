@@ -1,19 +1,15 @@
 import test from 'tape';
-import {app, getLibp2p, getIPFS} from '../src/app';
+import {getLibp2p} from '../src/app';
 import {getOrbitDb} from '../src/graph'
 import {queryResultMap, testData, testEventGenerator} from "./test-data";
 import {connect, createClient} from "./helper";
 import {PROTOCOL, submitQuery, Request, Result, submitSubscriptionQuery} from "@functionland/graph-protocol";
 
-
-test('Graphgql on OrbitDB test', async function (t) {
+test('Graph API OrbitDB test', async function (t) {
     t.plan(12)
-    const p = await app();
     try {
         const node = await getLibp2p();
-        const ipfs = await getIPFS();
         const orbitDB = await getOrbitDb();
-        // t.comment('Start Insert Sample Data')
         const options = {
             // Give write access to ourselves
             accessController: {
@@ -113,11 +109,6 @@ test('Graphgql on OrbitDB test', async function (t) {
         t.end(error);
     }
 
-    t.teardown(async () => {
-        await p.stop()
-
-    })
-
-    await new Promise(resolve => setTimeout(resolve, 10000));
     t.end()
 });
+

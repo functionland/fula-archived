@@ -9,6 +9,34 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+        ipfs:
+          image: ipfs/go-ipfs:v0.13.0
+          ports:
+            - "4001:4001" # ipfs swarm - expose if needed/wanted
+            - "5001:5001" # ipfs api - expose if needed/wanted
+            - "8080:8080" # ipfs gateway - expose if needed/wanted
+
+
+        cluster:
+          image: functionland/ipfs-cluster:v1.0.1
+          env:
+            CLUSTER_PEERNAME: cluster0
+            CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
+            CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/localhost/tcp/5001
+            CLUSTER_IPFSPROXY_LISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9095
+            CLUSTER_IPFSPROXY_NODEMULTIADDRESS: /dns4/localhost/tcp/5001
+            CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
+            CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
+            CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+          ports:
+            # Open API port (allows ipfs-cluster-ctl usage on host)
+            - "127.0.0.1:9094:9094"
+            - "9095:9095"
+            # The cluster swarm port would need  to be exposed if this container
+            # was to connect to cluster peers on other hosts.
+            # But this is just a testing cluster.
+            # - "9096:9096" # Cluster IPFS Proxy endpoint
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js

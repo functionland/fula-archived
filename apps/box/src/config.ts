@@ -7,7 +7,7 @@ import {Libp2pOptions} from "libp2p";
 import {FaultTolerance} from "libp2p/transport-manager";
 import { PreSharedKeyConnectionProtector } from 'libp2p/pnet'
 import type { PeerDiscovery } from '@libp2p/interfaces/peer-discovery'
-import {LIBP2P_PATH, FULA_NODES, IPFS_HTTP, LISTENING, PKEY_PATH} from "./const";
+import {REPO_PATH, FULA_NODES, IPFS_HTTP, LISTENING, PKEY_PATH} from "./const";
 import {createEd25519PeerId, createFromProtobuf, exportToProtobuf} from '@libp2p/peer-id-factory'
 import {TCP} from '@libp2p/tcp';
 import {WebSockets} from '@libp2p/websockets';
@@ -18,6 +18,12 @@ import {getPublicIP} from "./utils";
 
 const _ipfsHttpClient = ipfsHttpClient({url: new URL(IPFS_HTTP)})
 const delegatedPeerRouting = new DelegatedPeerRouting(_ipfsHttpClient);
+
+const createRepo = ()=>{
+  if (!fs.existsSync(REPO_PATH)){
+    fs.mkdirSync(REPO_PATH);
+  }
+}
 
 const getBootstrapNodes = async () => {
   const swarmAdders = await _ipfsHttpClient.swarm.addrs()
@@ -43,12 +49,12 @@ const getAnnounceAddr = async (identity) => {
   }
 }
 const getPeerId = async () => {
-  if (fs.existsSync(LIBP2P_PATH + '/identity')) {
-    const identity = fs.readFileSync(LIBP2P_PATH + '/identity');
+  if (fs.existsSync(REPO_PATH + '/identity')) {
+    const identity = fs.readFileSync(REPO_PATH + '/identity');
     return await createFromProtobuf(identity)
   } else {
     const identity = await createEd25519PeerId()
-    fs.writeFileSync(LIBP2P_PATH + '/identity', exportToProtobuf(identity))
+    fs.writeFileSync(REPO_PATH + '/identity', exportToProtobuf(identity))
     return identity
   }
 }
@@ -66,6 +72,7 @@ export const netSecret = getNetSecret()
 
 
 export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
+  createRepo()
   const discovery: PeerDiscovery[] = [] ;
   const peerId = await getPeerId()
   const boostrapNodes = await getBootstrapNodes()

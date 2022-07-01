@@ -4,13 +4,7 @@ Start a wifi server on the Raspberry Pi 4 that is accessible from the Box setup 
 
 ## Installing
 
-1. Update locale via:
-
-```bash
-$ sudo raspi-config
-```
-
-2. Run the following script:
+Run the following script:
 
 ```bash
 $ sudo bash ./installer.sh

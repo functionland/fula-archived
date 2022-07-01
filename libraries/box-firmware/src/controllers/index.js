@@ -57,7 +57,6 @@ export const postWifiConnect = async ({ params }) => {
   wifi.connect(params.ssid, params.password, params.countryCode, (response) => {
     console.log('Wifi connection response: ' + response);
   });
-  return { success };
 };
 
 /**

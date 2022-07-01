@@ -125,7 +125,7 @@ export const connect = (
   countryCode = config.COUNTRY,
   callback
 ) => {
-  // Write a wpa_suppplicant.conf file and save it
+  // Write a wpa_supplicant.conf file and save it
   const fileContent = template(
     path.join(__dirname, `../../templates/wpa_supplicant.hbs`),
     {
@@ -139,12 +139,12 @@ export const connect = (
   // Restart network drivers
   execWithJournalctlCallback(`sudo killall wpa_supplicant`, () => {
     execWithJournalctlCallback(
-      `sudo wpa_supplicant -B -i${config.IFFACE_CLIENT} -c /etc/wpa_supplicant/wpa_supplicant.conf`,
+      `sudo wpa_supplicant -B -i ${config.IFFACE_CLIENT} -c /etc/wpa_supplicant/wpa_supplicant.conf`,
       () => {
         if (!checkIfIsConnected()) {
           // Retry
           execWithJournalctlCallback(
-            `sudo wpa_cli -i${config.IFFACE_CLIENT} RECONFIGURE`,
+            `sudo wpa_cli -i ${config.IFFACE_CLIENT} RECONFIGURE`,
             () => {
               execWithJournalctlCallback(
                 `sudo ifconfig ${config.IFFACE_CLIENT} up`,
@@ -179,8 +179,8 @@ export const disconnect = async () => {
  * @param {Function} callback
  */
 export const enableAccessPoint = (callback) => {
-  console.log('Enabling access point');
   disableAccessPoint(() => {
+    console.log('Enabling access point');
     writeAccessPointFiles('ap');
     execWithJournalctlCallback(
       `sudo iw dev ${config.IFFACE_CLIENT} interface add ${config.IFFACE} type __ap`,
@@ -199,8 +199,7 @@ export const enableAccessPoint = (callback) => {
             });
           });
         });
-      },
-      `Interface ${config.IFFACE}.IPv6 no longer relevant for mDNS.`
+      }
     );
   });
 };

@@ -12,12 +12,9 @@ jobs:
     container: node:16-bullseye
     services:
         ipfs:
-          image: ipfs/ipfs-cluster-test:v1.0.1
+          image: functionland/ipfs-cluster-test:v1.0.1
           ports:
-            - "4001:4001" # ipfs swarm - expose if needed/wanted
             - "5001:5001" # ipfs api - expose if needed/wanted
-            - "8080:8080" # ipfs gateway - expose if needed/wanted
-            - "9094:9094"
             - "9095:9095"
 
     steps:

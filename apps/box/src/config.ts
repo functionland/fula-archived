@@ -114,6 +114,6 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
         maxListeners: 2         // Configure maximum number of HOP relays to use
       }
     },
-    peerDiscovery: discovery
+    // peerDiscovery: discovery
   }
 }

@@ -11,13 +11,39 @@ import {REPO_PATH, FULA_NODES, IPFS_HTTP, LISTENING, PKEY_PATH} from "./const";
 import {createEd25519PeerId, createFromProtobuf, exportToProtobuf} from '@libp2p/peer-id-factory'
 import {TCP} from '@libp2p/tcp';
 import {WebSockets} from '@libp2p/websockets';
-import {create as ipfsHttpClient} from "ipfs-http-client";
+import {create as ipfsHttpClient, IPFSHTTPClient} from "ipfs-http-client";
 import {DelegatedPeerRouting} from '@libp2p/delegated-peer-routing';
 import * as fs from "fs";
-import {getPublicIP} from "./utils";
+import {connectWithBackOff, getPublicIP} from "./utils";
+import {getLogger} from "./logger"
 
-const _ipfsHttpClient = ipfsHttpClient({url: new URL(IPFS_HTTP)})
-const delegatedPeerRouting = new DelegatedPeerRouting(_ipfsHttpClient);
+const log = getLogger()
+let _ipfs: undefined|IPFSHTTPClient = undefined;
+
+const getIPFS = async ()=>{
+  log.info('Connecting to IPFS companion')
+  if(_ipfs){
+    return _ipfs
+  }
+  _ipfs = await connectWithBackOff(IPFS_HTTP)
+  return _ipfs
+}
+
+const getPeerRouting = async () => {
+  try{
+    const _ipfsHttpClient = await getIPFS()
+    if(!_ipfsHttpClient){
+      throw Error('IPFS Not Found')
+    }
+    if(_ipfsHttpClient){
+      const delegatedPeerRouting = new DelegatedPeerRouting(_ipfsHttpClient);
+      return [delegatedPeerRouting]
+    }
+  }catch (e) {
+    log.info('Can not config peer routing: %o', e)
+  }
+
+}
 
 const createRepo = ()=>{
   if (!fs.existsSync(REPO_PATH)){
@@ -25,7 +51,21 @@ const createRepo = ()=>{
   }
 }
 
+const getPeerDiscovery = async () => {
+  const discovery: PeerDiscovery[] = [] ;
+  const boostrapNodes = await getBootstrapNodes()
+  if(boostrapNodes.length>0){
+    discovery.push(new Bootstrap({list: boostrapNodes, interval: 2000}))
+  }
+  return discovery
+}
+
 const getBootstrapNodes = async () => {
+  const _ipfsHttpClient = getIPFS()
+  if(!_ipfsHttpClient){
+    log.error('Bootstrap Can not config IPFS not found')
+    throw Error('IPFS Not Found')
+  }
   const swarmAdders = await _ipfsHttpClient.swarm.addrs()
   const adder: string[] = []
   swarmAdders.map((ma)=>{
@@ -34,7 +74,7 @@ const getBootstrapNodes = async () => {
       adder.push(addrStr)
     })
   })
-  return [...FULA_NODES]
+  return [...FULA_NODES,...adder]
 }
 
 const getAnnounceAddr = async (identity) => {
@@ -73,12 +113,7 @@ export const netSecret = getNetSecret()
 
 export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
   createRepo()
-  const discovery: PeerDiscovery[] = [] ;
   const peerId = await getPeerId()
-  const boostrapNodes = await getBootstrapNodes()
-  if(boostrapNodes.length>0){
-    discovery.push(new Bootstrap({list: boostrapNodes, interval: 2000}))
-  }
   return {
     peerId,
     connectionProtector: netSecret,
@@ -86,7 +121,7 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
       faultTolerance: FaultTolerance.NO_FATAL
     },
     connectionManager: {
-      autoDial: false
+      autoDial: true
     },
     transports: [new WebRTCStar({wrtc}), new TCP(), new WebSockets()],
     connectionEncryption: [new Noise()],
@@ -95,9 +130,7 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
       listen: LISTENING,
       // announce: [...advertise]
     },
-    peerRouting: [
-      delegatedPeerRouting
-    ],
+    peerRouting: await getPeerRouting(),
     relay: {                   // Circuit Relay options (this config is part of libp2p core configurations)
       enabled: true,           // Allows you to dial and accept relayed connections. Does not make you a relay.
       hop: {
@@ -114,6 +147,5 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
         maxListeners: 2         // Configure maximum number of HOP relays to use
       }
     },
-    // peerDiscovery: discovery
   }
 }

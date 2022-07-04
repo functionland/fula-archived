@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/functionland/fula#readme",
   "dependencies": {
-    "@functionland/file-protocol": "~0.3.6",
+    "@functionland/file-protocol": "~0.4.0",
     "@functionland/graph-protocol": "~0.2.2",
     "@ipld/dag-json": "~8.0.8",
     "async-later": "0.1.11",
@@ -54,7 +54,9 @@
     "ipfs-utils": "^9.0.6",
     "leveldown": "^5.0.0",
     "@achingbrain/ssdp":"^4.0.1",
-    "@multiformats/multiaddr": "^10.2.1"
+    "@multiformats/multiaddr": "^10.2.1",
+    "@libp2p/logger": "^1.1.6",
+    "debug": "^4.3.3"
   },
   "devDependencies": {
     "@types/debug": "~4.1.7",

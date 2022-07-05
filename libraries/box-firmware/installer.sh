@@ -39,6 +39,7 @@ sudo rm -rf /home/$SUDO_USER/.ssh
 sudo systemctl enable systemd-networkd
 
 # Setup project
+cd $SCRIPT_DIR
 npm install
 
 # Start pm2

@@ -3,7 +3,7 @@
   user:
     name: "{{ dev_username }}"
     password: "{{ dev_password | password_hash('sha512') }}"
-    groups: admin,sudo
+    groups: "{{ dev_groups }}"
 
 - name: update sshd_config to enable password login
   become: yes

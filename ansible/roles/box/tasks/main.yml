@@ -60,15 +60,16 @@
   notify:
     - restart Box
 
+
 - name: clean github repo if it exists
   become: yes
+  become_user: ipfs
   ansible.builtin.shell: git checkout -- .
   args:
     chdir: "{{ ipfs_home }}/.fula"
   when: fula_repo.stat.exists
   notify:
     - restart Box
-
 
 - name: clone a github repository
   become: yes
@@ -121,6 +122,17 @@
     state: directory
   notify:
     - restart Box
+
+
+- name: ensure node-pre-gyp is installed
+  become_user: ipfs
+  become: yes
+  command: npm i node-pre-gyp
+  args:
+    chdir: "{{ ipfs_home }}/.fula/apps/box"
+  notify:
+    - restart Box
+
 
 
 - name: install Box with npm

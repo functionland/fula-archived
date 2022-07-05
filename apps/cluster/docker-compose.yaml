@@ -14,20 +14,19 @@ services:
       - ./data/box0/data:/opt/apps/box/data
     environment:
       NODE_ENV: "production"
-      FULA_IPFS_HTTP: "http://cluster0:9095"
+      FULA_CLUSTER_PROXY: "http://cluster0:9095"
+      FULA_IPFS_HTTP: "http://ipfs0:5001"
     ports:
-      - "4001:4001" # ipfs swarm - expose if needed/wanted
-      - "5001:5001"
+      - "4002:4002" # TCP
+      - "4003:4003" # WS
 
   ipfs0:
     container_name: ipfs0
-    build:
-      context: .
-      dockerfile: ./ipfs/Dockerfile
+    image: ipfs/go-ipfs:v0.13.0
     ports:
-      - "4002:4001" # ipfs swarm - expose if needed/wanted
-      - "5002:5001" # ipfs api - expose if needed/wanted
-      - "8082:8080" # ipfs gateway - expose if needed/wanted
+      - "4001:4001" # ipfs swarm - expose if needed/wanted
+      - "5001:5001" # ipfs api - expose if needed/wanted
+      - "8080:8080" # ipfs gateway - expose if needed/wanted
     volumes:
       - ./data/ipfs0:/data/ipfs
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
@@ -35,7 +34,7 @@ services:
 
   cluster0:
     container_name: cluster0
-    image: ipfs/ipfs-cluster:latest
+    image: functionland/ipfs-cluster:v1.0.1
     depends_on:
       - ipfs0
     environment:
@@ -71,23 +70,22 @@ services:
       - ./data/box1/data:/opt/apps/box/data
     environment:
       NODE_ENV: "production"
-      FULA_IPFS_HTTP: "http://cluster1:9095"
+      FULA_CLUSTER_PROXY: "http://cluster1:9095"
+      FULA_IPFS_HTTP: "http://ipfs1:5001"
     ports:
-      - "4004:4001" # ipfs swarm - expose if needed/wanted
-      - "5004:5001"
+      - "4102:4002" # TCP
+      - "4103:4003" # WS
 
   ipfs1:
     container_name: ipfs1
-    build:
-      context: .
-      dockerfile: ./ipfs/Dockerfile
+    image: ipfs/go-ipfs:v0.13.0
     volumes:
       - ./data/ipfs1:/data/ipfs
     command: ["daemon", "--migrate=true", "--enable-pubsub-experiment", "--enable-namesys-pubsub"]
 
   cluster1:
     container_name: cluster1
-    image: ipfs/ipfs-cluster:latest
+    image: functionland/ipfs-cluster:v1.0.1
     depends_on:
       - ipfs1
     environment:

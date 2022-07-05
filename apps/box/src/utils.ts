@@ -1,39 +1,51 @@
-import {networkInterfaces} from "os";
+import http from 'http';
+import {create as ipfsHttpClient} from "ipfs-http-client";
+import {IPFS_HTTP} from "./const";
+import child_process from "child_process";
+import {getLogger} from "./logger";
 
-export const getIPList = () => {
-  const nets = networkInterfaces();
-  const ips = []; // Or just '{}', an empty object
+const log = getLogger()
 
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
-      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-      // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
-      const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
-      if (net.family === familyV4Value && !net.internal) {
-        if (net.address)
-          ips.push(net.address);
-      }
-    }
-  }
-  return ips
+export const getPublicIP = async () => {
+  return new Promise<string>((resolve, reject) => {
+    http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
+      resp.on('data', function(ip) {
+        console.log("My public IP address is: " + ip);
+        resolve(ip.toString())
+      });
+      resp.on('error', (e)=>{
+        reject('NO local address')
+      })
+    });
+  })
 }
 
-export const printBoxListeningAddrs = (peerId, multiaddrs) => {
-  const ips = getIPList();
-  const allmultiaddrsStr: Array<string> = []
+
+export const printBoxListeningAddrs = (multiaddrs) => {
   for (const ma of multiaddrs) {
-    if (ma.toString().includes('0.0.0.0')) {
-      for (const localIp of ips) {
-        const maStr = `${ma.toString().replace('0.0.0.0', localIp)}/p2p/${peerId.toB58String()}`
-        allmultiaddrsStr.push(maStr)
-      }
-    } else {
-      const maStr = `${ma.toString()}/p2p/${peerId.toB58String()}`
-      allmultiaddrsStr.push(maStr)
+    log.info(`Box Listen On ${ma.toString()}`)
+  }
+}
+
+
+export const connectWithBackOff = async (ipfs_http)=>{
+  log.trace('Connecting to IPFS %s', ipfs_http)
+  const limit = 100;
+  let tryCount = 0;
+  let sleep = 5
+  let _ipfs
+  while( limit > tryCount ){
+    try{
+      _ipfs = ipfsHttpClient({url: new URL(ipfs_http)})
+      const _id = await _ipfs.id()
+      log.info('Connected to IPFS %s', _id.id)
+      return _ipfs
+    }catch (e) {
+      log.error('Try %d of %d failed to connect to IPFS: %O', tryCount, limit, e)
+      child_process.execSync(`sleep ${sleep}`);
+      sleep += 5
+      tryCount += 1
     }
   }
-  console.log('Box Listen On:')
-  for (const maStr of allmultiaddrsStr) {
-    console.log(`  ${maStr}`)
-  }
+  throw Error("Can Not Connect to IPFS")
 }

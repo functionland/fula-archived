@@ -12,8 +12,10 @@ import {parse} from "graphql";
 import {iterateLater, toAsyncIterable} from "async-later";
 import {ORBITDB_PATH} from "../const";
 import OrbitDB from 'orbit-db';
-import * as IPFS from "ipfs";
 import {resolveLater} from "async-later";
+import {getLogger} from "../logger";
+
+const log = getLogger()
 
 
 type DBCollections = { [dbName: string]: any }
@@ -28,14 +30,17 @@ export async function getOrbitDb() {
 }
 
 export const registerGraph = async (libp2pNode, ipfsNode) => {
-  libp2pNode.handle(PROTOCOL, handler);
-
+  log.trace('Registering File Protocol')
+  await libp2pNode.handle(PROTOCOL, handler);
+  log.trace('Create OrbitDB Instance')
   const orbitDBNode = await OrbitDB.createInstance(ipfsNode, {directory: ORBITDB_PATH})
   resolveOrbitDB(orbitDBNode)
+  log.trace('Setup Resolver')
   const resolvers = createResolver(orbitDBNode)
   const dbCollections: DBCollections = {}
 
   const sendDBName = async (message) => {
+    log.trace('Publish %o to OpenDB Channel',message)
     try {
       const msgString = JSON.stringify(message)
       const messageBuffer = encoder.encode(msgString)
@@ -51,9 +56,11 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
     const rawdata = decoder.decode(msg.data)
     const data = JSON.parse(rawdata)
     if(data.ROI && data.ROI === 'req'){
+      log.trace('New node Join OrbitDB replicator send list of collections')
       await sendDBName({list: [...Object.keys(dbCollections)], ROI: 'res'})
       return
     }
+    log.trace('Open Shared DBs to get Synced')
     for (const dbName of data.list) {
       if (!dbCollections[dbName]) {
         const db = await orbitDBNode.docs(dbName, options)
@@ -97,32 +104,33 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
   }
 
   setQueryResolutionMethod(async function (req: Request) {
-
+    log.info('Request received pass it to GQL Engine.')
+    log.trace('%O', Request.toJson(req))
     try{
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const {query, variableValues, operationName} = Request.toJson(req)
+      log?.trace('Request: %o', {query, variableValues, operationName})
       const gqlQuery = parse(query)
       const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB)
       const s = Result.fromJson(data)
       const bytes = Result.toBinary(s)
       return bytes && toAsyncIterable([bytes]);
     }catch (e) {
-      console.log(e)
+      log?.error('Failed to process request (%o): reason:',Request.toJson(req))
     }
-
   })
 
   setSubscriptionQueryResolutionMethod(async function* (req: Request) {
+    log.info('Subscription Request received pass it to GQL Engine')
+    log.trace('%O', Request.toJson(req))
     try{
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
 
       const {query, variableValues, operationName} = Request.toJson(req)
       const gqlQuery = parse(query)
-
       const [values, next, complete] = iterateLater()
-
       const data = await executeAndSelect(gqlQuery, resolvers, variableValues, operationName, loadDB, next, true)
       const s = Result.fromJson(data)
       const bytes = Result.toBinary(s)
@@ -136,7 +144,7 @@ export const registerGraph = async (libp2pNode, ipfsNode) => {
         yield bytes
       }
     }catch (e) {
-      console.log(e)
+      log?.error('Failed to process request (%o): reason:',Request.toJson(req))
     }
 
   })

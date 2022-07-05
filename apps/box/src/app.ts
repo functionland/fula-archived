@@ -1,18 +1,17 @@
-import Libp2p, {constructorOptions, Libp2pOptions} from 'libp2p';
-import * as IPFS from 'ipfs';
-import { resolveLater } from 'async-later';
-import debug from 'debug';
-import config from "config";
-import {create} from "ipfs-http-client";
-import {printBoxListeningAddrs} from "./utils";
+import {createLibp2p as createNode, Libp2pOptions, Libp2p} from 'libp2p';
+import {resolveLater} from 'async-later';
+import type {IPFSHTTPClient} from "ipfs-http-client";
+import {connectWithBackOff, printBoxListeningAddrs} from "./utils";
 import {registerFile} from "./file";
-import {libConfig, ipfsConfig} from "./config";
+import {libConfig} from "./config";
 import {registerGraph, getOrbitDb} from "./graph";
-import {IPFS_PATH, IPFS_HTTP} from "./const";
+import {IPFS_CLUSTER_PROXY} from "./const";
+import {getLogger} from "./logger";
 
+const log = getLogger()
 
 const [libp2pPromise, resolveLibp2p] = resolveLater<Libp2p>();
-const [ipfsPromise, resolveIpfs] = resolveLater<IPFS.IPFS>();
+const [ipfsPromise, resolveIpfs] = resolveLater<IPFSHTTPClient>();
 
 export async function getLibp2p() {
   return libp2pPromise;
@@ -22,69 +21,54 @@ export async function getIPFS() {
   return ipfsPromise;
 }
 
-async function createIPFS(createLibp2p){
-  if(IPFS_HTTP){
-    createLibp2p()
-    const libp2pNode = await getLibp2p();
-    await libp2pNode.start()
-    printBoxListeningAddrs(libp2pNode.peerId, libp2pNode.multiaddrs)
-    return  new Promise<IPFS.IPFS>(((resolve, reject) => {
-      try{
-        resolve(create({url:new URL(IPFS_HTTP)}))
-      }catch (e){
-        console.log(e)
-        reject()
-      }
-    }))
-  }else {
-    return IPFS.create({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      libp2p: createLibp2p,
-      repo: IPFS_PATH,
-      peerId: config?.peerId,
-      config: ipfsConfig()
-    })
+
+const createLibp2p = async (conf) => {
+  try {
+    log.info('Start Configuring Box')
+    const cfg = await libConfig(conf)
+    return createNode(cfg)
+  } catch (e) {
+    log.error('Can Not Create Libp2p: %o', e)
+    console.log(e);
+
   }
 }
 
+const createIPFSClusterProxy = async () => {
+  if (!IPFS_CLUSTER_PROXY) {
+    throw new Error('No IPFS cluster provided')
+  }
+  log.info('Connecting to IPFS Cluster')
+  return connectWithBackOff(IPFS_CLUSTER_PROXY)
+}
 
-export async function app(config?:Partial<Libp2pOptions&constructorOptions>) {
 
-  const createLibp2p = async (config: Libp2pOptions) => {
-    resolveLibp2p(
-      Libp2p.create(await libConfig(config))
-    );
-    return libp2pPromise;
-  };
+export async function app(config?: Partial<Libp2pOptions>) {
+  resolveLibp2p(
+    createLibp2p(config)
+  );
   resolveIpfs(
-    createIPFS(createLibp2p)
+    createIPFSClusterProxy()
   )
-
-
   const libp2pNode = await getLibp2p();
   const ipfsNode = await getIPFS();
-  console.log('Box peerID: ' + libp2pNode.peerId.toB58String())
-
-
-  registerFile(libp2pNode, ipfsNode)
-  registerGraph(libp2pNode, ipfsNode)
+  await libp2pNode.start()
+  log.info("Box peerID %s", libp2pNode.peerId)
+  printBoxListeningAddrs(libp2pNode.getMultiaddrs())
+  await registerFile(libp2pNode, ipfsNode)
+  await registerGraph(libp2pNode, ipfsNode)
   return {
     stop: async () => await graceful()
   }
 }
 
 export async function graceful() {
-  debug('\nStopping server...');
-  const ipfs = await getIPFS();
+  log.info('Stopping server...');
   const libp2p = await getLibp2p();
   const otbitDb = await getOrbitDb();
   await otbitDb.stop();
-  if(!IPFS_HTTP)
-    await ipfs.stop();
-  await libp2p.stop()
-  return
-  // process.exit(0);
+  await libp2p.stop();
+  log.info('GoodBye');
 }
 
 

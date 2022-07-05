@@ -9,6 +9,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: node:16-bullseye
+    services:
+        ipfs:
+          image: functionland/ipfs-cluster-test:v1.0.1
+          ports:
+            - "5001:5001" # ipfs api - expose if needed/wanted
+            - "9095:9095"
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -19,5 +27,8 @@ jobs:
       - run: rush update
       - run: rush build
       - name: Run Tests
+        env:
+          FULA_IPFS_HTTP: "http://ipfs:5001"
+          FULA_CLUSTER_PROXY: "http://ipfs:9095"
         working-directory: ./apps/box
         run: rushx test

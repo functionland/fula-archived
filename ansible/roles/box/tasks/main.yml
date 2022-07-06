@@ -1,3 +1,31 @@
+- name: update apt cache
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Wait for /var/lib/dpkg/lock-frontend to be released 
+  shell: while lsof /var/lib/dpkg/lock-frontend ; do sleep 10; done;
+
+- name: ensure gpg binary is installed
+  become: yes
+  apt:
+    name: gpg
+
+- name: ensure git is installed
+  become: yes
+  apt:
+    name: git
+
+- name: ensure make is installed
+  become: yes
+  apt:
+    name: make
+
+- name: ensure g++ is installed
+  become: yes
+  apt:
+    name: g++
+
 - name: install the gpg key for nodejs LTS
   become: yes
   apt_key:
@@ -5,7 +33,6 @@
     state: present
   notify:
     - restart Box
-
 
 - name: install the nodejs LTS repos
   become: yes
@@ -36,6 +63,7 @@
 
 - name: clean github repo if it exists
   become: yes
+  become_user: ipfs
   ansible.builtin.shell: git checkout -- .
   args:
     chdir: "{{ ipfs_home }}/.fula"
@@ -43,17 +71,14 @@
   notify:
     - restart Box
 
-
 - name: clone a github repository
   become: yes
   become_user: ipfs
   git:
-    #repo: https://github.com/functionland/fula.git
-    repo: https://github.com/farhoud/fula.git
+    repo: https://github.com/functionland/fula.git
     dest: "{{ ipfs_home }}/.fula"
     clone: yes
     update: yes
-    version: organize-examples
   notify:
     - restart Box
 
@@ -97,6 +122,17 @@
     state: directory
   notify:
     - restart Box
+
+
+- name: ensure node-pre-gyp is installed
+  become_user: ipfs
+  become: yes
+  command: npm i node-pre-gyp
+  args:
+    chdir: "{{ ipfs_home }}/.fula/apps/box"
+  notify:
+    - restart Box
+
 
 
 - name: install Box with npm

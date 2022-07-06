@@ -1,5 +1,10 @@
 [ipfs]
 # Write here your ipfs nodes
+fulepo1
+fulepo2
+fulepo3
+fulepo4
+signal
 
 [ipfs_cluster:children]
 ipfs

@@ -1,0 +1,7 @@
+ipfs_peer_id: "{IPFS_PEER_ID_PUBLIC}
+ipfs_private_key: "{IPFS_PEER_ID_PRIVATE}"
+
+ipfs_cluster_id: "{IPFS_CLUSTER_PEER_ID_PUBLIC}"
+ipfs_cluster_private_key: "{IPFS_CLUSTER_PEER_ID_PRIVATE}"
+
+ipfs_cluster_peer_addr: "/ip4/{HOST_NETWORK_IPV4}/tcp/9096/ipfs/{IPFS_CLUSTER_ID_PUBLIC}"

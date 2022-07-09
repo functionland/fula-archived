@@ -1,10 +1,12 @@
 FROM node:16
-COPY ./common/deploy /opt/
 
-WORKDIR /opt/apps/box
+RUN npm install -g @microsoft/rush
 
-VOLUME /opt/apps/box/data
-VOLUME /opt/apps/box/config
+
+WORKDIR /box
+
+VOLUME /box/data
+VOLUME /box/config
 
 EXPOSE 4002
 EXPOSE 4003

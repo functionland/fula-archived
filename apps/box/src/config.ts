@@ -29,6 +29,7 @@ const getIPFS = async ()=>{
   return _ipfs
 }
 
+// disabled
 const getPeerRouting = async () => {
   try{
     const _ipfsHttpClient = await getIPFS()
@@ -51,6 +52,7 @@ const createRepo = ()=>{
   }
 }
 
+// disabled
 const getPeerDiscovery = async () => {
   const discovery: PeerDiscovery[] = [] ;
   const boostrapNodes = await getBootstrapNodes()
@@ -61,7 +63,7 @@ const getPeerDiscovery = async () => {
 }
 
 const getBootstrapNodes = async () => {
-  const _ipfsHttpClient = getIPFS()
+  const _ipfsHttpClient = await getIPFS()
   if(!_ipfsHttpClient){
     log.error('Bootstrap Can not config IPFS not found')
     throw Error('IPFS Not Found')
@@ -77,6 +79,7 @@ const getBootstrapNodes = async () => {
   return [...FULA_NODES,...adder]
 }
 
+// disabled
 const getAnnounceAddr = async (identity) => {
   try{
     const publicIP = await getPublicIP();
@@ -120,17 +123,24 @@ export const libConfig = async (fula_options: Partial<Libp2pOptions>) => {
     transportManager: {
       faultTolerance: FaultTolerance.NO_FATAL
     },
+    dialer: {
+      maxParallelDials: 10,
+      maxAddrsToDial: 5,
+      maxDialsPerPeer: 2,
+      dialTimeout: 10e3
+    },
     connectionManager: {
-      autoDial: true
+      autoDial: true,
+      maxConnections: 50,
+      minConnections: 0,
+      pollInterval: 2000
     },
     transports: [new WebRTCStar({wrtc}), new TCP(), new WebSockets()],
     connectionEncryption: [new Noise()],
     streamMuxers: [new Mplex()],
     addresses: {
       listen: LISTENING,
-      // announce: [...advertise]
     },
-    peerRouting: await getPeerRouting(),
     relay: {                   // Circuit Relay options (this config is part of libp2p core configurations)
       enabled: true,           // Allows you to dial and accept relayed connections. Does not make you a relay.
       hop: {

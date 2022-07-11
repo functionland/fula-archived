@@ -3,22 +3,19 @@ version: '3.8'
 services:
   box0:
     container_name: box0
+    image: functionland/box:v0.6.5
     restart: always
     depends_on:
       - ipfs0
       - cluster0
-    build:
-      context: ../../
-      dockerfile: ./apps/box/Dockerfile
     volumes:
       - ./data/box0/data:/opt/apps/box/data
     environment:
+      DEBUG: "box:*"
       NODE_ENV: "production"
-      FULA_CLUSTER_PROXY: "http://cluster0:9095"
-      FULA_IPFS_HTTP: "http://ipfs0:5001"
-    ports:
-      - "4002:4002" # TCP
-      - "4003:4003" # WS
+      FULA_CLUSTER_PROXY: "http://localhost:9095"
+      FULA_IPFS_HTTP: "http://localhost:5001"
+    network_mode: "host"
 
   ipfs0:
     container_name: ipfs0
@@ -59,16 +56,15 @@ services:
 
   box1:
     container_name: box1
+    image: functionland/box:v0.6.5
     restart: always
     depends_on:
       - ipfs1
       - cluster1
-    build:
-      context: ../../
-      dockerfile: ./apps/box/Dockerfile
     volumes:
       - ./data/box1/data:/opt/apps/box/data
     environment:
+      DEBUG: "box:*"
       NODE_ENV: "production"
       FULA_CLUSTER_PROXY: "http://cluster1:9095"
       FULA_IPFS_HTTP: "http://ipfs1:5001"

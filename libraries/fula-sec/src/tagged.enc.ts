@@ -4,12 +4,12 @@
  * Not required publick and private keys, only add didAudience.
  */
 
- interface ITagEncryption {
+ export interface ITagEncryption {
     didAudience: string;
     symetricKey: any;
     accessKey: string;
     encrypt(symetricKey: any, accessKey: string, didAudience: Array<string>): Promise<any>;
-    decrypt(jwe: any): Promise<any>;
+    decrypt(jwe: any): Promise<any>;    
 }
 
 export class TaggedEncryption implements ITagEncryption {
@@ -18,8 +18,9 @@ export class TaggedEncryption implements ITagEncryption {
     symetricKey!: any
     accessKey!: string;
 
-    constructor (DID: any) {
-      this._did = DID;
+    protected dIdentity(did: any) {
+      console.log('did: ', did)
+      this._did = did;
     }
 
      /**

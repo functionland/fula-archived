@@ -104,6 +104,7 @@
 
 * [libp2p](https://libp2p.io/)
 * [IPFS](https://ipfs.io/)
+* [IPFS-Cluster](https://ipfscluster.io/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -115,142 +116,10 @@
 Use Server with caution and know the risk's becuse we are at development stage and the identity and encription is not avalibale 
 so you become public node that can accessed from anywhere.
 
-### Option 1
-By cloning repo and using rush (our monorepo manager) to build and run it. 
-#### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* `rush`
-  ```sh
-  npm install -g @microsoft/rush
-  ```
-* `node 16`
-#### Installation
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/functionland/fula.git
-   ```
-2. Install dependencies packages and build
-   ```sh
-   rush update
-   rush build --to box
-   ```
-
-<!-- USAGE EXAMPLES -->
-#### Usage
-Enter Server folder and start server
-   ```sh
-   cd apps/box 
-   rushx start
-   ```
-   
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-### Option 2
-Using npm
-#### Installation
-1. Install it globally
-```sh
-npm install -g @functionland/box
+## Usage
 ```
-2. Create directory for its data and config
-```sh
-mkdir -p /opt/box
-cd /opt/box
+docker-compose up
 ```
-3. Create config folder and create `default.json` 
-```sh
-cd /opt/box
-mkdir config
-touch config/default.json
-```
-And copy this config into it.
-```json
-{
-  "nodes": [],
-  "network":{
-    "key_path": "",
-    "listen": [
-      "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
-      "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star"
-    ]
-  },
-  "ipfs": {
-    "http": ""
-  }
-}
-```
-#### Usage
-```sh
-cd /opt/box
-npx @functionland/box
-```
-
-## Config
-###Overview
-```json
-{
-  "nodes": [], # List of multiaddresses of other box and ipfs node in your network.  
-  "network":{
-    "key_path": "", # Path to secret-key file
-    "listen": [
-      "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
-      "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star"
-    ] # List of multiaddresses libp2p and ipfs listen on
-  },
-
-}
-```
-### Private Fula network
-To have a private network without exposing your private data to public ipfs First create a key file:
-1. bash-script
-```sh
-  cd /opt/box/config
-  echo -e "/key/swarm/psk/1.0.0/\n/base16/\n`tr -dc 'a-f0-9' < /dev/urandom | head -c64`" > swarm.key
-```
-2. using go [ipfs-swarm-key-gen](https://github.com/Kubuxu/go-ipfs-swarm-key-gen)
-3. using node [ipfs-swarm-key-gen](https://github.com/libp2p/js-libp2p/tree/master/src/pnet#from-a-module-using-libp2p)
-
-After creating the key file open configuration and add path to it in config
-```json
-{
-  ...
-  "network":{
-    "key_path": "./config/swarm.key", # Path to secret-key file
-    ...
-  },
-  ...
-}
-```
-After adding this you have to add other network node multiaddresses manually for your network to join.
-
-```json
-{
-  ...
-  "nodes": [] # List of multiaddresses of other box and ipfs node in your network.
-  ...
-}
-```
-
-### External IPFS
-If you want to use an external ipfs like go-ipfs or ipfs-cluster proxy api set Http RPC api of your external node:
-```json
-{
-  ...,
-  "ipfs": {
-    "http": "" # external ipfs or ipfs-cluster proxy to use instead of js-ipfs
-  }
-  ...
-}
-```
-
-
-_For more examples, please refer to the [Documentation](https://docs.fx.land)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->

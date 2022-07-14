@@ -7,13 +7,13 @@ This setup is mainly for running on development host machines (tested on OSX / L
 Note: It will not work on ARM (eg/ Raspbery Pi 4) architectures.
 
 ## Components
-- `go-ipfs` using as underling ipfs for storing data
+- `go-ipfs` using as underlying ipfs for storing data
 - `ipfs-cluster` handle pinset on cluster of ipfs-node
-- `box` have file and graphql protocol that will pin its data on ipfs-cluster
+- `box` has file and graphql protocol that will pin its data on ipfs-cluster
 
 ## Overview
 
-This diagram show how every component interact.
+This diagram show how every component interacts.
 
 ```mermaid
 flowchart TB
@@ -34,45 +34,110 @@ flowchart TB
     cl1<-->|cluster-api|cl2
 ```
 
-## Usage
+## Setup Steps
 
 1. Create a cluster secret environment variable.
 
-### Linux:
+  Linux:
 
-```shell 
-cd config
-export CLUSTER_SECRET=$(echo "`tr -dc 'a-f0-9' < /dev/urandom | head -c64`")
-```
+  ```shell
+  cd config
+  export CLUSTER_SECRET=$(echo "`tr -dc 'a-f0-9' < /dev/urandom | head -c64`")
+  ```
 
-### macOS
+  macOS:
 
-```shell
-cd config
-export CLUSTER_SECRET=$(docker run -it -v "$(pwd)":/config $(docker build -q -t sec-gen .))
-```
+  ```shell
+  cd config
+  export CLUSTER_SECRET=$(docker run -it -v "$(pwd)":/config $(docker build -q -t sec-gen .))
+  ```
 
 2. Start docker-compose so it will init Box, IPFS and IPFS-Cluster nodes for Box0 and Box1
 
-```
-```shell
-docker-compose up -d
-```
+  ```shell
+  docker-compose up -d
+  ```
 
 3. View the logs to ensure everything has started.
 
-```shell
-docker-compose logs -f
-```
+  ```shell
+  docker-compose logs -f
+  ```
 
 4. Verify the cluster peers have connected (see step 4 of manual peer discovery)
 
+## Getting Box multiaddress / Peer ID
 
-## Troubleshooting on macOS
+Depending on the client you are using you may need to supply either the Box's Peer ID or the Box's multiaddress.
 
-There is an issue with MDNS on Apple M1 chips that might cause cluster to not startup properly.
+For Box 0 run:
 
-Even if it does startup properly, you will still probably  have to follow the steps below on 'manual peer discovery' since the MDNS interface is still not available.
+```
+ > docker-compose logs -f box0
+```
+
+For Box 1 run:
+
+```
+ > docker-compose logs -f box1
+```
+
+The log should contain something like this:
+
+```
+box0      | 2022-07-14T15:31:09.133Z box:info Box peerID 12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.134Z box:info Box Listen On /dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/127.0.0.1/tcp/4002/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/192.168.65.3/tcp/4002/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/192.168.65.4/tcp/4002/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/172.19.0.1/tcp/4002/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/127.0.0.1/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/192.168.65.3/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/192.168.65.4/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+box0      | 2022-07-14T15:31:09.135Z box:info Box Listen On /ip4/172.19.0.1/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+In this example, the Peer ID is `12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH` and the multiaddress is the one reachable from your client on the same network.
+
+Depending on the client support you can both pure TCP and websockets:
+
+```
+/ip4/192.168.65.4/tcp/4002/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+/ip4/192.168.65.4/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+## macOS notes
+
+### Getting a multiaddress that your client can connect to
+
+Because host only networking does not work on macOS, the IP self discovery in libp2p will acquire an IP address that is not reachable from outside of the container.  
+
+To work around, this change the IP portion of the multiaddress to the IP address of your host machine. 
+
+Click the 'network' icon -> network preferences and your wifi or ethernet connection should list your network IP address. (eg/ 192.168.4.42)
+
+Next update the multiaddress in the Box server log from the previous step.
+
+Change:
+
+```
+/ip4/127.0.0.1/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+To:
+
+```
+/ip4/192.168.4.42/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+
+
+### Troubleshooting cluster peer discovery
+
+There is an issue with MDNS on Apple M1 chips that might cause the cluster to not startup properly.
+
+Even if it does startup properly, you may still probably have to follow the steps below on 'manual peer discovery' since the MDNS interface is still not available.
 
 To work around the startup issue, disable MDNS.  Find the MDNS entry in `./data/ipfs[0|1]/config` and edit it as follows:
 
@@ -129,7 +194,7 @@ In this example the dns4 multiaddr would be -
 
 3. Add the cluster1 multiaddr to the peer addresses list in the cluster0 config under `data/cluster0/service.json`.
 
-Now add the ipfs1 PeerId as a bootstrap node to ipfs0:
+Now add the ipfs1 Peer ID as a bootstrap node to ipfs0:
 
 ```shell
   "peer_addresses": [

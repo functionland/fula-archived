@@ -13,9 +13,11 @@ services:
     environment:
       DEBUG: "box:*"
       NODE_ENV: "production"
-      FULA_CLUSTER_PROXY: "http://localhost:9095"
-      FULA_IPFS_HTTP: "http://localhost:5001"
-    network_mode: "host"
+      FULA_CLUSTER_PROXY: "http://cluster0:9095"
+      FULA_IPFS_HTTP: "http://cluster0:5001"
+    ports:
+      - "4002:4002"
+      - "4003:4003"
 
   ipfs0:
     container_name: ipfs0

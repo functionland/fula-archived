@@ -1,16 +1,18 @@
 import * as jose from 'jose'
-import { ProduceAccessKey } from './sign'
 import isObjects from '../utils/isObject'
-import { stringHexToU8a } from '../utils/u8a.multifoamats'
-import { getPrivateJWK} from './elliptic.key'
 import splitKey from 'shamirs-secret-sharing'
-import { buffer } from 'stream/consumers'
-import { type } from 'os'
+import { JWTPayload } from 'did-jwt'
+
 interface IAccessHeader {
     CID?: string
     issuer:string
     audience: string
     expt?: string | undefined
+}
+
+interface AccessHeaderResult {
+    accessToken: string,
+    sideKeys: Array<string>
 }
 
 export class ProtectedAccessHeader {
@@ -30,16 +32,10 @@ export class ProtectedAccessHeader {
         return this;
     }
 
-    /*
-        @function: sign()
-        @param: payload {alg, issuer, audience, expt} , key
-        @return: token string
-    */
-
    protected _splitKey(prime: Uint8Array) {
         let _splitKey: Array<string> = []
         const shares = splitKey.split(Buffer.from(prime), { shares: 2, threshold: 2 })
-        shares.forEach((element: any) => {
+        shares.forEach((element: Buffer) => {
             _splitKey.push(element.toString('hex'))
         });
         return _splitKey
@@ -60,8 +56,11 @@ export class ProtectedAccessHeader {
          return await jose.importJWK({kty: 'oct', k: splitKey.combine(keys).toString()}, 'HS256')
     }
 
-    async createAccess() {
-       try {
+    /*
+        @function: createAccess()
+        @return: AccessHeaderResult{ accessToken, sideKeys }
+    */
+    async createAccess(): Promise<AccessHeaderResult> {
          let jsonKeyStore = await this.sideKeySplit()
          let accessToken = await new jose.EncryptJWT({CID: this._CID})
              .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
@@ -75,27 +74,20 @@ export class ProtectedAccessHeader {
              accessToken,
              sideKeys: jsonKeyStore.splitKey 
          }
-       } catch (error) {
-            return error
-       }
     }
 
     /*
-        @function: verifyAccessHeader()
-        @param: token , key
-        @return: { payload, protectedHeader }
+        @function: verifyAccess()
+        @param: accessToken , sideKeys
+        @return: JWTPayload{ payload, protectedHeader }
     */
-    async verifyAccess(accessToken: string, sideKeys: Array<string>) {
-        try {
-            let sideJwk =  await this.sideKeyRecover(sideKeys)
-            let  { payload } = await jose.jwtDecrypt(accessToken, sideJwk, {
-                issuer: this._issuer,
-                audience: this._audience
-            })
-            return { payload }
-        } catch (error) {
-            return error
-        } 
+    async verifyAccess(accessToken: string, sideKeys: Array<string>): Promise<JWTPayload> {
+        let sideJwk =  await this.sideKeyRecover(sideKeys)
+        let  {payload}  = await jose.jwtDecrypt(accessToken, sideJwk, {
+            issuer: this._issuer,
+            audience: this._audience
+        })
+        return payload
     }
 
 }

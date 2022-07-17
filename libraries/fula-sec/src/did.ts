@@ -1,9 +1,8 @@
-import { DID } from 'dids'
+import { DID, DIDProvider } from 'dids'
 import KeyResolver from 'key-did-resolver'
 import { Ed25519Provider } from 'key-did-provider-ed25519'
 import sha3 from 'js-sha3'
 import {Buffer} from 'buffer';
-import { TaggedEncryption, ITagEncryption } from './tagged.enc';
 /**
  * @class FullaDID
  * @description Creates Decentrilized Identity for Clinet side application
@@ -20,21 +19,21 @@ export interface ActivateDIDResult {
     privateKey: string
 }
 
-export class FulaDID extends TaggedEncryption{
+export class FulaDID {
     private privateKey!: string;
     private authDID!: string;
+    did: any;
     /**
      * This private function only class functions can use it
      * @function didProvider()
      * @property privateKey
      * @returns  authDID
      */
-    private didProvider () {
+    private _didProvider (): Promise<string> {
         const _seed = Buffer.from(this.privateKey, 'hex');
         const provider = new Ed25519Provider(_seed);
-        const did = new DID({ provider, resolver: KeyResolver.getResolver() });
-        this.dIdentity(did)
-        return did
+        this.did = new DID({ provider, resolver: KeyResolver.getResolver() });
+        return this.did.authenticate();
     }
     /**
      * Activate decentralized identity
@@ -48,9 +47,7 @@ export class FulaDID extends TaggedEncryption{
             secretKey: object.secretKey || "" ,
             signature: object.signature
         }));
-        const did = this.didProvider();
-        this.authDID = await did.authenticate();
-        console.log('this.authDID: ', this.authDID)  
+        this.authDID = await this._didProvider();  
         return {
             authDID: this.authDID,
             privateKey: '0x' + this.privateKey

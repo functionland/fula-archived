@@ -8,12 +8,12 @@ describe('Access Token and Encryt/Decrypt', () => {
         const fulaDID = new FulaDID();
                             
         let result = await fulaDID.activate({
-            secretKey: '48dfa4b35e067f39c18aae59c6e05f01af9ba73',
+            secretKey: 'vvvvvv',
             signature: 'b3ad7e6a8b9440d648dfa4b35e067f39c18aae59c6e05f01af9ba73a10828781'
         });
         console.log('fulaDID: ', result)
     
-        let header: any = await new ProtectedAccessHeader()
+        let accessKey: any = await new ProtectedAccessHeader()
         .setDeclaration({
             issuer: result.authDID,
             audience: result.authDID,
@@ -21,26 +21,21 @@ describe('Access Token and Encryt/Decrypt', () => {
             CID: 'Qmhb9440d648dfa4b35e067f39c18aae59c6e05f01af9b'
         }).createAccess();
 
-        console.log('header: ', header);
+        console.log('accessKey: ', accessKey);
 
-        // const tagged = new TaggedEncryption(fulaDID.did);
+        const tagged = new TaggedEncryption(fulaDID.did);
 
-        let symetricKey = '12345';
-        console.log('secrets: ', { symetricKey,  clientSideKey: header.sideKeys[0] })
+        let plaintext = {
+            symetricKey: '12345',
+            CID: 'aaaaaaaaaaaaaaa'
+        }
      
-        let jwe = await fulaDID.encrypt(symetricKey, header.sideKeys[0], [result.authDID])
+        let jwe = await tagged.encrypt(plaintext.symetricKey, accessKey.sideKeys[0], [fulaDID.did.id])
         let objJsonStr = JSON.stringify(jwe);
         let jweB64 = Buffer.from(objJsonStr).toString("base64");
         console.log('jweB64: ', jweB64)
-
-        console.log('-=-=-=-=-=-=-=-=-=-=-=-=-')
-        console.log('Share: >>', {
-            accessToken: header.accessToken,
-            sideKey: header.sideKeys[1],
-            jweB64
-        })
         
-        let decrypted = await fulaDID.decrypt(jwe)
+        let decrypted = await tagged.decrypt(jwe)
         console.log('decrypted: ', decrypted)
         should().not.Throw
     });
@@ -49,21 +44,21 @@ describe('Access Token and Encryt/Decrypt', () => {
         const fulaDID = new FulaDID();
                             
         let result = await fulaDID.activate({
-            secretKey: '48dfa4b35e067f39c18aae59c6e05f01af9ba73',
+            secretKey: 'vvvvvv',
             signature: 'b3ad7e6a8b9440d648dfa4b35e067f39c18aae59c6e05f01af9ba73a10828781'
         });
         console.log('fulaDID: ', result)
     
-        // const tagged = new TaggedEncryption(fulaDID.did);
+        const tagged = new TaggedEncryption(fulaDID.did);
 
-        let jweB64 = 'eyJwcm90ZWN0ZWQiOiJleUpsYm1NaU9pSllRekl3VUNKOSIsIml2IjoiRi12NDdwb19qT2VINl9rYVJueHo1Zy1oM3ZtWThkclAiLCJjaXBoZXJ0ZXh0Ijoib3F0T0ZITmRMTTJoelV2QmVicDV4N0h6Q0NHa1QxWGE3aVdfV2dHVVh4VE9VbXpUcjd0N2VhRFVBVXZvZUdnSUp3SzhrTXIyWmdjVDhBQ3A0aW52UlZ3elZqbE9KQkRwb3ZpeWV0QkxRSWJLY1ZMbkgxWm9pdkFDLTN6bzVmT1pCb2ZSWDVTR1FwY2hyU2E0c2ozUnIyNF9yb1VtNWRjMk91d19WUnJmZDZfc3ZIVm5ySllLTFQtSzdGVjFJVndaMzh0ekt3RnhfVjZRdFNmTDNuOUtrclgzQXRwT2o3WEttRW50SUlsZE84RUpiVXBHMVdjQnpvSm05WHNsdmpjd0o0OXlaaXFBdlJtdkI1ZC1qVDFEdndxeEtsa1JnYnBMM3JCaU1sM1RIeTRvOXg5REVuTzU1emZfVzhHb2xjUUMiLCJ0YWciOiJZNUlPaFZuMTRtazhJZERTS1pNOFhnIiwicmVjaXBpZW50cyI6W3siZW5jcnlwdGVkX2tleSI6InNOc2g1SnBtU2FBYmRYSU5IUnNIdFJ3cUJmbm5OY2tCQTJIdmpBZXR4QTQiLCJoZWFkZXIiOnsiYWxnIjoiRUNESC1FUytYQzIwUEtXIiwiaXYiOiJjNnJRV0hZMHFSRlFMMllqNW9xTVoxY1FkUFZNTy1QVSIsInRhZyI6ImdtcjdkSnFtS2xVbzlGTVVjdkF6a3ciLCJlcGsiOnsia3R5IjoiT0tQIiwiY3J2IjoiWDI1NTE5IiwieCI6IllhdWhnWlhsVnVmUFQ3d2t2alE3a1FvOXl6Tk0tamdjczRmYkVWazV1a0UifSwia2lkIjoiZGlkOmtleTp6Nk1rbm9tYVRzZWl5bTZxRUpTM3k4cDJXMXVyZ1I3aVdvbm85Mzd3TXhWZ2FRYUQjejZMU2c0QVZhV1RmZkU4eE5YNE1kNXVMbU4xZ3lqZU0xREc4aU40cEVNa1hQa3RhIn19XX0='
-        let accessToken = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..7rRAkidtcBS6FMJ2.wDnNLhzAWChlLyhfuy-TGfcNjO-lkkMd56cZfkIAywd21byDF4v5FYsoG_YTMME9706PHX8yBWRBqoP_KAHg2uA0oS4Y1elvtGqq2v07WE4MSO33PK4F4ibLXY0vB4ylRmSyQCMdthqIa2EBWX9KH0k5Q5ByzR5nMvszVyhHqVVUWXqiCOHmAT6IXVbaGBBOtyts2VID0F5Wi9CZUvr-jj5dfkP9xlQmLth5u0u_Oe7zL-NM8qUkDD07jXt6hOHYwm8B88NtSvarPdPgpgVBo5bcwzKOKjXxPuNeAPCYwnHr8Tafqna7mb1_qqGu.eLDaHWjOsVpRU2JEYKl1YA'  
-        let boxSideKey = Buffer.from('0802496cbe185c8e3ba15953d387be278ecd4f518659b6fa1e286467ffff57f767938466a24786056b41b9e46f90aeb4ab3292b69866c15805a6b44cbc099b23629bd59a2705d53109bcd473e9a8998f606832fba9a9cf6b9aedeea6215965c56355', 'hex');
+        let jweB64 = 'eyJwcm90ZWN0ZWQiOiJleUpsYm1NaU9pSllRekl3VUNKOSIsIml2IjoiV3JxQ2pLcFRRM3d6aXlKNE1NdjhNX20xdkJ0cy05a3ciLCJjaXBoZXJ0ZXh0IjoiejZLNnhNSXVoWTBKTXFLbkhVWGJNMUloTmtGMC1oS2RQM0tUMjVGSHRJbG54VEJFcjRyaXBQcXVpdHNUNlNFQzRScFdwd2tlSzlmdjBjejhtSTR3dFUwYm9WckR2akU0YkppcEpUSEVnTXJzZXVtbXRBb25LQktEMkc1RnVQR0c4QUdXRDZ4NWpoTVBoejNyYXhyWkQwVFRsS3FuSnBtY01CYko2UExjeXZnY2c4VlRNS2F5ckU2TkJUS041bklXdWJ6QWxMdlVENkRDZzNlWG5rSnpEWkE1YWlJM0ltWS02dHVSRFc3aF9kOUhaY3pvdDlCRmRha1lpZGd6MEwxQWFYb0dmN2xveEpySUVQSDVoUC1QZmw1d293c1NPUUk2QnlUMXYtb1JFMlZqRVVNZy0tNTI5MnRZd1ctQTJUUHciLCJ0YWciOiJ3d3pxQnBSUmhHWTBTMDVwRm1nR3RRIiwicmVjaXBpZW50cyI6W3siZW5jcnlwdGVkX2tleSI6IlJ4cXVUOXNYMXctbW5rTGJoRTNnNUd2WVlBSzI4cFI3ak53Rk84MkpHUGciLCJoZWFkZXIiOnsiYWxnIjoiRUNESC1FUytYQzIwUEtXIiwiaXYiOiJmNzd2X3czemliWHFndGl0NkVMOW9aX0s2MXFFb1lUMyIsInRhZyI6ImJicjhrSWdDV2RhNVVYa3BKa0VMWlEiLCJlcGsiOnsia3R5IjoiT0tQIiwiY3J2IjoiWDI1NTE5IiwieCI6IkxSOUZlMTMwbkRrTTFmcHVtYTUxaVc2blVrOHk1R3pZUnRmNEJ5RHFrRE0ifSwia2lkIjoiZGlkOmtleTp6Nk1rajNBSksycnc2VDVSWnp6eVU3UzV4ekpSOW9LcVlxdkhmQzczc2dGZ3hjWFIjejZMU3BpNVc3Wmt3eUpESzltaG9mNFlyUjNBWW0yelZFd1Joc3FLODZhank5OHhIIn19XX0='
+        let accessToken = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..OoSNVVWSb0nRIBim.zPj_kSAvF4Xd05JE6gYY01Q076ACMBB_EN3_JJsBZozB9mBZJ4wPvPJcK_ohwFvXO_-h9mlRduVQZF4QSM6AvpYPplcCNr1SYZxj8ugXrMeK1mHzt31shvoAOWK4uzhhN2VW4kMC5BKPD_5kgSFey6lfkQon42_IWsCs2VbV3hNLztW7ZZIEW3HP9PV1jMGEV9N5M3OZIB8lydRh43gEQuDIiUiBdt8d6Xjdpt3LrOYPu_y57E5D_SQM0rzt2YU_yvs_IiN7aBgXecoW0q8gZ9UCmP9H8apMxhacN67mz3W0nbU2Cekonzahm-1T.69qUJXmAuotLk-9NbaYKhQ'  
+        let boxSideKey = Buffer.from('0802b0dac4d3574b109ef32d5850b6a296d6255b0301a8c9b7ace56be4f4ae797eee41c7c0e4e40c829e99f2a8fe14ef48d9cfa0a710d360b1a5943ecfa42b1e9d03e8a74878d7af0a3b63ccd64eeaf7fd3c1e3bec937d6945317636464b0a492184', 'hex');
         let jsonString = Buffer.from(jweB64, 'base64').toString()
         
         console.log('jsonString: ', jsonString)
 
-        let decrypted = await fulaDID.decrypt(JSON.parse(jsonString))
+        let decrypted = await tagged.decrypt(JSON.parse(jsonString))
         console.log('decrypted: ', decrypted)
         let clientSideKey = decrypted.accessKey
         let sideKeys:any = []  

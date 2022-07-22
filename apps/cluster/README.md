@@ -70,13 +70,18 @@ flowchart TB
 
 Depending on the client you are using you may need to supply either the Box's Peer ID or the Box's multiaddress.
 
-For Box 0 run:
+
+### Generate the logs
+
+Run the following commands in this directory.
+
+For Box 0:
 
 ```
  > docker-compose logs -f box0
 ```
 
-For Box 1 run:
+For Box 1:
 
 ```
  > docker-compose logs -f box1
@@ -107,13 +112,13 @@ Depending on the client support you can both pure TCP and websockets:
 /ip4/192.168.65.4/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
 ```
 
-## macOS notes
+### Modify the multiaddress so that it is reachable from your client
 
-### Getting a multiaddress that your client can connect to
+Because the Box is running as a bridged network, the network interface that the container sees is a different subnet than your host machine and is therefore probably not reachable from outside the container.  As a result, the multiaddress that the Box reports is also not reachable from outside the container.
 
-Because host only networking does not work on macOS, the IP self discovery in libp2p will acquire an IP address that is not reachable from outside of the container.  
+To work around this, change the IP portion of the multiaddress to the IP address of your host machine. 
 
-To work around, this change the IP portion of the multiaddress to the IP address of your host machine. 
+For example, on macOS do the following to obtain your ipv4 address: 
 
 Click the 'network' icon -> network preferences and your wifi or ethernet connection should list your network IP address. (eg/ 192.168.4.42)
 
@@ -130,6 +135,27 @@ To:
 ```
 /ip4/192.168.4.42/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
 ```
+
+For Box1 there is an additional step where the host machine's listening port is mapped to a different port that the Box is listenining on (to avoid port collisions with Box0).
+
+Change the port portion of the multiaddress that Box1 reported on from 4003 to 4103 (for ws) or from 4002 to 4102 (for tcp).
+
+Change:
+
+```
+/ip4/127.0.0.1/tcp/4003/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+To:
+
+```
+/ip4/192.168.4.42/tcp/4103/ws/p2p/12D3KooWMNV3ANQq5NE94ArVJDRd6rCk53hUTbVuhqQfrNGF54HH
+```
+
+
+
+
+## macOS notes
 
 
 

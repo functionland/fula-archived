@@ -13,7 +13,7 @@ Note: It will not work on ARM (eg/ Raspbery Pi 4) architectures.
 
 ## Overview
 
-This diagram show how every component interacts.
+This diagram shows how every component interacts.
 
 ```mermaid
 flowchart TB
@@ -158,12 +158,11 @@ To:
 ## macOS notes
 
 
-
 ### Troubleshooting cluster peer discovery
 
 There is an issue with MDNS on Apple M1 chips that might cause the cluster to not startup properly.
 
-Even if it does startup properly, you may still probably have to follow the steps below on 'manual peer discovery' since the MDNS interface is still not available.
+Even if it does startup properly, you may still have to follow the steps below on 'manual peer discovery' since the MDNS interface is still not available.
 
 To work around the startup issue, disable MDNS.  Find the MDNS entry in `./data/ipfs[0|1]/config` and edit it as follows:
 

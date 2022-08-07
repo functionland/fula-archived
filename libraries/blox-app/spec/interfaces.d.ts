@@ -116,7 +116,7 @@ export interface Tower {
 }
   
 export interface Blox {
-    id: string; // peerId?
+    id: string; // peerId? is should be mac our something else because on the same tower we may have multiple peerID
 
     totalStorage: number;
 
@@ -127,24 +127,14 @@ export interface Blox {
         decentralizedId: string
 
         storage: number
-        
+
     }[];
 
-    poolId: string; // pool unique 
+    poolId: string; // pool unique | all the towers connect to same pool?
     
     towers: string[]; // tower unique identifiers
 
     // other fields
-}
-
-export interface Blox {
-
-    id: string; // peerId?
-
-    poolId: string; // pool unique identifier
-
-    towers: string[]; // tower unique identifiers
-
 }
 
 declare enum L2BlockChainType {
@@ -179,6 +169,7 @@ export interface Pool {
 
 }
 
+// What is the concept of Friend?
 export interface Friend {
 
     status: "invited" | "accepted" // other status needed?

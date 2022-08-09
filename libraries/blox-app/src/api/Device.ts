@@ -1,7 +1,7 @@
-import { Blox, Tower } from "../../spec/interfaces";
+import { Blox, Tower, Device } from "../../spec/interfaces";
 
 
-interface Device {
+interface DeviceManager {
 
     getBlox(): Blox 
 
@@ -13,4 +13,9 @@ interface Device {
     
     setTower(t: Partial<Tower>): boolean
 
+    getExternalDevices(): Device[]
+
+    setDevices(d: Partial<Device>): boolean
+
 }
+

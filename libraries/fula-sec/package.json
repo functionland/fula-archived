@@ -28,6 +28,8 @@
     "@types/tape": "^4.13.2",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
+    "@types/lodash": "^4.14.182",
+    "@types/pify": "^5.0.1",
     "buffer": "^6.0.3",
     "chai": "^4.3.6",
     "dids": "3.0.0-alpha.12",
@@ -57,7 +59,17 @@
     "multiformats": "^9.6.4",
     "secp256k1": "^4.0.3",
     "shamirs-secret-sharing": "^1.0.1",
-    "uint8arrays": "^3.0.0"
+    "uint8arrays": "^3.0.0",
+    "buffer": "^5.2.1",
+    "ipfs-core": "^0.15.4",
+    "ipfs-core-types": "^0.11.1",
+    "ipns": "^2.0.0",
+    "it-all": "^1.0.6",
+    "libp2p-crypto": "^0.21.2",
+    "lodash": "^4.17.11",
+    "peer-id": "^0.16.0",
+    "pify": "^6.0.0",
+    "tslib": "^2.4.0"
   },
   "exports": {
     ".": {

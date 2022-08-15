@@ -21,7 +21,7 @@ class Document {
         return _.omitBy(this._content, (prop) => _.isUndefined(prop) || (_.isArray(prop) && prop.length === 0));
     }
 
-    addPublicKey(props: { id: string; controller: string; }, options: { idPrefix: any; }) {
+    addPublicKey(props:any, options?:any) {
         // @ts-ignore
         const { idPrefix } = { ...options };
 
@@ -49,7 +49,7 @@ class Document {
         this._refreshUpdated();
     }
 
-    addAuthentication(auth: string) {
+    addAuthentication(auth: any) {
         const key = this._content.publicKey.find((pk) => isEquivalentId(pk.id, auth, publicKey.separator)) || {};
 
         authentication.assert(key.id, this._content.authentication);
@@ -71,7 +71,7 @@ class Document {
         this._refreshUpdated();
     }
 
-    addService(props: any, options: any) {
+    addService(props: any, options?: any) {
         // @ts-ignore
         const { idPrefix } = { ...options };
 

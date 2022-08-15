@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "removeComments": true,
     "downlevelIteration": true,
     "outDir": "dist",
     "module": "ESNext",
@@ -16,13 +17,16 @@
     "importHelpers": false,
     "skipLibCheck": true
   },
+  "paths": {
+    "*": ["types/*"]
+  },
   "typedocOptions": {
     "entryPoints": ["src/index.ts"],
     "out": "docs"
   },
   "include": [
     "src/**/*",
-    "tests/**/*"
+    "__tests__/**/*"
   ],
   "exclude": [
     "node_modules",

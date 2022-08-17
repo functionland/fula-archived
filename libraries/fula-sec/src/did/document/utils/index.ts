@@ -1,6 +1,6 @@
 import _ from 'lodash'; //{ _.isString, _.isPlainObject }
-import { generateRandomString, isDidValid } from '../../utils/index.js';
-import { InvalidDocument, InvalidIdPrefix } from '../../utils/errors.js';
+import { generateRandomString, isDidValid } from '../../utils/index';
+import { InvalidDocument, InvalidIdPrefix } from '../../utils/errors';
 
 const DEFAULT_CONTEXT = 'https://w3id.org/did/v1';
 export const SEPARATORS = {

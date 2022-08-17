@@ -1,5 +1,5 @@
-import { SEPARATORS, isEquivalentId, createId } from './utils/index.js';
-import { DuplicateService, InvalidService } from '../utils/errors.js';
+import { SEPARATORS, isEquivalentId, createId } from './utils/index';
+import { DuplicateService, InvalidService } from '../utils/errors';
 
 const SEPARATOR = SEPARATORS.SERVICE;
 const REQUIRED = ['type', 'serviceEndpoint'];

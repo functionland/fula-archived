@@ -1,4 +1,4 @@
-import {Povider} from './src/provider.js'
+import {Povider} from './src/provider'
 import { UnavailableIpfs } from '../../../src/did/utils/errors';
 
 export const createProvider = (ipfs: any, { lifetime }:any = {}) => {

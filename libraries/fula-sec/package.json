@@ -7,11 +7,20 @@
   "browser": "dist/br/index.js",
   "scripts": {
     "build": "node scripts/build.js && tsc",
-    "build:test": "node scripts/build-test.js",
+    "build:test": "node scripts/build-test.js && tsc",
     "test": "rushx build:test && mocha './dist/__tests__/full.test.cjs'",
-    "test:jest": "jest ./dist/src/did/document/__tests__/index.test.js --forceExit --detectOpenHandles --passWithNoTests",
+    "test:jest":  "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
     "lint": "eslint . --ext .ts",
     "doc": "npx typedoc src/*.ts"
+  },
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts"],
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "reporters": ["default", "jest-junit"],
+    "collectCoverageFrom": ["src/**/*.ts", "!**/*.d.ts"],
+    "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/", "<rootDir>/__tests__/full.test.ts"],
+    "testMatch": ["<rootDir>/**/*test.ts"]
   },
   "keywords": [],
   "author": "",

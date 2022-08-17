@@ -2,9 +2,9 @@
 import all from 'it-all';
 import {CID} from 'multiformats/cid'
 import createDocument, { assertDocument } from '../../../../src/did/document/index';
-import { generateRandomString, parseDid } from '../../../../src/did/utils/index.js';
-import { InvalidDid, IllegalCreate } from '../../../../src/did/utils/errors.js';
-import {getDidFromPem} from '../../index.js'
+import { generateRandomString, parseDid } from '../../../../src/did/utils/index';
+import { InvalidDid, IllegalCreate } from '../../../../src/did/utils/errors';
+import {getDidFromPem} from '../../index'
 
 export class Povider {
     _ipfs: any;

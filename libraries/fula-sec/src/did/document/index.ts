@@ -1,9 +1,9 @@
 // @ts-ignore
 import _ from 'lodash'; //{ _.omitBy, _.isArray, _.isUndefined }
-import service from './service.js';
-import publicKey from './publicKey.js';
-import authentication from './authentication.js';
-import { generateDocument, isEquivalentId, assertDocument } from './utils/index.js';
+import service from './service';
+import publicKey from './publicKey';
+import authentication from './authentication';
+import { generateDocument, isEquivalentId, assertDocument } from './utils/index';
 
 class Document {
     _content: { id: string; publicKey: any[]; authentication: any[]; service: any[]; updated: string; };

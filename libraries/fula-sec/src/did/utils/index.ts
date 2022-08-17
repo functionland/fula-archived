@@ -1,7 +1,7 @@
 import * as crypto from 'libp2p-crypto';
 import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
-import { InvalidDid } from './errors.js';
+import { InvalidDid } from './errors';
 
 export const pemToBuffer = async (pem: any, password?: any) => {
         const key = await crypto.keys.import(pem, password);

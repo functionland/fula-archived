@@ -1,5 +1,5 @@
-import { SEPARATORS, isEquivalentId, createId } from './utils/index.js';
-import { DuplicatePublicKey, InvalidPublicKey } from '../utils/errors.js';
+import { SEPARATORS, isEquivalentId, createId } from './utils/index';
+import { DuplicatePublicKey, InvalidPublicKey } from '../utils/errors';
 
 const SEPARATOR = SEPARATORS.PUBLIC_KEY;
 const REQUIRED = ['id', 'type', 'controller'];

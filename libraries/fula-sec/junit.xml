@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="38" failures="0" errors="0" time="2.132">
-  <testsuite name="createDocument" errors="0" failures="0" skipped="0" timestamp="2022-08-17T10:39:12" time="2.072" tests="38">
-    <testcase classname="createDocument should create document from scratch" name="createDocument should create document from scratch" time="0.005">
+<testsuites name="jest tests" tests="38" failures="0" errors="0" time="2.095">
+  <testsuite name="createDocument" errors="0" failures="0" skipped="0" timestamp="2022-08-17T10:42:09" time="2.034" tests="38">
+    <testcase classname="createDocument should create document from scratch" name="createDocument should create document from scratch" time="0.004">
     </testcase>
     <testcase classname="createDocument should create document from provided content" name="createDocument should create document from provided content" time="0.001">
     </testcase>
@@ -9,11 +9,11 @@
     </testcase>
     <testcase classname="addPublicKey should add public key successfully" name="addPublicKey should add public key successfully" time="0.002">
     </testcase>
-    <testcase classname="addPublicKey should add public key successfully with prefix" name="addPublicKey should add public key successfully with prefix" time="0.001">
+    <testcase classname="addPublicKey should add public key successfully with prefix" name="addPublicKey should add public key successfully with prefix" time="0.002">
     </testcase>
-    <testcase classname="addPublicKey should not accept duplicate ids" name="addPublicKey should not accept duplicate ids" time="0.021">
+    <testcase classname="addPublicKey should not accept duplicate ids" name="addPublicKey should not accept duplicate ids" time="0.02">
     </testcase>
-    <testcase classname="addPublicKey should not accept publicKey without type" name="addPublicKey should not accept publicKey without type" time="0.002">
+    <testcase classname="addPublicKey should not accept publicKey without type" name="addPublicKey should not accept publicKey without type" time="0.003">
     </testcase>
     <testcase classname="addPublicKey should not accept publicKey without a `publicKey` prefixed property" name="addPublicKey should not accept publicKey without a `publicKey` prefixed property" time="0.002">
     </testcase>
@@ -33,9 +33,9 @@
     </testcase>
     <testcase classname="addAuthentication should add authentication with short id successfully" name="addAuthentication should add authentication with short id successfully" time="0.001">
     </testcase>
-    <testcase classname="addAuthentication should fail if same id already exists" name="addAuthentication should fail if same id already exists" time="0.007">
+    <testcase classname="addAuthentication should fail if same id already exists" name="addAuthentication should fail if same id already exists" time="0.006">
     </testcase>
-    <testcase classname="addAuthentication should fail if no publicKey with same id" name="addAuthentication should fail if no publicKey with same id" time="0.002">
+    <testcase classname="addAuthentication should fail if no publicKey with same id" name="addAuthentication should fail if no publicKey with same id" time="0.001">
     </testcase>
     <testcase classname="addAuthentication should fail auth is not a string" name="addAuthentication should fail auth is not a string" time="0.001">
     </testcase>
@@ -57,21 +57,21 @@
     </testcase>
     <testcase classname="addService should not accept service with invalid id prefix" name="addService should not accept service with invalid id prefix" time="0.001">
     </testcase>
-    <testcase classname="removeService should remove service with full id successfully" name="removeService should remove service with full id successfully" time="0.002">
+    <testcase classname="removeService should remove service with full id successfully" name="removeService should remove service with full id successfully" time="0.001">
     </testcase>
     <testcase classname="removeService should remove service with short id successfully" name="removeService should remove service with short id successfully" time="0.001">
     </testcase>
     <testcase classname="assertDocument should assert document successfully" name="assertDocument should assert document successfully" time="0.001">
     </testcase>
-    <testcase classname="assertDocument should throw if document is not a plain object" name="assertDocument should throw if document is not a plain object" time="0.001">
+    <testcase classname="assertDocument should throw if document is not a plain object" name="assertDocument should throw if document is not a plain object" time="0.002">
     </testcase>
     <testcase classname="assertDocument should throw if document has no context property" name="assertDocument should throw if document has no context property" time="0.002">
     </testcase>
-    <testcase classname="assertDocument should throw if document has context property with invalid type" name="assertDocument should throw if document has context property with invalid type" time="0.005">
+    <testcase classname="assertDocument should throw if document has context property with invalid type" name="assertDocument should throw if document has context property with invalid type" time="0.004">
     </testcase>
     <testcase classname="assertDocument should throw if document has multiple contexts but the first one is not the default" name="assertDocument should throw if document has multiple contexts but the first one is not the default" time="0.001">
     </testcase>
-    <testcase classname="assertDocument should throw if document has just one context and is not the default" name="assertDocument should throw if document has just one context and is not the default" time="0.002">
+    <testcase classname="assertDocument should throw if document has just one context and is not the default" name="assertDocument should throw if document has just one context and is not the default" time="0.001">
     </testcase>
     <testcase classname="assertDocument should throw if document has no id property" name="assertDocument should throw if document has no id property" time="0.002">
     </testcase>

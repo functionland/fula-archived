@@ -3,11 +3,13 @@ import KeyResolver from 'key-did-resolver'
 import { Ed25519Provider } from 'key-did-provider-ed25519'
 import sha3 from 'js-sha3'
 import {Buffer} from 'buffer';
+
+
 /**
  * @class FullaDID
  * @description Creates Decentrilized Identity for Clinet side application
  * 
- */
+*/
 
 export interface ActivateParam {
     secretKey?: string, 

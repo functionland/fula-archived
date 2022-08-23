@@ -3,6 +3,15 @@ import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
 import { InvalidDid } from './errors';
 
+export const getDidFromPem = async (pem:any) => {
+    const key = await pemToBuffer(pem);
+    return generateDid(key);
+};
+
+export const getDidFromBuffer = async (keyBuff:Uint8Array) => {
+    return generateDid(keyBuff);
+};
+
 export const pemToBuffer = async (pem: any, password?: any) => {
         const key = await crypto.keys.import(pem, password);
         return key.bytes;

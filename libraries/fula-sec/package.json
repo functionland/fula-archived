@@ -9,18 +9,32 @@
     "build": "node scripts/build.js && tsc",
     "build:test": "node scripts/build-test.js && tsc",
     "test": "rushx build:test && mocha './dist/__tests__/full.test.cjs'",
-    "test:jest":  "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
+    "test:jest": "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
     "lint": "eslint . --ext .ts",
     "doc": "npx typedoc src/*.ts"
   },
   "jest": {
-    "extensionsToTreatAsEsm": [".ts"],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "reporters": ["default", "jest-junit"],
-    "collectCoverageFrom": ["src/**/*.ts", "!**/*.d.ts"],
-    "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/", "<rootDir>/__tests__/full.test.ts"],
-    "testMatch": ["<rootDir>/**/*test.ts"]
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!**/*.d.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/dist/",
+      "<rootDir>/__tests__/full.test.ts"
+    ],
+    "testMatch": [
+      "<rootDir>/**/*test.ts"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -30,6 +44,7 @@
     "@esbuild-plugins/node-globals-polyfill": "~0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "~0.1.4",
     "@types/chai": "^4.3.0",
+    "@types/create-hmac": "^1.1.0",
     "@types/elliptic": "6.4.14",
     "@types/jest": "^28.1.6",
     "@types/keccak": "^3.0.1",
@@ -66,6 +81,8 @@
   "dependencies": {
     "@stablelib/x25519": "^1.0.2",
     "buffer": "^5.2.1",
+    "create-hmac": "^1.1.7",
+    "crypto-js": "^4.1.1",
     "did-jwt": "^5.12.4",
     "dids": "^2.4.3",
     "elliptic": "^6.5.4",
@@ -84,6 +101,7 @@
     "secp256k1": "^4.0.3",
     "shamirs-secret-sharing": "^1.0.1",
     "tslib": "^2.4.0",
+    "tweetnacl": "^1.0.3",
     "uint8arrays": "^3.0.0"
   },
   "exports": {

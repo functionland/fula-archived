@@ -1,4 +1,4 @@
-import { derivePath, getPublicKey, getMasterKeyFromSeed } from '../../src/did/hkey/index';
+import { derivePath, getPublicKey, getMasterKeyFromSeed } from '../../src/did/hkey/key';
 
 const vector_1_seed = '000102030405060708090a0b0c0d0e0f';
 const vector_1 = [

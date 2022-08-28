@@ -1,15 +1,34 @@
 import * as crypto from 'libp2p-crypto';
 import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
-import { InvalidDid } from './errors';
+import { InvalidDid } from './errors.js';
 
 export const getDidFromPem = async (pem:any) => {
     const key = await pemToBuffer(pem);
     return generateDid(key);
 };
 
-export const getDidFromBuffer = async (keyBuff:Uint8Array) => {
-    return generateDid(keyBuff);
+export const getDidFromParentKey = async (parentKey:any) => {
+    const key = await parentKeyToBuffer(parentKey);
+    return generateDidFromParent(key);
+};
+export const parentKeyToBuffer = async (parentKey: any) => {
+    return await crypto.keys.generateKeyPairFromSeed('Ed25519', new Uint8Array(parentKey), 512) 
+};
+
+export const generateDidFromParent = async (key:any) => {
+    const identifier = await generateIpnsNameFromParent(key);
+    const did = `did:fula:${identifier.toB58String()}`;
+    return {
+       PeerId: identifier.toJSON(),
+       did 
+    }
+};
+
+export const generateIpnsNameFromParent = async (key: any) => {
+    let _privateKey: Uint8Array = crypto.keys.marshalPrivateKey(key, 'ed25519')
+    const peerId = await PeerId.createFromPrivKey(_privateKey);
+    return peerId;
 };
 
 export const pemToBuffer = async (pem: any, password?: any) => {

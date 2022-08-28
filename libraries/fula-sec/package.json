@@ -80,6 +80,7 @@
   },
   "dependencies": {
     "@stablelib/x25519": "^1.0.2",
+    "bip39": "^3.0.4",
     "buffer": "^5.2.1",
     "create-hmac": "^1.1.7",
     "crypto-js": "^4.1.1",
@@ -100,6 +101,7 @@
     "pify": "^6.0.0",
     "secp256k1": "^4.0.3",
     "shamirs-secret-sharing": "^1.0.1",
+    "tree-model": "^1.0.7",
     "tslib": "^2.4.0",
     "tweetnacl": "^1.0.3",
     "uint8arrays": "^3.0.0"

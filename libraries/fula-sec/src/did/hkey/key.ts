@@ -1,7 +1,7 @@
 import createHmac from 'create-hmac'
 import nacl from 'tweetnacl';
 
-import { replaceDerive, pathRegex } from './utils.js';
+import { replaceDerive, pathRegex } from './utils/utils.js';
 
 interface Nacl {
     crypto_sign_seed_keypair: (

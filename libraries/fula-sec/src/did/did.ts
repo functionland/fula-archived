@@ -38,9 +38,10 @@ export type DecryptJWEOptions = {
 export class DID {
     publicKey: any;
     private _privateKey: string;
-    constructor(privateKey: any) {
-        this.publicKey = generateKeyPairFromSeed(Buffer.from(privateKey, 'hex')).publicKey;
-        this._privateKey = privateKey;
+    constructor(privateKey: any, publicKey: any) {
+      // this.publicKey = generateKeyPairFromSeed(privateKey).publicKey;
+      this.publicKey = publicKey
+      this._privateKey = privateKey;
     }
 
     /**
@@ -52,7 +53,7 @@ export class DID {
 
      private encrypter(publicKey: Array<string>): Array<any> {
         let encrypter: Array<any> = [];
-        publicKey.forEach((_publicKey:any)=> encrypter.push(x25519Encrypter(new Uint8Array(_publicKey))))
+        publicKey.forEach((_publicKey:any)=> encrypter.push(x25519Encrypter(u8a.fromString(_publicKey))))
         return encrypter
     }
 
@@ -80,7 +81,7 @@ export class DID {
   ): Promise<JWE> {
     let asymEncrypter = this.encrypter(recipients);
     const preparedCleartext = await prepareCleartext(cleartext)
-    return createJWE(preparedCleartext, asymEncrypter, options.protectedHeader, options.aad)
+    return await createJWE(preparedCleartext, asymEncrypter, options.protectedHeader, options.aad)
   }
 
    /**
@@ -91,7 +92,9 @@ export class DID {
 
   async decryptJWE(jwe: JWE): Promise<Record<string, any>> {
     let decrypter = this.decrypter();
+    console.log('decrypter: ', decrypter)
     const bytes = await decryptJWE(jwe, decrypter)
+    console.log('bytes: ', bytes)
     return decodeCleartext(bytes)
   }
 }

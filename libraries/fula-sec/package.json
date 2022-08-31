@@ -8,7 +8,7 @@
   "scripts": {
     "build": "node scripts/build.js && tsc",
     "build:test": "node scripts/build-test.js && tsc",
-    "test": "rushx build:test && mocha './dist/__tests__/full.test.cjs'",
+    "test": "rushx build:test && mocha './dist/__tests__/did-jwe-encdec-test/jwe.encdec.test.cjs'",
     "test:jest": "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
     "lint": "eslint . --ext .ts",
     "doc": "npx typedoc src/*.ts"

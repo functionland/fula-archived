@@ -2,31 +2,35 @@ import * as crypto from 'libp2p-crypto';
 import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
 import { InvalidDid } from './errors.js';
-
+import * as u8a from 'uint8arrays'
 export const getDidFromPem = async (pem:any) => {
     const key = await pemToBuffer(pem);
     return generateDid(key);
 };
 
-export const getDidFromParentKey = async (parentKey:any) => {
+export const getDidFromParentKey = async (parentKey: Uint8Array, publicKey: Uint8Array) => {
     const key = await parentKeyToBuffer(parentKey);
-    return generateDidFromParent(key);
+    return generateDidFromParent(key, publicKey);
 };
-export const parentKeyToBuffer = async (parentKey: any) => {
-    return await crypto.keys.generateKeyPairFromSeed('Ed25519', new Uint8Array(parentKey), 512) 
+export const parentKeyToBuffer = async (parentKey: Uint8Array) => {
+    return await crypto.keys.generateKeyPairFromSeed('Ed25519', parentKey, 512) 
 };
 
-export const generateDidFromParent = async (key:any) => {
+export const generateDidFromParent = async (key:crypto.PrivateKey, publicKey: Uint8Array) => {
     const identifier = await generateIpnsNameFromParent(key);
-    const did = `did:fula:${identifier.toB58String()}`;
+    const encode = {
+        id: identifier.toB58String(),
+        publicKey: u8a.toString(publicKey, 'base58btc')
+    }
+    const did = `did:fula:${encode.id}/${encode.publicKey}`;
     return {
        PeerId: identifier.toJSON(),
        did 
     }
 };
 
-export const generateIpnsNameFromParent = async (key: any) => {
-    let _privateKey: Uint8Array = crypto.keys.marshalPrivateKey(key, 'ed25519')
+export const generateIpnsNameFromParent = async (key: crypto.PrivateKey) => {
+    let _privateKey = crypto.keys.marshalPrivateKey(key, 'ed25519')
     const peerId = await PeerId.createFromPrivKey(_privateKey);
     return peerId;
 };

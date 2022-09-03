@@ -1,4 +1,4 @@
-import { generateDid, pemToBuffer } from '../../src/did/utils/index'; 
+import { generateDid, pemToBuffer } from '../../src/did/utils/index.js'; 
 
 export const getDidFromPem = async (pem:any) => {
     const key = await pemToBuffer(pem);

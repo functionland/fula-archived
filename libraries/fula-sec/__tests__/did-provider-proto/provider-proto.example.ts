@@ -1,6 +1,8 @@
 import * as IPFS from 'ipfs-core';
-import {getDidFromPem} from './index.js'
+import {getDidFromPem} from './index.js';
 import {createProvider} from './did-provider-mock/index.js';
+import * as u8a from 'uint8arrays';
+import { generateKeyPair } from '@stablelib/x25519';
 
 export const pem = `
 -----BEGIN RSA PRIVATE KEY-----
@@ -20,10 +22,10 @@ ttrI1rZSmCBbKkicdvBsJo2c916giPwGpcGIzlrt72sW
 -----END RSA PRIVATE KEY-----`;
 
 
-async function main() {
+async function createDoc() {
     const ipfs = await IPFS.create()
 
-    const didProvider = createProvider(ipfs);
+    const didProvider = createProvider(ipfs); 
     console.log('didProvider: ', didProvider);
     const did = await getDidFromPem(pem);   
     console.log('did: ', did)
@@ -53,4 +55,49 @@ async function main() {
     console.log('res: ', res)
 }
 
-main()
+
+async function createTrustedKeyDoc() {
+    const ipfs = await IPFS.create()
+
+    const didProvider = createProvider(ipfs);
+
+    const did = await getDidFromPem(pem);   
+    console.log('did: ', did)
+
+    const secondKp1 = generateKeyPair()
+
+    const didDocument = await didProvider.create(pem, (document: { 
+    addPublicKey: (arg0: { type: string; publicKeyBase58: string; controller: Array<string>}) => any; 
+    addAuthentication: (arg0: any) => any; // Auth/Verification method
+    addService: (arg0: { id: string; type: string; serviceEndpoint: string; }) => any; 
+  }) => {
+        const publicKey = document.addPublicKey({
+            type: 'X25519KeyAgreementKey2019',
+            publicKeyBase58: u8a.toString(secondKp1.publicKey, 'base58btc'),
+            controller: [did, 'did2']
+            // TODO Add Param: Blockchain Account, chain ID 
+        });
+        // TODO keyAgreement function
+        console.log('publicKey: ', publicKey)
+
+        const authentication = document.addAuthentication(publicKey.id);
+        console.log('authentication: ', authentication)
+
+        const service = document.addService({
+            id: 'fula',
+            type: 'FulaService',
+            serviceEndpoint: 'https://fula.provider.com/',
+        });
+        console.log('service: ', service)
+    });
+
+    console.log('didDocument: ', didDocument)
+
+
+    let resolve = await didProvider.resolve(did);
+    console.log('resolve: ', resolve)
+
+}
+
+// createDoc();
+createTrustedKeyDoc();

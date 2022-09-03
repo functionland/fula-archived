@@ -1,9 +1,9 @@
 // @ts-ignore
 import _ from 'lodash'; //{ _.omitBy, _.isArray, _.isUndefined }
-import service from './service';
-import publicKey from './publicKey';
-import authentication from './authentication';
-import { generateDocument, isEquivalentId, assertDocument } from './utils/index';
+import service from './service.js';
+import publicKey from './publicKey.js';
+import authentication from './authentication.js';
+import { generateDocument, isEquivalentId, assertDocument } from './utils/index.js';
 
 class Document {
     _content: { id: string; publicKey: any[]; authentication: any[]; service: any[]; updated: string; };
@@ -56,7 +56,6 @@ class Document {
 
         this._content.authentication.push(key.id);
         this._refreshUpdated();
-
         return key.id;
     }
 

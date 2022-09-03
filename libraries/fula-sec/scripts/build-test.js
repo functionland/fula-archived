@@ -1,18 +1,18 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+import {readFile} from 'node:fs/promises'
+import {pathToFileURL} from 'node:url'
+
 import { build } from 'esbuild';
-// import browserify from 'browserify';
-// import * as fs from 'fs'
+
 
 await build({
   entryPoints: ['__tests__/full.test.ts', '__tests__/did-document-test/index.test.ts', 
-  '__tests__/did-jwe-encdec-test/jwe.encdec.test.ts'],
+  '__tests__/did-jwe-encdec-test/jwe.encdec.test.ts', '__tests__/did-provider-proto/provider-proto.example.ts'],
   platform: 'node',
   format: 'cjs',
   bundle: true,
   sourcemap: true,
   outExtension: {'.js':'.cjs'},
-  outdir: 'dist/__tests__/',
+  outdir: 'dist/__tests__/'
 });
 
 // const b = browserify()

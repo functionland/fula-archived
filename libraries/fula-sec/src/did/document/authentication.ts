@@ -1,5 +1,5 @@
 import _ from 'lodash'; // { _.isString, _.isPlainObject }
-import { DuplicateAuthentication, InvalidAuthentication } from '../utils/errors';
+import { DuplicateAuthentication, InvalidAuthentication } from '../utils/errors.js';
 
 const parseId = (authentication: { id: any; }) =>
     _.isPlainObject(authentication) ? authentication.id : authentication;

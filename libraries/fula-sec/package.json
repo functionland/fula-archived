@@ -8,8 +8,9 @@
   "scripts": {
     "build": "node scripts/build.js && tsc",
     "build:test": "node scripts/build-test.js && tsc",
-    "test": "rushx build:test && mocha './dist/__tests__/did-jwe-encdec-test/jwe.encdec.test.cjs'",
+    "test": "rushx build:test && mocha './dist/__tests__/did-provider-proto/provider-proto.test.cjs'",
     "test:jest": "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
+    "test:node": "node ./dist/__tests__/did-provider-proto/provider-proto.example.js",
     "lint": "eslint . --ext .ts",
     "doc": "npx typedoc src/*.ts"
   },

@@ -22,7 +22,7 @@ export const generateDidFromParent = async (key:crypto.PrivateKey, publicKey: Ui
         id: identifier.toB58String(),
         publicKey: u8a.toString(publicKey, 'base58btc')
     }
-    const did = `did:fula:${encode.id}/${encode.publicKey}`;
+    const did = `did:fula:${encode.id.concat('/', encode.publicKey)}`;
     return {
        PeerId: identifier.toJSON(),
        did 

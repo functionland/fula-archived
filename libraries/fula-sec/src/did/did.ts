@@ -1,14 +1,6 @@
-import { decryptJWE, createJWE, Encrypter, JWE, 
-    xc20pDirEncrypter,
-    xc20pDirDecrypter,
+import { decryptJWE, createJWE, JWE,
     x25519Encrypter,
     x25519Decrypter,
-    xc20pAuthDecrypterEcdh1PuV3x25519WithXc20PkwV2,
-    xc20pAuthEncrypterEcdh1PuV3x25519WithXc20PkwV2,
-    createAnonEncrypter,
-    createAnonDecrypter,
-    createAuthEncrypter,
-    createAuthDecrypter,
 } from 'did-jwt'
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import { encodePayload, prepareCleartext, decodeCleartext } from 'dag-jose-utils'

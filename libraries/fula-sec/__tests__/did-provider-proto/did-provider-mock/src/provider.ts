@@ -1,10 +1,13 @@
 // import type IPFS from 'ipfs-core-types'
 import all from 'it-all';
 import {CID} from 'multiformats/cid'
-import createDocument, { assertDocument } from '../../../../src/did/document/index';
-import { generateRandomString, parseDid } from '../../../../src/did/utils/index';
-import { InvalidDid, IllegalCreate } from '../../../../src/did/utils/errors';
-import {getDidFromPem} from '../../index'
+import type { VerificationMethod, Resolvable } from 'did-resolver'
+import * as u8a from 'uint8arrays'
+import { Encrypter, x25519Encrypter } from 'did-jwt';
+import createDocument, { assertDocument } from '../../../../src/did/document/index.js';
+import { generateRandomString, parseDid } from '../../../../src/did/utils/index.js';
+import { InvalidDid, IllegalCreate } from '../../../../src/did/utils/errors.js';
+import {getDidFromPem} from '../../index.js'
 
 export class Povider {
     _ipfs: any;
@@ -40,6 +43,58 @@ export class Povider {
             throw new InvalidDid(did, `Unable to resolve document with DID: ${did}`, { originalError: err.message });
         }
     }
+
+    async resolveX25519Encrypters(dids: string[], resolver: Resolvable): Promise<Encrypter[]> {
+        const encryptersForDID = async (did: string, resolved: string[] = []): Promise<Encrypter[]> => {
+          const { didResolutionMetadata, didDocument } = await resolver.resolve(did)
+          resolved.push(did)
+          if (didResolutionMetadata?.error || didDocument == null) {
+            throw new Error(
+              `resolver_error: Could not resolve ${did}: ${didResolutionMetadata.error}, ${didResolutionMetadata.message}`
+            )
+          }
+          let controllerEncrypters: Encrypter[] = []
+          if (!didDocument.controller && !didDocument.keyAgreement) {
+            throw new Error(`no_suitable_keys: Could not find x25519 key for ${did}`)
+          }
+          if (didDocument.controller) {
+            let controllers = Array.isArray(didDocument.controller) ? didDocument.controller : [didDocument.controller]
+            controllers = controllers.filter((c) => !resolved.includes(c))
+            const encrypterPromises = controllers.map((did) =>
+              encryptersForDID(did, resolved).catch(() => {
+                return []
+              })
+            )
+            const encrypterArrays = await Promise.all(encrypterPromises)
+            controllerEncrypters = ([] as Encrypter[]).concat(...encrypterArrays)
+          }
+          const agreementKeys: VerificationMethod[] = didDocument.keyAgreement
+            ?.map((key) => {
+              if (typeof key === 'string') {
+                return [...(didDocument.publicKey || []), ...(didDocument.verificationMethod || [])].find(
+                  (pk) => pk.id === key
+                )
+              }
+              return key
+            })
+            ?.filter((key) => typeof key !== 'undefined') as VerificationMethod[]
+          const pks =
+            agreementKeys?.filter((key) => {
+              // TODO: should be able to use non base58 keys too
+              return key.type === 'X25519KeyAgreementKey2019' && Boolean(key.publicKeyBase58)
+            }) || []
+          if (!pks.length && !controllerEncrypters.length)
+            throw new Error(`no_suitable_keys: Could not find x25519 key for ${did}`)
+          return pks
+            .map((pk) => x25519Encrypter(u8a.fromString(<string>pk.publicKeyBase58, 'base58btc'), pk.id))
+            .concat(...controllerEncrypters)
+        }
+      
+        const encrypterPromises = dids.map((did) => encryptersForDID(did))
+        const encrypterArrays = await Promise.all(encrypterPromises)
+        const flattenedArray = ([] as Encrypter[]).concat(...encrypterArrays)
+        return flattenedArray
+      }
 
     async create(pem: any, operations: any) {
         const did = await getDidFromPem(pem);

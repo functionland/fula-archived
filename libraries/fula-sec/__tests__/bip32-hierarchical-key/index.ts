@@ -19,7 +19,7 @@ import { generateKeyPairFromSeed } from '@stablelib/x25519'
 let parentDID = await getDidFromParentKey(master.key.slice(0, 32), pubkey.publicKey)
     console.log('ParentDID: ', parentDID)
 
-    const sub = derivePath("m/0'/1'", hexSeed);
+    const sub = derivePath("m/0'/1/'", hexSeed);
 
     let subDID = await getDidFromParentKey(sub.key.slice(0, 32), pubkey.publicKey)
     console.log('subDID: ', subDID)

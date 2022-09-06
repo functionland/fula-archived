@@ -1,6 +1,7 @@
 import { decryptJWE, createJWE, JWE,
     x25519Encrypter,
     x25519Decrypter,
+    Encrypter,
 } from 'did-jwt'
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import { encodePayload, prepareCleartext, decodeCleartext } from 'dag-jose-utils'
@@ -28,10 +29,9 @@ export type DecryptJWEOptions = {
   
 
 export class DID {
-    publicKey: any;
-    private _privateKey: string;
-    constructor(privateKey: any, publicKey: any) {
-      // this.publicKey = generateKeyPairFromSeed(privateKey).publicKey;
+    publicKey: Uint8Array;
+    private _privateKey: Uint8Array;
+    constructor(privateKey: Uint8Array, publicKey: Uint8Array) {
       this.publicKey = publicKey
       this._privateKey = privateKey;
     }
@@ -43,9 +43,10 @@ export class DID {
      * @returns  encrypter = publicKey
      */
 
-     private encrypter(publicKey: Array<string>): Array<any> {
-        let encrypter: Array<any> = [];
+     private encrypter(publicKey: Array<Uint8Array>): Encrypter[] {
+        let encrypter: Encrypter[] = [];
         publicKey.forEach((_publicKey:any)=> encrypter.push(x25519Encrypter(u8a.fromString(_publicKey))))
+        console.log('>> encrypter: ', encrypter)
         return encrypter
     }
 
@@ -56,8 +57,8 @@ export class DID {
      * @returns  asymDecrypter = privateKey
      */
       private decrypter() {
-        return x25519Decrypter(Buffer.from(this._privateKey, 'hex'));
-    }
+        return x25519Decrypter(this._privateKey);
+      }
 
     /**
    * Create a JWE encrypted to the given recipients.
@@ -68,12 +69,14 @@ export class DID {
    */
   async createJWE(
     cleartext: Record<string, any>,
-    recipients: Array<string>,
+    recipients: Encrypter[] | Array<Uint8Array>,
     options: CreateJWEOptions = {}
   ): Promise<JWE> {
-    let asymEncrypter = this.encrypter(recipients);
-    const preparedCleartext = await prepareCleartext(cleartext)
-    return await createJWE(preparedCleartext, asymEncrypter, options.protectedHeader, options.aad)
+    if(!recipients.map((key:any)=>  { return key.alg }).includes('ECDH-ES+XC20PKW')) {
+      recipients = this.encrypter(recipients as Array<Uint8Array>);
+    }
+    const preparedCleartext = await prepareCleartext(cleartext);
+    return await createJWE(preparedCleartext, recipients as Encrypter[], options.protectedHeader, options.aad)
   }
 
    /**

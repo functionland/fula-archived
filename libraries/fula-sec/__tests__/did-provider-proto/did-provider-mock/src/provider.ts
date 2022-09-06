@@ -44,50 +44,31 @@ export class Povider {
         }
     }
 
-    async resolveX25519Encrypters(dids: string[], resolver: Resolvable): Promise<Encrypter[]> {
+    async resolveEncrypters(dids: string[]): Promise<Encrypter[]> {
         const encryptersForDID = async (did: string, resolved: string[] = []): Promise<Encrypter[]> => {
-          const { didResolutionMetadata, didDocument } = await resolver.resolve(did)
+          const didDocument = await this.resolve(did)
           resolved.push(did)
-          if (didResolutionMetadata?.error || didDocument == null) {
-            throw new Error(
-              `resolver_error: Could not resolve ${did}: ${didResolutionMetadata.error}, ${didResolutionMetadata.message}`
-            )
-          }
-          let controllerEncrypters: Encrypter[] = []
-          if (!didDocument.controller && !didDocument.keyAgreement) {
+          if (!didDocument.publicKey) {
             throw new Error(`no_suitable_keys: Could not find x25519 key for ${did}`)
           }
-          if (didDocument.controller) {
-            let controllers = Array.isArray(didDocument.controller) ? didDocument.controller : [didDocument.controller]
-            controllers = controllers.filter((c) => !resolved.includes(c))
-            const encrypterPromises = controllers.map((did) =>
-              encryptersForDID(did, resolved).catch(() => {
-                return []
-              })
-            )
-            const encrypterArrays = await Promise.all(encrypterPromises)
-            controllerEncrypters = ([] as Encrypter[]).concat(...encrypterArrays)
-          }
-          const agreementKeys: VerificationMethod[] = didDocument.keyAgreement
-            ?.map((key) => {
+          const agreementKeys: VerificationMethod[] = didDocument.publicKey
+            ?.map((key: any) => {
               if (typeof key === 'string') {
-                return [...(didDocument.publicKey || []), ...(didDocument.verificationMethod || [])].find(
+                return [...(didDocument.publicKey || [])].find(
                   (pk) => pk.id === key
                 )
               }
               return key
             })
-            ?.filter((key) => typeof key !== 'undefined') as VerificationMethod[]
+            ?.filter((key: any) => typeof key !== 'undefined') as VerificationMethod[]
           const pks =
             agreementKeys?.filter((key) => {
-              // TODO: should be able to use non base58 keys too
               return key.type === 'X25519KeyAgreementKey2019' && Boolean(key.publicKeyBase58)
             }) || []
-          if (!pks.length && !controllerEncrypters.length)
+          if (!pks.length)
             throw new Error(`no_suitable_keys: Could not find x25519 key for ${did}`)
-          return pks
+            return pks
             .map((pk) => x25519Encrypter(u8a.fromString(<string>pk.publicKeyBase58, 'base58btc'), pk.id))
-            .concat(...controllerEncrypters)
         }
       
         const encrypterPromises = dids.map((did) => encryptersForDID(did))

@@ -2,7 +2,11 @@ import * as IPFS from 'ipfs-core';
 import {getDidFromPem} from './index.js';
 import {createProvider} from './did-provider-mock/index.js';
 import * as u8a from 'uint8arrays';
-import { generateKeyPair } from '@stablelib/x25519';
+import { generateKeyPair, generateKeyPairFromSeed } from '@stablelib/x25519';
+import { DID } from '../../src/did/did.js';
+import { derivePath, getMasterKeyFromSeed, getPublicKey } from '../../src/did/hkey/key.js';
+
+
 
 export const pem = `
 -----BEGIN RSA PRIVATE KEY-----
@@ -57,6 +61,16 @@ async function createDoc() {
 
 
 async function createTrustedKeyDoc() {
+
+
+  let hexSeed = 'simple squirrel mirror answer please often device decide demand bottom harvest range';
+  console.log('seed: ', hexSeed)
+
+  const master = getMasterKeyFromSeed(hexSeed);
+  let pubkey = generateKeyPairFromSeed(master.key.slice(0, 32));
+  console.log('pubkey for JWE TEST: ', pubkey);
+
+
     const ipfs = await IPFS.create()
 
     const didProvider = createProvider(ipfs);
@@ -64,7 +78,7 @@ async function createTrustedKeyDoc() {
     const did = await getDidFromPem(pem);   
     console.log('did: ', did)
 
-    const secondKp1 = generateKeyPair()
+    // const secondKp1 = generateKeyPair()
 
     const didDocument = await didProvider.create(pem, (document: { 
     addPublicKey: (arg0: { type: string; publicKeyBase58: string; controller: Array<string>}) => any; 
@@ -73,11 +87,10 @@ async function createTrustedKeyDoc() {
   }) => {
         const publicKey = document.addPublicKey({
             type: 'X25519KeyAgreementKey2019',
-            publicKeyBase58: u8a.toString(secondKp1.publicKey, 'base58btc'),
-            controller: [did, 'did2']
+            publicKeyBase58: u8a.toString(pubkey.publicKey, 'base58btc'),
+            controller: [did]
             // TODO Add Param: Blockchain Account, chain ID 
         });
-        // TODO keyAgreement function
         console.log('publicKey: ', publicKey)
 
         const authentication = document.addAuthentication(publicKey.id);
@@ -96,6 +109,21 @@ async function createTrustedKeyDoc() {
 
     let resolve = await didProvider.resolve(did);
     console.log('resolve: ', resolve)
+
+    let encrypters:any = await didProvider.resolveEncrypters([did]);
+    console.log('encrypters: ', encrypters)
+    // TEST JWE
+    const asymEnc = new DID(pubkey.secretKey, pubkey.publicKey);
+
+    let plaintext = {
+      symetricKey: '12345',
+      CID: 'aaaaaaaaaaaaaaa'
+    }
+    let jwe = await asymEnc.createJWE(plaintext, encrypters);
+    console.log('jwe: ', jwe)
+
+    let ciphertext = await asymEnc.decryptJWE(jwe)
+    console.log('ciphertext: ', ciphertext)
 
 }
 

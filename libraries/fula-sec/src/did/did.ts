@@ -3,8 +3,7 @@ import { decryptJWE, createJWE, JWE,
     x25519Decrypter,
     Encrypter,
 } from 'did-jwt'
-import { generateKeyPairFromSeed } from '@stablelib/x25519'
-import { encodePayload, prepareCleartext, decodeCleartext } from 'dag-jose-utils'
+import {prepareCleartext, decodeCleartext } from 'dag-jose-utils'
 import * as u8a from 'uint8arrays'
 
 /**
@@ -13,10 +12,6 @@ import * as u8a from 'uint8arrays'
  * Requires public and private key. The user must import the DID`s private key and 
  * share the public key among network participants. 
  */
- interface IDIDEncDec {
-    encrypt(symetricKey: string, CID: string, publicKey: any): Promise <any>;
-    decrypt(jwe: any): Promise <any>;
-}
 
 export type CreateJWEOptions = {
     protectedHeader?: Record<string, any>
@@ -46,7 +41,6 @@ export class DID {
      private encrypter(publicKey: Array<Uint8Array>): Encrypter[] {
         let encrypter: Encrypter[] = [];
         publicKey.forEach((_publicKey:any)=> encrypter.push(x25519Encrypter(u8a.fromString(_publicKey))))
-        console.log('>> encrypter: ', encrypter)
         return encrypter
     }
 
@@ -87,9 +81,7 @@ export class DID {
 
   async decryptJWE(jwe: JWE): Promise<Record<string, any>> {
     let decrypter = this.decrypter();
-    console.log('decrypter: ', decrypter)
     const bytes = await decryptJWE(jwe, decrypter)
-    console.log('bytes: ', bytes)
     return decodeCleartext(bytes)
   }
 }

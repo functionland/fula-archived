@@ -102,13 +102,10 @@ export class Povider {
 
     _publish = async (pem:any, content:any) => {
         const keyName:any = await this._generateKeyName();
-        console.log('keyName: ', keyName)
-        console.log('content: ', content)
         await this._importKey(keyName, pem);
         try {
             const cid = await this._ipfs.dag.put(content, { storeCodec: 'dag-cbor', hashAlg: 'sha2-512' });
             const path = `/ipfs/${cid}`;
-            console.log('path: ', path)
             const res = await this._ipfs.name.publish(path, {
                 lifetime: this._lifetime,
                 ttl: this._lifetime,

@@ -1,5 +1,5 @@
 import * as jose from 'jose'
-import isObjects from '../utils/isObject'
+import isObjects from '../../utils/isObject'
 import splitKey from 'shamirs-secret-sharing'
 import { JWTPayload } from 'did-jwt'
 

@@ -1,6 +1,6 @@
 import secp256k1 from 'secp256k1';
-import isObjects from '../utils/isObject'
-import { stringToBytes, bytesToBase64, base64ToBytes, stringHexToU8a } from '../utils/u8a.multifoamats'
+import isObjects from '../../utils/isObject'
+import { stringToBytes, bytesToBase64, base64ToBytes, stringHexToU8a } from '../../utils/u8a.multifoamats'
 import sha3 from 'js-sha3'
 /*
     Generate Signature per content

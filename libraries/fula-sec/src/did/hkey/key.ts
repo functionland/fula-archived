@@ -3,11 +3,6 @@ import nacl from 'tweetnacl';
 
 import { replaceDerive, pathRegex } from './utils/utils.js';
 
-interface Nacl {
-    crypto_sign_seed_keypair: (
-        val: Buffer,
-    ) => { signPk: Buffer; signSk: Buffer };
-}
 type Hex = string;
 type Path = string;
 

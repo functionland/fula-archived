@@ -37,17 +37,17 @@ describe('Asymetric Encription', () => {
         let parentDID = await getDidFromParentKey(master.key.slice(0, 32), pubkey.publicKey)
         console.log('ParentDID: ', parentDID)
 
-        const asymEnc = new DID(master.key, new Uint8Array(getPublicKey(master.key.slice(0, 32)).slice(1)));
-        // const asymEnc = new DID(pubkey.secretKey, pubkey.publicKey);
+        // const asymEnc = new DID(master.key, new Uint8Array(getPublicKey(master.key.slice(0, 32)).slice(1)));
+        const asymEnc = new DID(pubkey.secretKey, pubkey.publicKey);
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'
         }
         console.log('asymEnc.publicKey: ', asymEnc.publicKey)
-        // let jwe = await asymEnc.createJWE(plaintext, [asymEnc.publicKey]);
-        // console.log('JWE: ', jwe)
-        // let ciphertext = await asymEnc.decryptJWE(jwe)
-        // console.log('ciphertext: ', ciphertext)
+        let jwe = await asymEnc.createJWE(plaintext, [asymEnc.publicKey]);
+        console.log('JWE: ', jwe)
+        let ciphertext = await asymEnc.decryptJWE(jwe)
+        console.log('ciphertext: ', ciphertext)
         should().not.Throw
         // expect(JSON.stringify(plaintext)).to.equal(JSON.stringify(ciphertext));
     });

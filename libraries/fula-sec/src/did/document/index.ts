@@ -70,6 +70,31 @@ class Document {
         this._refreshUpdated();
     }
 
+    addSession(props: any, options?: any) {
+        // @ts-ignore
+        const { idPrefix } = { ...options };
+        //todo session
+        props.id = service.createId(this._content.id, props.id, { prefix: idPrefix });
+
+        service.assert(props, this._content.service);
+
+        this._content.service.push(props);
+        this._refreshUpdated();
+
+        return props;
+    }
+
+    removeSession(id: string) {
+        const filter = this._content.service.filter((srvc) => !isEquivalentId(srvc.id, id, service.separator));
+        // todo session
+        if (this._content.service.length === filter.length) {
+            return;
+        }
+
+        this._content.service = filter;
+        this._refreshUpdated();
+    }
+
     addService(props: any, options?: any) {
         // @ts-ignore
         const { idPrefix } = { ...options };

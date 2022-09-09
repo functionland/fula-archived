@@ -2,7 +2,8 @@ import _ from 'lodash'; //{ _.isString, _.isPlainObject }
 import { generateRandomString, isDidValid } from '../../utils/index.js';
 import { InvalidDocument, InvalidIdPrefix } from '../../utils/errors.js';
 
-const DEFAULT_CONTEXT = 'https://w3id.org/did/v1';
+// todo add url for document format
+const DEFAULT_CONTEXT = 'https://github.com/did/v1';
 export const SEPARATORS = {
     PUBLIC_KEY: '#',
     SERVICE: ';',

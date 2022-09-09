@@ -80,7 +80,7 @@ async function createTrustedKeyDoc() {
 
     // const secondKp1 = generateKeyPair()
 
-    const didDocument = await didProvider.create(pem, (document: { 
+    const didDocument = await didProvider.create(pem, (document: {
     addPublicKey: (arg0: { type: string; publicKeyBase58: string; controller: Array<string>}) => any; 
     addAuthentication: (arg0: any) => any; // Auth/Verification method
     addService: (arg0: { id: string; type: string; serviceEndpoint: string; }) => any; 
@@ -110,9 +110,10 @@ async function createTrustedKeyDoc() {
     let resolve = await didProvider.resolve(did);
     console.log('resolve: ', resolve)
 
+
     let encrypters:any = await didProvider.resolveEncrypters([did]);
     console.log('encrypters: ', encrypters)
-    // TEST JWE
+
     const asymEnc = new DID(pubkey.secretKey, pubkey.publicKey);
 
     let plaintext = {
@@ -124,7 +125,6 @@ async function createTrustedKeyDoc() {
 
     let ciphertext = await asymEnc.decryptJWE(jwe)
     console.log('ciphertext: ', ciphertext)
-
 }
 
 // createDoc();

@@ -2,27 +2,23 @@ import * as crypto from 'libp2p-crypto';
 import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
 import { InvalidDid } from './errors.js';
-import * as u8a from 'uint8arrays'
+
 export const getDidFromPem = async (pem:any) => {
     const key = await pemToBuffer(pem);
     return generateDid(key);
 };
 
-export const getDidFromParentKey = async (parentKey: Uint8Array, publicKey: Uint8Array) => {
+export const getDidFromParentKey = async (parentKey: Uint8Array) => {
     const key = await parentKeyToBuffer(parentKey);
-    return generateDidFromParent(key, publicKey);
+    return generateDidFromParent(key);
 };
 export const parentKeyToBuffer = async (parentKey: Uint8Array) => {
     return await crypto.keys.generateKeyPairFromSeed('Ed25519', parentKey, 512) 
 };
 
-export const generateDidFromParent = async (key:crypto.PrivateKey, publicKey: Uint8Array) => {
+export const generateDidFromParent = async (key:crypto.PrivateKey) => {
     const identifier = await generateIpnsNameFromParent(key);
-    const encode = {
-        id: identifier.toB58String(),
-        publicKey: u8a.toString(publicKey, 'base58btc')
-    }
-    const did = `did:fula:${encode.id.concat('/', encode.publicKey)}`;
+    const did = `did:fula:${identifier.toB58String()}`;
     return {
        PeerId: identifier.toJSON(),
        did 

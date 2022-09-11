@@ -72,6 +72,4 @@ async function createTrustedKeyDoc() {
     let ciphertext = await asymEnc.decryptJWE(jwe)
     console.log('ciphertext: ', ciphertext)
 }
-
-// createDoc();
 createTrustedKeyDoc();

@@ -1,11 +1,9 @@
 import { expect, should } from 'chai';
 import { DID } from '../../src/did/did';
-import { derivePath, getMasterKeyFromSeed, getPublicKey } from '../../src/did/hkey/key';
-import {getDidFromParentKey} from '../../src/did/utils/index'
+import { getMasterKeyFromSeed, getPublicKey } from '../../src/did/hkey/key';
 import bip39 from 'bip39';
-import * as u8a from 'uint8arrays'
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
-import {bytesToBase64, base64ToBytes, bytesToBase58, base58ToBytes, encodeBase64url, decodeBase64url } from '../../src/utils/u8a.multifoamats'
+import {bytesToBase58, base58ToBytes } from '../../src/utils/u8a.multifoamats'
 
 describe('Asymetric Encription', () => {
     it('1- Issuer encryptes string with pubKey and decrypts with priKey', async () => {
@@ -34,15 +32,16 @@ describe('Asymetric Encription', () => {
         let pubkey = generateKeyPairFromSeed(master.key.slice(0, 32));
         console.log('pubkey for JWE TEST: ', pubkey);
 
-        let parentDID = await getDidFromParentKey(master.key.slice(0, 32))
-        console.log('ParentDID: ', parentDID)
-
         // const asymEnc = new DID(master.key, new Uint8Array(getPublicKey(master.key.slice(0, 32)).slice(1)));
         const asymEnc = new DID(pubkey.secretKey, pubkey.publicKey);
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'
         }
+
+        let parentDID = await asymEnc.getDID(master.key.slice(0, 32))
+        console.log('ParentDID: ', parentDID)
+
         console.log('asymEnc.publicKey: ', asymEnc.publicKey)
         let jwe = await asymEnc.createJWE(plaintext, [asymEnc.publicKey]);
         console.log('JWE: ', jwe)
@@ -52,18 +51,3 @@ describe('Asymetric Encription', () => {
         // expect(JSON.stringify(plaintext)).to.equal(JSON.stringify(ciphertext));
     });
 });
-
-
-
-/*
-      // let secretkey = randomBytes(32)
-        // console.log('secretkey: ', secretkey)
-        // let pubkey = generateKeyPairFromSeed(secretkey).publicKey
-        // console.log('pubkey: ', pubkey)
-        // let cleartext = u8a.fromString('my secret message')
-        // let encrypter = x25519Encrypter(pubkey)
-        // console.log('encrypter: ', encrypter)
-        // let decrypter = x25519Decrypter(secretkey)
-        // console.log('decrypter: ', decrypter)
-
-*/

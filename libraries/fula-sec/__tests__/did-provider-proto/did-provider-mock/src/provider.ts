@@ -1,41 +1,37 @@
-// import type IPFS from 'ipfs-core-types'
+import type IPFS from 'ipfs-core-types'
 import all from 'it-all';
 import {CID} from 'multiformats/cid'
 import type { VerificationMethod, Resolvable } from 'did-resolver'
 import * as u8a from 'uint8arrays'
 import { Encrypter, x25519Encrypter } from 'did-jwt';
 import createDocument, { assertDocument } from '../../../../src/did/document/index.js';
-import { generateRandomString, parseDid } from '../../../../src/did/utils/index.js';
+import { generateRandomString } from '../../../../src/did/utils/index.js';
 import { InvalidDid, IllegalCreate } from '../../../../src/did/utils/errors.js';
-import {getDidFromPem} from '../../index.js'
-
+import * as crypto from 'libp2p-crypto';
+import { DID } from '../../../../src/did/did.js' 
 export class Povider {
-    _ipfs: any;
+    _ipfs: IPFS.IPFS;
     _lifetime: any;
+    _secretKey: Uint8Array;
 
-    constructor(ipfs: any, lifetime: any) {
+    constructor(ipfs: IPFS.IPFS, lifetime: any, secretKey: Uint8Array) {
         this._ipfs = ipfs;
         this._lifetime = lifetime || '87600h';
+        this._secretKey = secretKey;
     }
 
     async resolve(did:any) {
-        const { identifier } = parseDid(did);
-        console.log('identifier: ', identifier)
+        const { identifier } = DID.parseDID(did);
         try {
             const path:any = await all(this._ipfs.name.resolve(identifier));
-            console.log('path: ', path)
             if(!path) return false
             const cidStr:any = path[0].replace(/^\/ipfs\//, '');
-            console.log('cidStr: ', cidStr)
             //https://bytemeta.vip/repo/ipfs/js-ipfs/issues/3854
             let cid = CID.parse(cidStr)
-            console.log('cid:>> ', cid)
             const { value: content } = await this._ipfs.dag.get(cid);
-            console.log('content: ', content)
             assertDocument(content);
             return content;
         } catch (err: any) {
-            console.log('err: ', err)
             if (err.code === 'INVALID_DOCUMENT') {
                 throw err;
             }
@@ -77,63 +73,59 @@ export class Povider {
         return flattenedArray
       }
 
-    async create(pem: any, operations: any) {
-        const did = await getDidFromPem(pem);
+    async create(did: any, operations: any) {
         try {
             const document = createDocument(did);
             operations(document);
-            return this._publish(pem, document.getContent());
+            return this._publish(document.getContent());
         } catch (err) {
             return err
         }
         throw new IllegalCreate();
     }
 
-    async update(pem: any, operations:any) {
-        const did = await getDidFromPem(pem);
-
+    async update(did: any, operations:any) {
         const content = await this.resolve(did);
         const document = createDocument(did, content);
-
         operations(document);
-
-        return this._publish(pem, document.getContent());
+        return this._publish(document.getContent());
     }
 
-    _publish = async (pem:any, content:any) => {
-        const keyName:any = await this._generateKeyName();
-        await this._importKey(keyName, pem);
+    _publish = async (content:any) => {
+      const keyName = await this._generateKeyName();
+      let pem = await this._getKey('123456')
         try {
+          await this._importKey(keyName, pem, '123456');
             const cid = await this._ipfs.dag.put(content, { storeCodec: 'dag-cbor', hashAlg: 'sha2-512' });
             const path = `/ipfs/${cid}`;
             const res = await this._ipfs.name.publish(path, {
                 lifetime: this._lifetime,
                 ttl: this._lifetime,
-                key: keyName,
+                key: keyName
             });
             return content;
         } finally {
             await this._removeKey(keyName);
         }
     }
-
+  
     _removeKey = async (keyName:any) => {
-        console.log('>> keyName: ', keyName)
         const keysList = await this._ipfs.key.list();
         const hasKey = keysList.some(({ name }) => name === keyName);
-
         if (!hasKey) {
             return;
         }
-
         const key = await this._ipfs.key.rm(keyName);
-        console.log('rm key: ', key)
     }
 
     _importKey = async (keyName:any, pem:any, password?:any) => {
-        // await this._removeKey(keyName);
-        const key = await this._ipfs.key.import(keyName, pem, password);
-        console.log('import key: ', key)
+      await this._removeKey(keyName);
+      await this._ipfs.key.import(keyName, pem, password);
+    }
+
+    _getKey = async(password: string) => {
+      const key = await crypto.keys.generateKeyPairFromSeed('Ed25519', this._secretKey, 512)      
+      return key.export(password)
     }
 
     _generateKeyName = async() =>

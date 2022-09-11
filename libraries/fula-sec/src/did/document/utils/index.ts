@@ -1,9 +1,10 @@
 import _ from 'lodash'; //{ _.isString, _.isPlainObject }
-import { generateRandomString, isDidValid } from '../../utils/index.js';
+import { DID } from '../../did.js'
+import { generateRandomString } from '../../utils/index.js';
 import { InvalidDocument, InvalidIdPrefix } from '../../utils/errors.js';
 
 // todo add url for document format
-const DEFAULT_CONTEXT = 'https://github.com/did/v1';
+const DEFAULT_CONTEXT = 'https://www.w3.org/ns/did/v1';
 export const SEPARATORS = {
     PUBLIC_KEY: '#',
     SERVICE: ';',
@@ -61,7 +62,7 @@ export const assertDocument = (content) => {
 
     if (!id) {
         throw new InvalidDocument('Document content must contain "id" property.');
-    } else if (!isDidValid(id)) {
+    } else if (!DID.isValidDID(id)) {
         throw new InvalidDocument(`Document "id" must be a valid DID. Found: "${id}"`);
     }
 };

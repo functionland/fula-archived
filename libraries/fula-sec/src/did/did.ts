@@ -6,9 +6,9 @@ import { decryptJWE, createJWE, JWE,
 import {prepareCleartext, decodeCleartext } from 'dag-jose-utils'
 import * as u8a from 'uint8arrays'
 import * as crypto from 'libp2p-crypto';
-import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
 import { InvalidDid } from '../did/utils/errors.js';
+
 /**
  * @class Decentralized Identity and JWE
  * @description Asymetric Encription
@@ -102,7 +102,7 @@ export class DID {
      * @returns  did
      */
 
-    parseDID(did: string) {
+    static parseDID(did: string) {
       const match = did.match(/did:(\w+):(\w+).*/);
       if (!match) {
           throw new InvalidDid(did);
@@ -118,7 +118,7 @@ export class DID {
      * @returns  boolen
      */
 
-    isValidDID(did: string) {
+    static isValidDID(did: string) {
       try {
         this.parseDID(did);
         return true;

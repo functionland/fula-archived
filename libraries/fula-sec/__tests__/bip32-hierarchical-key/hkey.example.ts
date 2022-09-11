@@ -1,5 +1,5 @@
 import { derivePath, getMasterKeyFromSeed, getPublicKey } from '../../src/did/hkey/key.js';
-import {getDidFromParentKey} from '../../src/did/utils/index.js'
+import { DID } from '../../src/did/did.js'
 import bip39 from 'bip39';
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 
@@ -14,13 +14,14 @@ import { generateKeyPairFromSeed } from '@stablelib/x25519'
     console.log('master key: ', master.key.toString('hex'))
     console.log('master chain', master.chainCode.toString('hex'));
 
-    let pubkey = generateKeyPairFromSeed(master.key.slice(0, 32));
+    let keyPair = generateKeyPairFromSeed(master.key.slice(0, 32));
 
-let parentDID = await getDidFromParentKey(master.key.slice(0, 32))
-    console.log('ParentDID: ', parentDID)
+    const idid = new DID(master.key.slice(0, 32), keyPair.publicKey);
+    const {did} = await idid.getDID();
+    console.log('ParentDID: ', did)
 
     const sub = derivePath("m/0'/1/'", hexSeed);
 
-    let subDID = await getDidFromParentKey(sub.key.slice(0, 32))
+    let subDID = await idid.getDID(sub.key.slice(0, 32))
     console.log('subDID: ', subDID)
 })()    

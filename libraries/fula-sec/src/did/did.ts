@@ -8,7 +8,7 @@ import * as u8a from 'uint8arrays'
 import * as crypto from 'libp2p-crypto';
 import { Buffer } from 'buffer';
 import * as PeerId from 'peer-id'
-import { InvalidDid } from '../did/utils/errors';
+import { InvalidDid } from '../did/utils/errors.js';
 /**
  * @class Decentralized Identity and JWE
  * @description Asymetric Encription

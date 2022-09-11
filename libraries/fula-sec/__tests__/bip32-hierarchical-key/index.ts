@@ -16,11 +16,11 @@ import { generateKeyPairFromSeed } from '@stablelib/x25519'
 
     let pubkey = generateKeyPairFromSeed(master.key.slice(0, 32));
 
-let parentDID = await getDidFromParentKey(master.key.slice(0, 32), pubkey.publicKey)
+let parentDID = await getDidFromParentKey(master.key.slice(0, 32))
     console.log('ParentDID: ', parentDID)
 
     const sub = derivePath("m/0'/1/'", hexSeed);
 
-    let subDID = await getDidFromParentKey(sub.key.slice(0, 32), pubkey.publicKey)
+    let subDID = await getDidFromParentKey(sub.key.slice(0, 32))
     console.log('subDID: ', subDID)
 })()    

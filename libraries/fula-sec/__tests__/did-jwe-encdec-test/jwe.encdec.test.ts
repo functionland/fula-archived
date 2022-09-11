@@ -34,7 +34,7 @@ describe('Asymetric Encription', () => {
         let pubkey = generateKeyPairFromSeed(master.key.slice(0, 32));
         console.log('pubkey for JWE TEST: ', pubkey);
 
-        let parentDID = await getDidFromParentKey(master.key.slice(0, 32), pubkey.publicKey)
+        let parentDID = await getDidFromParentKey(master.key.slice(0, 32))
         console.log('ParentDID: ', parentDID)
 
         // const asymEnc = new DID(master.key, new Uint8Array(getPublicKey(master.key.slice(0, 32)).slice(1)));

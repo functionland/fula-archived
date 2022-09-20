@@ -1,2 +1,2 @@
-export * from './did/did';
-export * from './did/hkey/key';
+export * from './did/did.js';
+export * from './did/hkey/key.js';

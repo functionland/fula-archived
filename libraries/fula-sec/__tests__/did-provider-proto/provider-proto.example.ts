@@ -1,40 +1,37 @@
 import * as IPFS from 'ipfs-core';
-// import {getDidFromPem} from './index.js';
 import {createProvider} from './did-provider-mock/index.js';
 import * as u8a from 'uint8arrays';
-import { generateKeyPairFromSeed } from '@stablelib/x25519';
 import { DID } from '../../src/did/did.js';
-import { getMasterKeyFromSeed } from '../../src/did/hkey/key.js';
+import { HDKEY } from '../../src/did/hkey/key.js';
 
 
 async function createTrustedKeyDoc() {
-
-  let hexSeed = 'simple squirrel mirror answer please often device decide demand bottom harvest range';
+  
+  let hexSeed = '9d7020006cf0696334ead54fffb859a8253e5a44860c211d23c7b6bf842d0c63535a5efd266a647cabdc4392df9a4ce28db7dc393318068d93bf33a32adb81ae';
   console.log('seed: ', hexSeed)
+  const ed = new HDKEY(hexSeed)
+  const master = ed.createEDKey();
+  console.log('master: ', master)
+  const ipfs = await IPFS.create()
+  console.log(ipfs)
 
-  const master = getMasterKeyFromSeed(hexSeed);
-  let keyPair = generateKeyPairFromSeed(master.key.slice(0, 32));
-  console.log('keyPair for JWE TEST: ', keyPair);
-
-    const ipfs = await IPFS.create()
-
-    const didProvider = createProvider(ipfs, keyPair.secretKey);
-
-
-    const asymEnc = new DID(keyPair.secretKey, keyPair.publicKey);
-
-    const {did} = await asymEnc.getDID(keyPair.secretKey);   
-    console.log('did: ', did)
+  const didProvider = createProvider(ipfs, master.secretKey.slice(0, 32));
 
 
-    const didDocument = await didProvider.create(did, (document: {
+  const asymEnc = new DID(master.secretKey.slice(0, 32), master.publicKey);
+
+  const {did} = await asymEnc.getDID(master.secretKey.slice(0, 32));   
+  console.log('did: ', did)
+
+
+  const didDocument = await didProvider.create(did, (document: {
     addPublicKey: (arg0: { type: string; publicKeyBase58: string; controller: Array<string>}) => any; 
     addAuthentication: (arg0: any) => any; // Auth/Verification method
     addService: (arg0: { id: string; type: string; serviceEndpoint: string; }) => any; 
   }) => {
         const publicKey = document.addPublicKey({
             type: 'X25519KeyAgreementKey2019',
-            publicKeyBase58: u8a.toString(keyPair.publicKey, 'base58btc'),
+            publicKeyBase58: u8a.toString(master.publicKey, 'base58btc'),
             controller: [did]
             // TODO Add Param: Blockchain Account, chain ID 
         });

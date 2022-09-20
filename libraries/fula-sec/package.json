@@ -10,7 +10,7 @@
     "build:test": "node scripts/build-test.js && tsc",
     "test": "rushx build:test && mocha './dist/__tests__/did-jwe-encdec-test/jwe.encdec.test.cjs'",
     "test:jest": "tsc && jest --forceExit --detectOpenHandles --passWithNoTests",
-    "test:node": "node ./dist/__tests__/did-provider-proto/provider-proto.example.js",
+    "test:node": "node ./dist/__tests__/dag-ucan-test/ucan.example.js",
     "lint": "eslint . --ext .ts",
     "doc": "npx typedoc src/*.ts"
   },
@@ -73,11 +73,14 @@
     "uint8arrays": "^3.0.0"
   },
   "dependencies": {
+    "@ipld/dag-ucan": "^3.0.0-beta",
     "@stablelib/x25519": "^1.0.2",
     "bip39": "^3.0.4",
     "create-hmac": "^1.1.7",
+    "dag-jose-utils": "^2.0.0",
     "did-jwt": "^5.12.4",
     "elliptic": "^6.5.4",
+    "i": "^0.3.7",
     "it-all": "^1.0.6",
     "jose": "^4.8.1",
     "libp2p-crypto": "^0.21.2",
@@ -88,6 +91,7 @@
     "shamirs-secret-sharing": "^1.0.1",
     "tslib": "^2.4.0",
     "tweetnacl": "^1.0.3",
+    "ucans": "^0.10.0",
     "uint8arrays": "^3.0.0"
   },
   "exports": {

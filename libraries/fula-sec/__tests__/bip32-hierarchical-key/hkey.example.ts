@@ -1,27 +1,19 @@
-import { derivePath, getMasterKeyFromSeed, getPublicKey } from '../../src/did/hkey/key.js';
+import { HDKEY } from '../../src/did/hkey/key.js';
 import { DID } from '../../src/did/did.js'
-import bip39 from 'bip39';
-import { generateKeyPairFromSeed } from '@stablelib/x25519'
+import { generateKeyPairFromSeed, extractPublicKeyFromSecretKey } from '@stablelib/ed25519'
 
 (async()=> {
-    const mnemonic = bip39.generateMnemonic()
-    console.log('mnemonic: ', mnemonic)
+    let hexSeed = '9d7020006cf0696334ead54fffb859a8253e5a44860c211d23c7b6bf842d0c63535a5efd266a647cabdc4392df9a4ce28db7dc393318068d93bf33a32adb81ae';
+    const ed = new HDKEY(hexSeed)
+    const master = ed.createEDKey()
+    console.log('master key: ', master)
 
-    let hexSeed = bip39.mnemonicToSeedSync(mnemonic).toString('hex')
-    console.log('seed: ', hexSeed)
-
-    const master = getMasterKeyFromSeed(hexSeed);
-    console.log('master key: ', master.key.toString('hex'))
-    console.log('master chain', master.chainCode.toString('hex'));
-
-    let keyPair = generateKeyPairFromSeed(master.key.slice(0, 32));
-
-    const idid = new DID(master.key.slice(0, 32), keyPair.publicKey);
-    const {did} = await idid.getDID();
+    const idid = new DID(master.secretKey.slice(0, 32), master.publicKey);
+    const did = await idid.getDID();
     console.log('ParentDID: ', did)
 
-    const sub = derivePath("m/0'/1/'", hexSeed);
+    const sub = ed.deriveKeyPath("m/0'/0'");
 
-    let subDID = await idid.getDID(sub.key.slice(0, 32))
+    let subDID = await idid.getDID(sub.secretKey.slice(0, 32))
     console.log('subDID: ', subDID)
 })()    

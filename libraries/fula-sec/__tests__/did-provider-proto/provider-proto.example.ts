@@ -15,12 +15,12 @@ async function createTrustedKeyDoc() {
   const ipfs = await IPFS.create()
   console.log(ipfs)
 
-  const didProvider = createProvider(ipfs, master.secretKey.slice(0, 32));
+  const didProvider = createProvider(ipfs, ed._secretKey.slice(0, 32));
 
 
-  const asymEnc = new DID(master.secretKey.slice(0, 32), master.publicKey);
+  const asymEnc = new DID(ed._secretKey.slice(0, 32), master.publicKey);
 
-  const {did} = await asymEnc.getDID(master.secretKey.slice(0, 32));   
+  const {did} = await asymEnc.getDID(ed._secretKey.slice(0, 32));   
   console.log('did: ', did)
 
 
@@ -55,13 +55,13 @@ async function createTrustedKeyDoc() {
     console.log('resolve: ', resolve)
 
 
-    let encrypters:any = await didProvider.resolveEncrypters([did]);
+    let encrypters:any = await didProvider.resolveEncrypters([did, 'did-jamshid', 'did-masih');
     console.log('encrypters: ', encrypters)
 
 
     let plaintext = {
       symetricKey: '12345',
-      CID: 'aaaaaaaaaaaaaaa'
+      msg: 'aaaaaaaaaaaaaaa'
     }
     let jwe = await asymEnc.createJWE(plaintext, encrypters);
     console.log('jwe: ', jwe)

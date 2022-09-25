@@ -9,13 +9,13 @@ describe('Asymetric Encription', () => {
         const ed = new HDKEY(hexSeed)
         const master = ed.createEDKey()
     
-        const asymEnc = new DID(master.secretKey, master.publicKey);
+        const asymEnc = new DID(ed._secretKey, master.publicKey);
         let plaintext = {
             symetricKey: '12345',
             CID: 'aaaaaaaaaaaaaaa'
         }
 
-        let parentDID = await asymEnc.getDID(master.secretKey)
+        let parentDID = await asymEnc.getDID(ed._secretKey)
         console.log('ParentDID: ', parentDID)
 
         console.log('asymEnc.publicKey: ', asymEnc.publicKey)

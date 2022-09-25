@@ -7,13 +7,13 @@ import { generateKeyPairFromSeed, extractPublicKeyFromSecretKey } from '@stablel
     const ed = new HDKEY(hexSeed)
     const master = ed.createEDKey()
     console.log('master key: ', master)
-
-    const idid = new DID(master.secretKey.slice(0, 32), master.publicKey);
+    fetch('/users').then(res => res.json())
+    const idid = new DID(ed._secretKey.slice(0, 32), master.publicKey);
     const did = await idid.getDID();
     console.log('ParentDID: ', did)
 
     const sub = ed.deriveKeyPath("m/0'/0'");
-
-    let subDID = await idid.getDID(sub.secretKey.slice(0, 32))
+    console.log('child Key: ', sub)
+    let subDID = await idid.getDID(ed._secretKey.slice(0, 32))
     console.log('subDID: ', subDID)
 })()    

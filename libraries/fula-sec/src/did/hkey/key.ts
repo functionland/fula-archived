@@ -1,6 +1,8 @@
 import createHmac from 'create-hmac'
 import { extractPublicKeyFromSecretKey } from '@stablelib/ed25519'
 import { replaceDerive, pathRegex } from './utils/utils.js';
+import * as ucans from './utils/ts-ucan.cjs'
+import * as u8a from 'uint8arrays';
 
 type Hex = string;
 type Path = string;
@@ -10,24 +12,18 @@ type Keys = {
     chainCode: Buffer;
 };
 
-export type EdKeyType = {
-    publicKey: Uint8Array;
-    secretKey: Uint8Array;
-    keyType: 'ed25519';
-}
-
 const ED25519_CURVE = 'ed25519 seed';
 const HARDENED_OFFSET = 0x80000000;
 
 export class HDKEY {
     private _seed: Hex;
     private _Key!: Keys;
-    private _secretKey!: Uint8Array;
+    _secretKey!: Uint8Array;
     constructor(seed: Hex) {
         this._seed = seed;
     }
 
-    createEDKey(seed?: Hex): EdKeyType {
+    createEDKey(seed?: Hex): ucans.EdKeypair {
         const hmac = createHmac('sha512', ED25519_CURVE);
         const secretKey = hmac.update(Buffer.from(seed || this._seed, 'hex')).digest();
         const IL = secretKey.slice(0, 32);
@@ -38,12 +34,8 @@ export class HDKEY {
             key,
             chainCode
         }
-        this._secretKey = new Uint8Array(secretKey)
-        return {
-            publicKey: this.getPublicKey(this._secretKey),
-            secretKey: this._secretKey,
-            keyType: 'ed25519' 
-        }
+        this._secretKey = new Uint8Array(secretKey);
+        return ucans.EdKeypair.fromSecretKey(u8a.toString(this._secretKey, 'base64pad'));
     };
 
     getPublicKey(secretKey?: Uint8Array): Uint8Array {
@@ -98,14 +90,10 @@ export class HDKEY {
         );
     };
 
-    deriveKeyPath(path: Path, offset = HARDENED_OFFSET): EdKeyType {
+    deriveKeyPath(path: Path, offset = HARDENED_OFFSET): ucans.EdKeypair {
         let { key, chainCode } = this._deriveKeyPath(path, offset);
-        const privateKey =  new Uint8Array(Buffer.concat([key, chainCode]));
-        return {
-            publicKey: this.getPublicKey(privateKey),
-            secretKey: privateKey,
-            keyType: 'ed25519'
-        }
+        const secretKey =  new Uint8Array(Buffer.concat([key, chainCode]));
+        return ucans.EdKeypair.fromSecretKey(u8a.toString(secretKey, 'base64pad'));
     }
 }
 

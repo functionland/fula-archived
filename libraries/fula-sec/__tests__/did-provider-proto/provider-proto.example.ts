@@ -55,7 +55,7 @@ async function createTrustedKeyDoc() {
     console.log('resolve: ', resolve)
 
 
-    let encrypters:any = await didProvider.resolveEncrypters([did, 'did-jamshid', 'did-masih');
+    let encrypters:any = await didProvider.resolveEncrypters([did]);
     console.log('encrypters: ', encrypters)
 
 

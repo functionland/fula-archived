@@ -1,8 +1,2 @@
-import {
-    createJWS,
-    createJWT,
-    decodeJWT,
-    verifyJWS,
-    verifyJWT,
-  } from 'did-jwt'
-  import * as u8a from 'uint8arrays'
+export * from './ucan/index.js';
+export * as Parser from './ucan/parser.js';

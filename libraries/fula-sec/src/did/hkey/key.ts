@@ -1,7 +1,8 @@
 import createHmac from 'create-hmac'
 import { extractPublicKeyFromSecretKey } from '@stablelib/ed25519'
 import { replaceDerive, pathRegex } from './utils/utils.js';
-import * as ucans from './utils/ts-ucan.cjs'
+// import * as ucans from './utils/ts-ucan.js'
+import * as ucans from "ucans"
 import * as u8a from 'uint8arrays';
 
 type Hex = string;

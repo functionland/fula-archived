@@ -91,7 +91,7 @@
     "shamirs-secret-sharing": "^1.0.1",
     "tslib": "^2.4.0",
     "tweetnacl": "^1.0.3",
-    "ucans": "^0.10.0",
+    "ucans": "^0.9.1",
     "uint8arrays": "^3.0.0"
   },
   "exports": {
